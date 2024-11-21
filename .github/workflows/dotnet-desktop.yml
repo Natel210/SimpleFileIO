@@ -52,5 +52,5 @@ jobs:
     - name: 7. Run tests
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
 
-    - name: 7. Run tests
-      run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
+    - name: 8. Publish .dll
+      run: dotnet publish ${{ env.Library_Project_Path }} --configuration ${{ matrix.configuration }} --output ./output
