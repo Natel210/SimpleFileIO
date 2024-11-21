@@ -3,10 +3,13 @@ name: Simple File I/O Library Main Action
 on:
   push:
     branches:
-      - main  # 메인 브랜치에서 실행
+      - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
-  contents: write  # Release 생성 및 업로드를 위해 권한 필요
+  contents: write
 
 jobs:
   build-and-release:
@@ -35,7 +38,6 @@ jobs:
         echo "Project version is $version"
         echo "version=$version" >> $GITHUB_ENV
 
-    # Debug 빌드
     - name: Build Debug configuration
       run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore
 
@@ -49,7 +51,6 @@ jobs:
           exit 1
         fi
 
-    # Release 빌드
     - name: Build Release configuration
       run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore
 
@@ -63,19 +64,18 @@ jobs:
           exit 1
         fi
 
-    # 릴리즈 생성 (한 번만 실행)
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v${{ env.version }}  # 프로젝트 버전 기반 태그
-        release_name: "Simple File I/O Library v${{ env.version }}"
+        tag_name: v${{ env.version }}
+        release_name: "v${{ env.version }}"
         draft: false
         prerelease: false
 
-    # Debug DLL 업로드
+    # Debug DLL Upload
     - name: Upload Debug DLL to Release
       uses: actions/upload-release-asset@v1
       env:
@@ -83,10 +83,10 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./output/Debug/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Debug-v${{ env.version }}.dll
+        asset_name: SimpleFileIO-Debug.dll
         asset_content_type: application/octet-stream
 
-    # Release DLL 업로드
+    # Release DLL Upload
     - name: Upload Release DLL to Release
       uses: actions/upload-release-asset@v1
       env:
@@ -94,5 +94,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./output/Release/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Release-v${{ env.version }}.dll
+        asset_name: SimpleFileIO-Release.dll
         asset_content_type: application/octet-stream
