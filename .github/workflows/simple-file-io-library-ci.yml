@@ -55,5 +55,5 @@ jobs:
     - name: 7. Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: BuildOutput
+        name: SimpleFileIO-DLL
         path: ./output
