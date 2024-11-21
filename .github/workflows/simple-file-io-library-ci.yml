@@ -52,7 +52,10 @@ jobs:
     - name: 7. Run tests
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
 
-    - name: 7. Upload build artifacts
+    - name: 8. Check output folder
+      run: ls -la ./output  # ./output 디렉토리의 파일 리스트 확인
+
+    - name: 9. Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: SimpleFileIO-DLL
