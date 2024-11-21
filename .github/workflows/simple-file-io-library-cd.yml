@@ -8,25 +8,22 @@ on:
 
 jobs:
   deploy:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         configuration: [Debug, Release]
 
     steps:
-    - name: List Available Artifacts
+    - name: Debug GitHub Context
       run: |
-        echo "Checking for available artifacts in the current workspace:"
-        ls -la # 현재 디렉토리 확인
+        echo "Dumping GitHub Context:"
+        echo ${{ toJson(github) }}
 
-    - name: List Available Artifacts from Previous Workflow
+    - name: List Artifacts from Triggering Workflow
       run: |
         echo "Listing artifacts from the triggering workflow:"
         curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-        https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts
-
+          https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts
 
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
