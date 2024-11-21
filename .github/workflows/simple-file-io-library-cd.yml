@@ -1,8 +1,8 @@
-name: Simple File I/O Library - CD
+name: Simple File I/O Library Main - CD
 
 on:
   workflow_run:
-    workflows: ["Simple File I/O Library - CI"]
+    workflows: ["Simple File I/O Library Main - CI"]
     types:
       - completed
 
