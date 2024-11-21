@@ -1,0 +1,63 @@
+name:  Simple File I/O Library Main Action
+
+on:
+  push:
+    branches:
+      - main  # 메인 브랜치에 대한 작업 실행
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write  # Release에 업로드를 위해 권한 필요
+  actions: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SimpleFileIO.sln
+
+    - name: Build solution
+      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Publish DLL
+      run: dotnet publish SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --output ./output/${{ matrix.configuration }}
+
+    - name: Verify Output Folder
+      run: |
+        if [ ! -f "./output/${{ matrix.configuration }}/SimpleFileIO.dll" ]; then
+          echo "DLL not found for ${{ matrix.configuration }} configuration."
+          exit 1
+        fi
+
+    - name: Upload DLL to GitHub Release
+      if: ${{ matrix.configuration == 'Release' }}
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/Release/SimpleFileIO.dll
+        asset_name: SimpleFileIO-Release.dll
+        asset_content_type: application/octet-stream
+
+    - name: Upload DLL to Debug Release
+      if: ${{ matrix.configuration == 'Debug' }}
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/Debug/SimpleFileIO.dll
+        asset_name: SimpleFileIO-Debug.dll
+        asset_content_type: application/octet-stream
