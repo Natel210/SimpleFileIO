@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Verify Downloaded Artifacts
+      run: |
+        echo "Checking downloaded artifacts..."
+        ls -la ./output
+    
     - name: Download Build Artifacts
       uses: actions/download-artifact@v3
       with:
