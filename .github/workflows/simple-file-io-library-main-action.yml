@@ -24,6 +24,17 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore SimpleFileIO.sln
 
+    - name: Extract version from csproj
+      id: extract_version
+      run: |
+        version=$(cat SimpleFileIO/SimpleFileIO.csproj | grep '<Version>' | sed -E 's/.*<Version>(.*)<\/Version>.*/\1/')
+        if [ -z "$version" ]; then
+          echo "Project version not found in csproj file."
+          exit 1
+        fi
+        echo "Project version is $version"
+        echo "version=$version" >> $GITHUB_ENV
+
     # Debug 빌드
     - name: Build Debug configuration
       run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore
@@ -59,8 +70,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v1.0.0
-        release_name: "Simple File I/O Library"
+        tag_name: v${{ env.version }}  # 프로젝트 버전 기반 태그
+        release_name: "Simple File I/O Library v${{ env.version }}"
         draft: false
         prerelease: false
 
@@ -72,7 +83,7 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./output/Debug/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Debug.dll
+        asset_name: SimpleFileIO-Debug-v${{ env.version }}.dll
         asset_content_type: application/octet-stream
 
     # Release DLL 업로드
@@ -83,5 +94,5 @@ jobs:
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./output/Release/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Release.dll
+        asset_name: SimpleFileIO-Release-v${{ env.version }}.dll
         asset_content_type: application/octet-stream
