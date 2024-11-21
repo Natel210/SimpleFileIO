@@ -1,4 +1,4 @@
-name: Simple File I/O Library - CI
+name: Simple File I/O Library Main - CI
 
 on:
   push:
