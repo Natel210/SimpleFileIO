@@ -11,9 +11,6 @@ permissions:
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        configuration: [Debug, Release]  # Debug와 Release 두 가지 구성
 
     steps:
     - name: Checkout code
@@ -27,39 +24,64 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore SimpleFileIO.sln
 
-    - name: Build solution
-      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --no-restore
+    # Debug 빌드
+    - name: Build Debug configuration
+      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore
 
-    - name: Publish DLL
-      run: dotnet publish SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --output ./output/${{ matrix.configuration }}
+    - name: Publish Debug DLL
+      run: dotnet publish SimpleFileIO/SimpleFileIO.csproj --configuration Debug --output ./output/Debug
 
-    - name: Verify Output Folder
+    - name: Verify Debug Output Folder
       run: |
-        if [ ! -f "./output/${{ matrix.configuration }}/SimpleFileIO.dll" ]; then
-          echo "DLL not found for ${{ matrix.configuration }} configuration."
+        if [ ! -f "./output/Debug/SimpleFileIO.dll" ]; then
+          echo "Debug DLL not found."
           exit 1
         fi
 
-    # 릴리즈 생성 - Debug와 Release 공통 릴리즈 생성
+    # Release 빌드
+    - name: Build Release configuration
+      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore
+
+    - name: Publish Release DLL
+      run: dotnet publish SimpleFileIO/SimpleFileIO.csproj --configuration Release --output ./output/Release
+
+    - name: Verify Release Output Folder
+      run: |
+        if [ ! -f "./output/Release/SimpleFileIO.dll" ]; then
+          echo "Release DLL not found."
+          exit 1
+        fi
+
+    # 릴리즈 생성 (한 번만 실행)
     - name: Create Release
-      if: ${{ matrix.configuration == 'Debug' }}
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v1.0.0  # 단일 릴리즈 생성 (디버그와 릴리즈 구분 X)
+        tag_name: v1.0.0
         release_name: "Simple File I/O Library"
         draft: false
         prerelease: false
 
-    # 릴리즈에 Debug 또는 Release 파일 업로드
-    - name: Upload Release Asset
+    # Debug DLL 업로드
+    - name: Upload Debug DLL to Release
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/${{ matrix.configuration }}/SimpleFileIO.dll
-        asset_name: SimpleFileIO-${{ matrix.configuration }}.dll
+        asset_path: ./output/Debug/SimpleFileIO.dll
+        asset_name: SimpleFileIO-Debug.dll
+        asset_content_type: application/octet-stream
+
+    # Release DLL 업로드
+    - name: Upload Release DLL to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./output/Release/SimpleFileIO.dll
+        asset_name: SimpleFileIO-Release.dll
         asset_content_type: application/octet-stream
