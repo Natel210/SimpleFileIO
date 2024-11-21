@@ -3,7 +3,7 @@ name: Simple File I/O Library Main Action
 on:
   push:
     branches:
-      - main  # 메인 브랜치에 대한 작업 실행
+      - main  # 메인 브랜치에서 실행
 
 permissions:
   contents: write  # Release 생성 및 업로드를 위해 권한 필요
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Debug, Release]  # Debug와 Release 두 가지 구성
 
     steps:
     - name: Checkout code
@@ -40,20 +40,20 @@ jobs:
           exit 1
         fi
 
-    # Release를 생성하는 단계 추가
+    # 릴리즈 생성 - Debug와 Release 공통 릴리즈 생성
     - name: Create Release
-      if: ${{ matrix.configuration == 'Release' }}
+      if: ${{ matrix.configuration == 'Debug' }}
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: v1.0.0-${{ matrix.configuration }}  # Release와 Debug를 구분하는 태그 생성
-        release_name: "Simple File I/O Library - ${{ matrix.configuration }}"
+        tag_name: v1.0.0  # 단일 릴리즈 생성 (디버그와 릴리즈 구분 X)
+        release_name: "Simple File I/O Library"
         draft: false
         prerelease: false
 
-    # Release에 DLL 파일 업로드
+    # 릴리즈에 Debug 또는 Release 파일 업로드
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
       env:
