@@ -1,25 +1,87 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Copyright>MIT</Copyright>
-    <Version>1.0.0.0</Version>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Copyright>MIT</Copyright>
+        <Version>1.0.0.1</Version>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="UserProperties\**" />
-    <EmbeddedResource Remove="UserProperties\**" />
-    <None Remove="UserProperties\**" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="33.0.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="33.0.1" />
-  </ItemGroup>
+    <!-- 빌드 전 Git 상태 및 태그 검증 -->
+    <Target Name="CheckGitTagAndVersionBeforeBuild" BeforeTargets="BeforeBuild" DependsOnTargets="CleanUpTempFiles">
+        <!-- Git 명령 실행 -->
+        <Exec Command="git describe --tags --abbrev=0 > git_tag.txt" IgnoreExitCode="false" />
+        <Exec Command="git status --porcelain > git_status.txt" IgnoreExitCode="false" />
 
-  <ItemGroup>
-    <Folder Include="Converter\Csv\" />
-  </ItemGroup>
+        <!-- 파일에서 태그 읽기 -->
+        <ReadLinesFromFile File="git_tag.txt">
+            <Output TaskParameter="Lines" PropertyName="GitTagRaw" />
+        </ReadLinesFromFile>
+
+        <!-- Git 태그에서 접두사 제거 -->
+        <PropertyGroup>
+            <GitTag>$([System.String]::Copy($(GitTagRaw)).TrimStart('v'))</GitTag>
+        </PropertyGroup>
+
+        <!-- 파일에서 Git 상태 읽기 -->
+        <ReadLinesFromFile File="git_status.txt">
+            <Output TaskParameter="Lines" PropertyName="GitStatus" />
+        </ReadLinesFromFile>
+
+        <!-- 현재 프로그램 버전 가져오기 -->
+        <PropertyGroup>
+            <ProgramVersion>$(Version)</ProgramVersion>
+        </PropertyGroup>
+
+        <!-- Powershell을 사용한 버전 비교 -->
+        <Exec Command="powershell -Command &quot;if ([System.Version]::Parse('$(ProgramVersion)') -le [System.Version]::Parse('$(GitTag)')) { exit 1 } else { exit 0 }&quot;" IgnoreExitCode="true">
+            <Output TaskParameter="ExitCode" PropertyName="VersionComparisonResult" />
+        </Exec>
+
+        <!-- 조건 메시지 출력 -->
+        <Message Text="Raw Git Tag: $(GitTagRaw)" Importance="high" />
+        <Message Text="Processed Git Tag: $(GitTag)" Importance="high" />
+        <Message Text="Program Version: $(ProgramVersion)" Importance="high" />
+        <Message Text="Git Status: $(GitStatus)" Importance="high" />
+
+        <!-- 조건 1: 프로그램 버전 <= Git 태그 버전 -->
+        <PropertyGroup>
+            <IsVersionOutdated Condition="'$(VersionComparisonResult)' == '1'">true</IsVersionOutdated>
+        </PropertyGroup>
+
+        <!-- 조건 2: 변경 사항 있음 -->
+        <PropertyGroup>
+            <HasChanges Condition="'$(GitStatus)' != ''">true</HasChanges>
+        </PropertyGroup>
+
+        <!-- 검증 실패 시 오류 출력 -->
+        <Error Condition="'$(IsVersionOutdated)' == 'true' AND '$(HasChanges)' == 'true'"
+               Text="Error: Program version ($(ProgramVersion)) must be greater than the latest Git tag ($(GitTag)) if changes are detected." />
+    </Target>
+
+    <!-- Cleanup 작업 -->
+    <Target Name="CleanUpTempFiles" AfterTargets="Build;CheckGitTagAndVersionBeforeBuild" Condition="Exists('git_status.txt') OR Exists('git_tag.txt')">
+        <!-- 로그 출력 -->
+        <Message Text="Cleaning up temporary files: git_status.txt, git_tag.txt" Importance="high" />
+
+        <!-- git_status.txt 삭제 -->
+        <Delete Files="git_status.txt">
+            <Output TaskParameter="DeletedFiles" PropertyName="DeletedStatusFile" />
+        </Delete>
+
+        <!-- git_tag.txt 삭제 -->
+        <Delete Files="git_tag.txt">
+            <Output TaskParameter="DeletedFiles" PropertyName="DeletedTagFile" />
+        </Delete>
+
+        <!-- 삭제 확인 -->
+        <Message Condition="'$(DeletedStatusFile)' != ''" Text="Successfully deleted git_status.txt" Importance="high" />
+        <Message Condition="'$(DeletedTagFile)' != ''" Text="Successfully deleted git_tag.txt" Importance="high" />
+    </Target>
 
 </Project>

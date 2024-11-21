@@ -1,6 +1,9 @@
-﻿using SimpleFileIO;
+﻿using CsvHelper;
+using SimpleFileIO;
 using SimpleFileIO.Log.Csv;
 using SimpleFileIO.Log.Text;
+using SimpleFileIO.State.Ini;
+using System.Globalization;
 using TEST_CONSOLE;
 
 namespace SimpleFileIO_Tester
@@ -24,14 +27,24 @@ namespace SimpleFileIO_Tester
             csvLog.Add(data2);
             csvLog.Add(data2);
             csvLog.Write();
+            List<testdata2> temp1;
+            using (var reader = new StreamReader("./TEST.csvlog"))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                temp1 = csv.GetRecords<testdata2>().ToList();
 
             Manager.CreateIniState("TestIni", new() { RootDirectory = new("./Test"), FileName = "TestIni", Extension = ".ini" });
+            IINIState? iniState = Manager.GetIniState("TestIni") ?? null;
+            if (iniState is null)
+                throw new Exception("not create ini.");
+            iniState.Load();
+            iniState.SetValue("MY", "ITEM1", "111");
+            iniState.SetValue("MY", "ITEM2", "222");
+            iniState.SetValue("YOUR", "CAR1", "333");
+            iniState.SetValue("YOUR", "CAR2", "444");
+            iniState.Save();
+            iniState.Load();
 
-
-
-
-
-            Console.WriteLine("Hello, World!");
+            ////
         }
     }
 }
