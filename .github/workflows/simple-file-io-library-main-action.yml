@@ -1,19 +1,15 @@
-name:  Simple File I/O Library Main Action
+name: Simple File I/O Library Main Action
 
 on:
   push:
     branches:
       - main  # 메인 브랜치에 대한 작업 실행
-  pull_request:
-    branches:
-      - main
 
 permissions:
-  contents: write  # Release에 업로드를 위해 권한 필요
-  actions: read
+  contents: write  # Release 생성 및 업로드를 위해 권한 필요
 
 jobs:
-  build-and-deploy:
+  build-and-release:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,20 +40,26 @@ jobs:
           exit 1
         fi
 
-    - name: Upload DLL to GitHub Release
+    # Release를 생성하는 단계 추가
+    - name: Create Release
       if: ${{ matrix.configuration == 'Release' }}
-      uses: actions/upload-release-asset@v1
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/Release/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Release.dll
-        asset_content_type: application/octet-stream
+        tag_name: v1.0.0-${{ matrix.configuration }}  # Release와 Debug를 구분하는 태그 생성
+        release_name: "Simple File I/O Library - ${{ matrix.configuration }}"
+        draft: false
+        prerelease: false
 
-    - name: Upload DLL to Debug Release
-      if: ${{ matrix.configuration == 'Debug' }}
+    # Release에 DLL 파일 업로드
+    - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./output/Debug/SimpleFileIO.dll
-        asset_name: SimpleFileIO-Debug.dll
+        asset_path: ./output/${{ matrix.configuration }}/SimpleFileIO.dll
+        asset_name: SimpleFileIO-${{ matrix.configuration }}.dll
         asset_content_type: application/octet-stream
