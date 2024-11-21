@@ -7,19 +7,28 @@ on:
       - completed
 
 jobs:
-
   deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: 1. Download artifact
+    - name: Download Build Artifacts
       uses: actions/download-artifact@v3
       with:
-        name: SimpleFileIO-DLL
+        name: BuildOutput
 
-    - name: 2. Deploy to server
+    - name: Verify Downloaded Artifacts
+      run: |
+        if [ -d "./output" ]; then
+          echo "Output folder exists."
+          ls -la ./output
+        else
+          echo "Output folder does not exist."
+          exit 1
+        fi
+
+    - name: Deploy to Server
       run: |
         echo "Deploying to server..."
-        scp ./output/SimpleFileIO.dll user@your-server:/path/to/deployment/  # 서버로 복사
-        ssh user@your-server "sudo systemctl restart simplefileio-service"  # 서비스 재시작
+        scp ./output/SimpleFileIO.dll user@your-server:/path/to/deployment/
+        ssh user@your-server "sudo systemctl restart simplefileio-service"
