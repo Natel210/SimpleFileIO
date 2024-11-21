@@ -7,7 +7,6 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
 
     strategy:
@@ -20,43 +19,44 @@ jobs:
       Solution_Name: SimpleFileIO.sln
       Test_Project_Path: SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
       Library_Project_Path: SimpleFileIO/SimpleFileIO.csproj
-      
+
     steps:
-    - name: 1. Checkout Code
+    - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: 2. Install .NET Core
+    - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
 
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: 3. Setup MSBuild.exe
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    ## Execute all unit tests in the solution
-    #- name: 4. Execute unit tests ( Once Time test)
-    #  run: dotnet test
+    - name: Restore Dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
 
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    - name: 5. Restore the application
-      run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-      env:
-        Configuration: ${{ matrix.configuration }}
-        
-    - name: 6. Build library project
+    - name: Build Library Project
       run: dotnet build ${{ env.Library_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore
 
-    - name: 7. Run tests
+    - name: Run Tests
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
 
-    - name: 8. Check output folder
-      run: Get-ChildItem -Force ./output
+    - name: Publish Artifacts
+      run: dotnet publish ${{ env.Library_Project_Path }} --configuration ${{ matrix.configuration }} --output ./output
 
-    - name: 9. Upload build artifacts
+    - name: Check Output Folder
+      run: |
+        if (Test-Path ./output) {
+          Write-Host "Output folder exists."
+          Get-ChildItem -Force ./output
+        } else {
+          Write-Error "Output folder does not exist!"
+        }
+
+    - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: SimpleFileIO-DLL
+        name: BuildOutput
         path: ./output
