@@ -16,6 +16,11 @@ jobs:
         configuration: [Debug, Release]
 
     steps:
+    - name: List Available Artifacts
+      run: |
+        echo "Checking for available artifacts in the current workspace:"
+        ls -la # 현재 디렉토리 확인
+
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
       with:
