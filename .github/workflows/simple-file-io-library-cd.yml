@@ -11,30 +11,28 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    steps:
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
 
-    - name: Verify Downloaded Artifacts
-      run: |
-        echo "Checking downloaded artifacts..."
-        ls -la ./output
-    
+    steps:
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
       with:
-        name: BuildOutput
+        name: BuildOutput-${{ matrix.configuration }}
 
     - name: Verify Downloaded Artifacts
       run: |
-        if [ -d "./output" ]; then
-          echo "Output folder exists."
-          ls -la ./output
+        if [ -d "./output/${{ matrix.configuration }}" ]; then
+          echo "Output folder exists for configuration: ${{ matrix.configuration }}"
+          ls -la ./output/${{ matrix.configuration }}
         else
-          echo "Output folder does not exist."
+          echo "Output folder does not exist for configuration: ${{ matrix.configuration }}"
           exit 1
         fi
 
     - name: Deploy to Server
       run: |
-        echo "Deploying to server..."
-        scp ./output/SimpleFileIO.dll user@your-server:/path/to/deployment/
-        ssh user@your-server "sudo systemctl restart simplefileio-service"
+        echo "Deploying to server for configuration: ${{ matrix.configuration }}..."
+        scp ./output/${{ matrix.configuration }}/SimpleFileIO.dll user@your-server:/path/to/deployment/${{ matrix.configuration }}
+        ssh user@your-server "sudo systemctl restart simplefileio-service-${{ matrix.configuration }}"
