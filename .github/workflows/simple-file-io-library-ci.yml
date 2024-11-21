@@ -37,7 +37,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     # Execute all unit tests in the solution
-    - name: 4. Execute unit tests
+    - name: 4. Execute unit tests ( Once Time test)
       run: dotnet test
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
@@ -52,5 +52,8 @@ jobs:
     - name: 7. Run tests
       run: dotnet test ${{ env.Test_Project_Path }} --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
 
-    - name: 8. Publish .dll
-      run: dotnet publish ${{ env.Library_Project_Path }} --configuration ${{ matrix.configuration }} --output ./output
+    - name: 7. Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: BuildOutput
+        path: ./output
