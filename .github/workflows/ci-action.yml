@@ -43,6 +43,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: checkout
     steps:
+    - name: Check Directory
+      run: ls -R
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
