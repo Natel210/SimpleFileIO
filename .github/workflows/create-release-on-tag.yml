@@ -5,7 +5,7 @@ on:
     tags:
       - 'v*' # 태그 이름이 v로 시작하는 경우에만 실행
     branches:
-      - 'main'
+      - 'main
 
 permissions:
   contents: write

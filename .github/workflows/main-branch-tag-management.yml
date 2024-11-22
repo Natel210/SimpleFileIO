@@ -38,7 +38,7 @@ jobs:
             major=${BASH_REMATCH[1]}
             minor=${BASH_REMATCH[2]}
             patch=${BASH_REMATCH[3]}
-                  
+            
             # Increment the patch version
             new_patch=$((patch + 1))
             new_tag="v$major.$minor.$new_patch"
