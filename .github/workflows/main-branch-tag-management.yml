@@ -38,5 +38,17 @@ jobs:
             major=${BASH_REMATCH[1]}
             minor=${BASH_REMATCH[2]}
             patch=${BASH_REMATCH[3]}
-
-            # Increment
+            
+            # Increment the patch version
+            new_patch=$((patch + 1))
+            new_tag="v$major.$minor.$new_patch"
+          else
+            # Default to v0.0.1 if no valid tag exists
+            new_tag="v0.0.1"
+          fi
+                  
+          echo "New tag: $new_tag"
+                  
+          # Optionally push the tag
+          git tag $new_tag
+          git push origin $new_tag
