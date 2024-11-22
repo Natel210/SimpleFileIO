@@ -3,7 +3,7 @@ name: Main Branch Tag Management
 on:
   workflow_run:
     branches:
-      - main
+      - 'main'
     workflows:
       - Continuous Integration (CI)
     types:
