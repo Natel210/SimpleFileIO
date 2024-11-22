@@ -37,6 +37,8 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 전체 이력 가져오기
 
   setup:
     name: Setup
