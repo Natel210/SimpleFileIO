@@ -5,7 +5,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Copyright>MIT</Copyright>
-        <Version>1.0.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
