@@ -2,42 +2,41 @@ name: Main Branch Tag Management
 
 on:
   workflow_run:
+    branches:
+      - 'main'
     workflows:
-      - Continuous Integration (CI)
+      - Main CI (Continuous Integration)
     types:
       - completed
 
+      
 permissions:
   contents: write
   statuses: read
 
 jobs:
   create-main-tag:
-    name: Create Tag
+    name: Create Main Tag
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'Main' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main' }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Get Latest Tag and Create New Tag
         run: |
+          echo "Fetching the latest tag..."
+
+          # Get the latest tag or default to v0.0.0
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           echo "Latest tag: $latest_tag"
 
+          # Extract version and increment
           if [[ "$latest_tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             major=${BASH_REMATCH[1]}
             minor=${BASH_REMATCH[2]}
             patch=${BASH_REMATCH[3]}
-            
-            new_patch=$((patch + 1))
-            new_tag="v$major.$minor.$new_patch"
-          else
-            echo "No valid version tag found. Defaulting to v0.0.1."
-            new_tag="v0.0.1"
-          fi
 
-          echo "New tag: $new_tag"
-
-          git tag $new_tag
-          git push origin $new_tag
+            # Increment
