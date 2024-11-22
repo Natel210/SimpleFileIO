@@ -29,60 +29,6 @@ jobs:
           echo "Unknown ref type: $ref"
           exit 1
         fi
-  
-  checkout:
-    name: Checkout
-    runs-on: ubuntu-latest
-    needs: start-ci
-    steps:
-    - name: Before Directory
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Listing all files and directories:"
-        ls -R
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # 전체 이력 가져오기
-
-    - name: After Directory
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Listing all files and directories:"
-        ls -R
-
-    - name: Upload Checkout Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: checkout-artifacts
-        path: .
-
-  setup:
-    name: Setup
-    runs-on: ubuntu-latest
-    needs: checkout
-    steps:
-    - name: Download Checkout Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: checkout-artifacts
-        
-    - name: Check Directory
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Listing all files and directories:"
-        ls -R
-
-    - name: Verify Solution File
-      run: |
-        if [ -f "SimpleFileIO.sln" ]; then
-          echo "Solution file found: SimpleFileIO.sln"
-        else
-          echo "Error: SimpleFileIO.sln not found."
-          exit 1
-        fi
-
-
 
   build:
     name: Build Project
@@ -137,6 +83,12 @@ jobs:
       matrix:
         configuration: [Debug, Release]
     steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Run ${{ matrix.configuration }} Unit Tests
       run: |
         echo "Running unit tests in ${{ matrix.configuration }} mode..."
