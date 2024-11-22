@@ -60,7 +60,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore SimpleFileIO.sln --verbosity detailed
+      run: dotnet restore SimpleFileIO.sln --no-cache --verbosity detailed
 
     - name: Upload Checkout Setup Artifacts
       uses: actions/upload-artifact@v4
