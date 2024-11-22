@@ -32,12 +32,12 @@ jobs:
             echo "Unknown ref type: $ref"
             exit 1
           fi
-      
+
           # Get commit hash, message, and author
           commit_hash=$(git rev-parse HEAD)
           commit_message=$(git log -1 --pretty=format:%s)
           commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-      
+
           echo "Git Reference Information:"
           echo "> Branch Name   : $branch_name"
           echo "> Tag Name      : $tag_name"
@@ -51,160 +51,32 @@ jobs:
           ls -R
       - name: Verify Solution File
         run: |
-
           if [ -f "SimpleFileIO.sln" ]; then
             echo "Solution file found: SimpleFileIO.sln"
           else
             echo "Error: SimpleFileIO.sln not found."
             exit 1
           fi
+
   windows:
     name: Windows
     runs-on: windows-latest
     needs: info
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-    - name: Restore dependencies
-      run: dotnet restore SimpleFileIO.sln --no-cache
-    - name: Build Debug Dll
-      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore
-    - name: Build Release Dll
-      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore
-    - name: Run Debug Unit Tests
-      run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --verbosity normal
-    - name: Run Release Unit Tests
-      run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Release --no-restore --verbosity normal
-
-
-  start-ci:
-    name: Start CI
-    runs-on: ubuntu-latest
-    steps:
-    - name: CI Process Started
-      run: |
-        ref=${{ github.ref }}
-        if [[ "$ref" == refs/heads/* ]]; then
-          branch_name=${ref#refs/heads/}
-          echo "Continuous Integration process started for branch: $branch_name"
-        elif [[ "$ref" == refs/tags/* ]]; then
-          tag_name=${ref#refs/tags/}
-          echo "Continuous Integration process started for tag: $tag_name"
-        else
-          echo "Unknown ref type: $ref"
-          exit 1
-        fi
-  checkout:
-    name: Checkout
-    runs-on: ubuntu-latest
-    needs: start-ci
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-
-    - name: Check Directory
-      run: |
-        echo "Current directory: $(pwd)"
-        echo "Listing all files and directories:"
-        ls -R
-    
-    - name: Verify Solution File
-      run: |
-        if [ -f "SimpleFileIO.sln" ]; then
-          echo "Solution file found: SimpleFileIO.sln"
-        else
-          echo "Error: SimpleFileIO.sln not found."
-          exit 1
-        fi
-    - name: Upload Checkout Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: checkout-artifacts
-        path: |
-          .
-
-  setup:
-    name: Setup
-    runs-on: ubuntu-latest
-    needs: checkout
-    steps:
-    - name: Download Checkout Setup Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: checkout-artifacts
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-
-    - name: Restore dependencies
-      run: dotnet restore SimpleFileIO.sln --no-cache
-
-    - name: Upload Setup Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: setup-artifacts
-        path: |
-          ~/.nuget/packages
-
-  build:
-    name: Build Project
-    runs-on: ubuntu-latest
-    needs: setup
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-
-        
-    steps:
-    - name: Download Checkout Setup Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: checkout-artifacts
-        
-    - name: Download Setup Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: setup-artifacts
-
-    - name: Set NuGet Packages Path
-      run: echo "NUGET_PACKAGES=$HOME/.nuget/packages" >> $GITHUB_ENV
-
-    - name: Build ${{ matrix.configuration }} Configuration
-      run: |
-        echo "Building project in ${{ matrix.configuration }} mode..."
-        dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --no-restore
-        echo "Build completed for ${{ matrix.configuration }} configuration."
-
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    needs: build
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-    steps:
-
-    - name: Download Checkout Setup Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: checkout-artifacts
-        
-    - name: Download Setup Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: setup-artifacts
-
-    - name: Run ${{ matrix.configuration }} Unit Tests
-      run: |
-        echo "Running unit tests in ${{ matrix.configuration }} mode..."
-        dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
-        echo "Unit tests completed for ${{ matrix.configuration }} configuration."
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore dependencies
+        run: dotnet restore SimpleFileIO.sln --no-cache
+      - name: Build Debug Dll
+        run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore --output ./build/debug
+      - name: Build Release Dll
+        run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore --output ./build/release
+      - name: Run Debug Unit Tests
+        run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --output ./build/debug --verbosity normal
+      - name: Run Release Unit Tests
+        run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
