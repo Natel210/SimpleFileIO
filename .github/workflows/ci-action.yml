@@ -51,11 +51,15 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore Dependencies
+    - name: Restore dependencies
       run: |
-        echo "Restoring project dependencies..."
-        dotnet restore SimpleFileIO.sln
-        echo "Dependencies restored successfully."
+        if [ -f "SimpleFileIO.sln" ]; then
+          echo "Solution file found: SimpleFileIO.sln"
+          dotnet restore SimpleFileIO.sln
+        else
+          echo "Error: SimpleFileIO.sln not found in current directory."
+          exit 1
+        fi
 
   build:
     name: Build Project
