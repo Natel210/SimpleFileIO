@@ -12,6 +12,6 @@ namespace SimpleFileIO.Enum
         OK,
         WorkException,
         DifferentDataType,
-        int
+
     }
 }
