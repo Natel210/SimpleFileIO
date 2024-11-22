@@ -9,7 +9,8 @@ on:
       - '**'
 
 permissions:
-  contents: read
+  contents: write
+  statuses: write
 
 jobs:
   info:
