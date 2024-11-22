@@ -17,5 +17,6 @@ namespace SimpleFileIO.Enum
         TaskRunWritingException, // An error occurred while writing to the actual file.
         TaskRunCancellationTokenException, //Problem with refraining from tokens and task variables during task run operation.
         TaskRunInvalidRootPath, // not root path null
+
     }
 }
