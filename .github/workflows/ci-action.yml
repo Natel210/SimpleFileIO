@@ -12,6 +12,76 @@ permissions:
   contents: read
 
 jobs:
+  info:
+    name: Info
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Git Info
+        run: |
+          ref=${{ github.ref }}
+          if [[ "$ref" == refs/heads/* ]]; then
+            branch_name=${ref#refs/heads/}
+            tag_name="N/A"
+          elif [[ "$ref" == refs/tags/* ]]; then
+            branch_name="N/A"
+            tag_name=${ref#refs/tags/}
+          else
+            echo "Unknown ref type: $ref"
+            exit 1
+          fi
+      
+          # Get commit hash, message, and author
+          commit_hash=$(git rev-parse HEAD)
+          commit_message=$(git log -1 --pretty=format:%s)
+          commit_author=$(git log -1 --pretty=format:'%an <%ae>')
+      
+          echo "Git Reference Information:"
+          echo "> Branch Name   : $branch_name"
+          echo "> Tag Name      : $tag_name"
+          echo "> Commit Hash   : $commit_hash"
+          echo "> Commit Message: $commit_message"
+          echo "> Author        : $commit_author"
+      - name: Check Directory And Files
+        run: |
+          echo "Current directory: $(pwd)"
+          echo "Listing all files and directories:"
+          ls -R
+      - name: Verify Solution File
+        run: |
+
+          if [ -f "SimpleFileIO.sln" ]; then
+            echo "Solution file found: SimpleFileIO.sln"
+          else
+            echo "Error: SimpleFileIO.sln not found."
+            exit 1
+          fi
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    needs: info
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    - name: Restore dependencies
+      run: dotnet restore SimpleFileIO.sln --no-cache
+    - name: Build Debug Dll
+      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore
+    - name: Build Release Dll
+      run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore
+    - name: Run Debug Unit Tests
+      run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --verbosity normal
+    - name: Run Release Unit Tests
+      run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Release --no-restore --verbosity normal
+
+
   start-ci:
     name: Start CI
     runs-on: ubuntu-latest
