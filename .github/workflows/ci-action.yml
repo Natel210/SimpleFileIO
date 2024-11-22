@@ -1,0 +1,70 @@
+name: Continuous Integration (CI)
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  start-ci:
+    name: Start CI
+    runs-on: ubuntu-latest
+    steps:
+    - name: CI Process Started
+      run: |
+        ref=${{ github.ref }}
+        if [[ "$ref" == refs/heads/* ]]; then
+          branch_name=${ref#refs/heads/}
+          echo "Continuous Integration process started for branch: $branch_name"
+        elif [[ "$ref" == refs/tags/* ]]; then
+          tag_name=${ref#refs/tags/}
+          echo "Continuous Integration process started for tag: $tag_name"
+        else
+          echo "Unknown ref type: $ref"
+          exit 1
+        fi
+
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: start-ci
+    strategy:
+      matrix:
+        configuration: [Debug, Release]  # Debug 및 Release를 matrix로 설정
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Log Matrix Configuration
+      run: |
+       echo "Building and testing for configuration: ${{ matrix.configuration }}"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore Dependencies
+      run: |
+        echo "Restoring dependencies for ${{ matrix.configuration }}..."
+        dotnet restore SimpleFileIO.sln
+
+    - name: Build Project
+      run: |
+        echo "Building project in ${{ matrix.configuration }} configuration..."
+        dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Run Tests
+      run: |
+        echo "Running unit tests for ${{ matrix.configuration }} configuration..."
+        dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration ${{ matrix.configuration }} --no-restore
+
+    - name: Build and Test Summary
+      run: |
+        echo "Build and tests completed successfully for ${{ matrix.configuration }} configuration."

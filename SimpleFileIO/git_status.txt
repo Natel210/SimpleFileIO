@@ -1,2 +1,4 @@
+ M SimpleFileIO/Enum/EWriteItemErrorCode.cs
  M SimpleFileIO/SimpleFileIO.csproj
  M SimpleFileIO/git_status.txt
+ M SimpleFileIO/git_tag.txt
