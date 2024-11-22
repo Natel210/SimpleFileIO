@@ -1,9 +1,9 @@
-name: Continuous Integration (CI)
+name: Main CI (Continuous Integration)
 
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'main'
 
 permissions:
   contents: write
