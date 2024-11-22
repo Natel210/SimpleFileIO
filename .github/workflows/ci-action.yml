@@ -48,8 +48,8 @@ jobs:
         run: |
           # Define required files or directories
           solution_file="SimpleFileIO.sln"
-          dll_file="SimpleFileIO/SimpleFileIO/bin/Debug/net8.0/SimpleFileIO.dll"
-          tester_file="SimpleFileIO/SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          dll_file="SimpleFileIO/SimpleFileIO.csproj"
+          tester_file="SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
               
           # Initialize flags
           error_flag=0
@@ -78,12 +78,6 @@ jobs:
             error_flag=1
           fi
               
-          # Display current directory and list all files
-          echo "Exist Files:"
-          echo "> Current Directory : $(pwd)"
-          echo "> Listing all files:"
-          ls -R
-              
           # Exit with error if any required file is missing
           if [ $error_flag -eq 1 ]; then
             echo "One or more required files are missing."
@@ -91,20 +85,9 @@ jobs:
           else
             echo "All required files are present."
           fi
-            - name: Check Directory And Files
-              run: |
-                echo "Current directory: $(pwd)"
-                echo "Listing all files and directories:"
-                ls -R
-            - name: Verify Solution File
-              run: |
-                if [ -f "SimpleFileIO.sln" ]; then
-                  echo "Solution file found: SimpleFileIO.sln"
-                else
-                  echo "Error: SimpleFileIO.sln not found."
-                  exit 1
-                fi
-
+      - name: All Path List
+        run: |
+          ls -R
   windows:
     name: Windows
     runs-on: windows-latest
