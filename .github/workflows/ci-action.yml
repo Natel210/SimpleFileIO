@@ -29,22 +29,20 @@ jobs:
           echo "Unknown ref type: $ref"
           exit 1
         fi
-
-  build-and-test:
-    name: Build and Test
+  
+  checkout:
+    name: Checkout
     runs-on: ubuntu-latest
     needs: start-ci
-    strategy:
-      matrix:
-        configuration: [Debug, Release]  # Debug 및 Release를 matrix로 설정
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Log Matrix Configuration
-      run: |
-       echo "Building and testing for configuration: ${{ matrix.configuration }}"
-
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    needs: checkout
+    steps:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -52,19 +50,34 @@ jobs:
 
     - name: Restore Dependencies
       run: |
-        echo "Restoring dependencies for ${{ matrix.configuration }}..."
+        echo "Restoring project dependencies..."
         dotnet restore SimpleFileIO.sln
+        echo "Dependencies restored successfully."
 
-    - name: Build Project
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    needs: setup
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+    - name: Build ${{ matrix.configuration }} Configuration
       run: |
-        echo "Building project in ${{ matrix.configuration }} configuration..."
+        echo "Building project in ${{ matrix.configuration }} mode..."
         dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration ${{ matrix.configuration }} --no-restore
+        echo "Build completed for ${{ matrix.configuration }} configuration."
 
-    - name: Run Tests
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+    - name: Run ${{ matrix.configuration }} Unit Tests
       run: |
-        echo "Running unit tests for ${{ matrix.configuration }} configuration..."
-        dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration ${{ matrix.configuration }} --no-restore
-
-    - name: Build and Test Summary
-      run: |
-        echo "Build and tests completed successfully for ${{ matrix.configuration }} configuration."
+        echo "Running unit tests in ${{ matrix.configuration }} mode..."
+        dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration ${{ matrix.configuration }} --no-restore --verbosity normal
+        echo "Unit tests completed for ${{ matrix.configuration }} configuration."
