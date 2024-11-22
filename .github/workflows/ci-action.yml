@@ -66,7 +66,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: checkout-setup-artifacts
-        path: .
+        path: |
+          SimpleFileIO.sln
+          SimpleFileIO/
+          ~/.nuget/packages
 
   build:
     name: Build Project
@@ -83,6 +86,8 @@ jobs:
       with:
         name: checkout-setup-artifacts
 
+    - name: Set NuGet Packages Path
+      run: echo "NUGET_PACKAGES=$HOME/.nuget/packages" >> $GITHUB_ENV
 
     - name: Build ${{ matrix.configuration }} Configuration
       run: |
