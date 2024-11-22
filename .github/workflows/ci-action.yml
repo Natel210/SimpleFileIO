@@ -30,7 +30,7 @@ jobs:
           exit 1
         fi
   checkout-setup:
-    name: Set Up
+    name: Checkout and Setup
     runs-on: ubuntu-latest
     needs: start-ci
     steps:
@@ -60,7 +60,7 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore SimpleFileIO.sln --no-cache --verbosity detailed
+      run: dotnet restore SimpleFileIO.sln --no-cache
 
     - name: Upload Checkout Setup Artifacts
       uses: actions/upload-artifact@v4
