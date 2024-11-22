@@ -112,6 +112,6 @@ jobs:
       - name: Build Release Dll
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore --output ./build/release
       - name: Run Debug Unit Tests
-        run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --output ./build/debug --verbosity normal
+        run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --output ./build/debug --verbosity normal
       - name: Run Release Unit Tests
-        run: dotnet test SimpleFileIO/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
+        run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
