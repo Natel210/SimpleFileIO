@@ -67,8 +67,7 @@ jobs:
       with:
         name: checkout-setup-artifacts
         path: |
-          SimpleFileIO.sln
-          SimpleFileIO/
+          .
           ~/.nuget/packages
 
   build:
