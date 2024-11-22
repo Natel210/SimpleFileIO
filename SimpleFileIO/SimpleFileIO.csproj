@@ -15,7 +15,7 @@
     <!-- 빌드 전 Git 상태 및 태그 검증 -->
     <Target Name="CheckGitTagAndVersionBeforeBuild" BeforeTargets="BeforeBuild" DependsOnTargets="CleanUpTempFiles">
         <!-- Git 명령 실행 -->
-        <Exec Command="git describe --tags --abbrev=0 > git_tag.txt" IgnoreExitCode="false" />
+        <Exec Command="git describe --tags --abbrev=0 > git_tag.txt" IgnoreExitCode="true" />
         <Exec Command="git status --porcelain > git_status.txt" IgnoreExitCode="false" />
 
         <!-- 파일에서 태그 읽기 -->
