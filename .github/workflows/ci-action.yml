@@ -46,7 +46,10 @@ jobs:
     needs: checkout
     steps:
     - name: Check Directory
-      run: ls -R
+      run: |
+        echo "Current directory: $(pwd)"
+        echo "Listing all files and directories:"
+        ls -R
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
