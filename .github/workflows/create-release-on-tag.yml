@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+    branches-ignore:
+      - '*' # 브랜치 푸시 이벤트 무시
 
 permissions:
   contents: write
