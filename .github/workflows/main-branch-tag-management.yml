@@ -28,6 +28,9 @@ jobs:
       - name: Get Latest Tag and Create New Tag
         run: |
           echo "Fetching the latest tag..."
+          
+          # Fetch remote tags to ensure we have the latest state
+          git fetch --tags
 
           # Fetch remote tags to ensure we have the latest state
           git fetch --tags
