@@ -1,4 +1,5 @@
 ﻿using SimpleFileIO.Utility;
+using System.Diagnostics;
 
 namespace SimpleFileIO.State.Ini
 {
@@ -92,7 +93,7 @@ namespace SimpleFileIO.State.Ini
                         tempPathProperty.RootDirectory.Create();
 
                     FileInfo fileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
-                    using (var fileStream = new FileStream(fileInfo.FullName, fileInfo.Exists ? FileMode.Append : FileMode.Create))
+                    using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
                     using (var streamWriter = new StreamWriter(fileStream))
                     {
                         foreach (var section in _sections)
@@ -112,7 +113,7 @@ namespace SimpleFileIO.State.Ini
                 }
                 finally
                 {
-                    _isWriting = false; // 작업이 끝나면 플래그를 해제
+                    _isWriting = false;
                 }
             });
 
@@ -125,75 +126,96 @@ namespace SimpleFileIO.State.Ini
         /// <returns>true if the file was successfully loaded; otherwise, false.</returns>
         public bool Load()
         {
-            if (_isLoading is true)
+            if (_isLoading)
                 return false;
-            if (CheckPathProperty(Properties) is false)
+            if (!CheckPathProperty(Properties))
                 return false;
-            if (CheckFileExist() is false)
+            if (!CheckFileExist())
                 return false;
+
             // Directory check and create if necessary
-            if (Directory.Exists("./TempIniData/") is false)
+            if (!Directory.Exists("./TempIniData/"))
                 Directory.CreateDirectory("./TempIniData/");
 
             PathProperty tempPathProperty = Properties;
             var getCurTick = DateTime.UtcNow.Ticks;
             FileInfo originFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
             FileInfo tempCopyFileInfo = new FileInfo(Path.Combine("./TempIniData/", $"{tempPathProperty.FileName}_{getCurTick}.{tempPathProperty.Extension}"));
-            originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
 
-            _isLoading = true;
-
-            // async run
-            Task.Run(async () =>
+            try
             {
-                try
+                // 원본 파일을 복사
+                originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
+
+                _isLoading = true;
+
+                // 비동기 작업 실행
+                Task.Run(async () =>
                 {
-                    // Copy the original file to a temporary file for safe reading
-
-
-                    using (var fileStream = new FileStream(tempCopyFileInfo.FullName, FileMode.Open, FileAccess.Read))
-                    using (var streamReader = new StreamReader(fileStream))
+                    try
                     {
-                        string currentSection = "";
-                        while (streamReader.EndOfStream is false)
+                        using (var fileStream = new FileStream(tempCopyFileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var streamReader = new StreamReader(fileStream))
                         {
-                            string? line = await streamReader.ReadLineAsync(); // Asynchronously read a line
-                            if (string.IsNullOrWhiteSpace(line) is true)
-                                continue;
+                            string currentSection = "";
+                            while (!streamReader.EndOfStream)
+                            {
+                                string? line = await streamReader.ReadLineAsync();
+                                if (string.IsNullOrWhiteSpace(line))
+                                    continue;
 
-                            string trimmedLine = line.Trim();
-                            if (trimmedLine.StartsWith("[") && trimmedLine.EndsWith("]"))
-                            {
-                                currentSection = trimmedLine.Substring(1, trimmedLine.Length - 2);
-                                if (!_sections.ContainsKey(currentSection))
-                                    _sections[currentSection] = new Dictionary<string, string>();
-                            }
-                            else if (trimmedLine.Contains("=") && !trimmedLine.StartsWith(";") && currentSection != "")
-                            {
-                                string[] parts = trimmedLine.Split('=', 2);
-                                _sections[currentSection][parts[0].Trim()] = parts[1].Trim();
+                                string trimmedLine = line.Trim();
+                                if (trimmedLine.StartsWith("[") && trimmedLine.EndsWith("]"))
+                                {
+                                    currentSection = trimmedLine.Substring(1, trimmedLine.Length - 2);
+                                    if (!_sections.ContainsKey(currentSection))
+                                        _sections[currentSection] = new Dictionary<string, string>();
+                                }
+                                else if (trimmedLine.Contains("=") && !trimmedLine.StartsWith(";") && currentSection != "")
+                                {
+                                    string[] parts = trimmedLine.Split('=', 2);
+                                    _sections[currentSection][parts[0].Trim()] = parts[1].Trim();
+                                }
                             }
                         }
                     }
-                    
-                }
-                catch (Exception)
-                {
+                    catch (Exception ex)
+                    {
 #if DEBUG
-                    throw;
+                        Debug.WriteLine($"Error during file reading: {ex.Message}");
+                        throw;
 #endif
-                }
-                finally
-                {
-                    _isLoading = false; // 작업이 끝나면 플래그를 해제
-                }
+                    }
+                    finally
+                    {
+                        _isLoading = false;
+                        if (tempCopyFileInfo.Exists)
+                        {
+                            try
+                            {
+                                tempCopyFileInfo.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+#if DEBUG
+                                Debug.WriteLine($"Error during file deletion: {ex.Message}");
+#endif
+                            }
+                        }
+                    }
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Console.WriteLine($"Error during file operation: {ex.Message}");
+                throw;
+#endif
+            }
 
-            });
-            if (tempCopyFileInfo.Exists is true)
-                tempCopyFileInfo.Delete();
-            
             return true;
         }
+
 
         /// <summary>
         /// checks if the INI file exists.
@@ -215,9 +237,9 @@ namespace SimpleFileIO.State.Ini
             if (parser.ObjectToString is null)
                 return defaultValue;
             string? defaultValueString = parser.ObjectToString(defaultValue);
-            if (string.IsNullOrWhiteSpace(defaultValueString) is true)
-                return defaultValue;
-            string getValueString = GetValue(section, key, defaultValueString);
+            //if (string.IsNullOrWhiteSpace(defaultValueString) is true)
+            //    return defaultValue;
+            string getValueString = GetValue(section, key, defaultValueString ?? "");
             if (string.IsNullOrWhiteSpace(getValueString) is true)
                 return defaultValue;
             if (parser.StringToObject(getValueString) is T resultValue)
