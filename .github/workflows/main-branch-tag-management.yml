@@ -32,6 +32,9 @@ jobs:
           # Fetch remote tags to ensure we have the latest state
           git fetch --tags
 
+          # Fetch remote tags to ensure we have the latest state
+          git fetch --tags
+
           # Get the latest tag or default to v0.0.0
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           echo "Latest tag: $latest_tag"
@@ -55,3 +58,6 @@ jobs:
           # Optionally push the tag
           git tag $new_tag
           git push origin $new_tag
+
+          echo "Check tag :"
+          git ls-remote --tags origin
