@@ -1,12 +1,9 @@
-name: Continuous Integration (CI)
+name: Common CI (Continuous Integration)
 
 on:
   push:
-    branches:
-      - '**'
-  pull_request:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'main'
 
 permissions:
   contents: write
