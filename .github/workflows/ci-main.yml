@@ -1,4 +1,4 @@
-name: Main CI (Continuous Integration)
+name: Main CI/CD
 
 on:
   push:
@@ -118,8 +118,8 @@ jobs:
       - name: All Path List
         run: |
           ls -R
-  windows:
-    name: Windows
+  windows-ci:
+    name: Windows CI
     runs-on: windows-latest
     needs: info
     steps:
@@ -140,9 +140,10 @@ jobs:
         run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --output ./build/debug --verbosity normal
       - name: Run Release Unit Tests
         run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
+
   create-main-tag:
     name: Create Main Tag
-    needs: windows
+    needs: windows-ci
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main' }}
     steps:
