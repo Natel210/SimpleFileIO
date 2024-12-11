@@ -142,6 +142,7 @@ jobs:
         run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
   create-main-tag:
     name: Create Main Tag
+    needs: windows
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' && github.ref_name == 'main' }}
     steps:
