@@ -13,6 +13,14 @@ jobs:
   info:
     name: Info
     runs-on: ubuntu-latest
+    env:
+      EVNET: "${{ github.event_name }}"
+      REF: "${{ github.ref }}"
+      HEAD_REF: "${{ github.head_ref }}"
+      BASE_REF: "${{ github.base_ref }}"
+      SOLUTION_FILE: "CustomPath/CustomSolution.sln"
+      DLL_FILE: "CustomPath/CustomProject.csproj"
+      TESTER_FILE: "CustomPath/CustomTester.csproj"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,14 +30,6 @@ jobs:
         run: chmod +x .github/workflows/scripts/info/*.sh
 
       - name: Set Environment Variables
-        env:
-          EVNET: "${{ github.event_name }}"
-          REF: "${{ github.ref }}"
-          HEAD_REF: "${{ github.head_ref }}"
-          BASE_REF: "${{ github.base_ref }}"
-          SOLUTION_FILE: "CustomPath/CustomSolution.sln"
-          DLL_FILE: "CustomPath/CustomProject.csproj"
-          TESTER_FILE: "CustomPath/CustomTester.csproj"
         run: .github/workflows/scripts/info/env-value.sh  "$EVNET" "$REF" "$HEAD_REF" "$BASE_REF" "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
 
       - name: Git Info
