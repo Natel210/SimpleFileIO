@@ -14,55 +14,55 @@ jobs:
   build-and-release:
     name: Build and Create Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-
       - name: Restore dependencies
-        run: dotnet restore SimpleFileIO/SimpleFileIO.csproj --no-cache
-
+        run: dotnet restore SimpleFileIO.sln --no-cache
       - name: Build Debug
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore --output ./build/debug
-
       - name: Build Release
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore --output ./build/release
-
+      - name: Zip Debug Build
+        run: |
+          cd ./build/debug
+          zip -r debug_build.zip .
+          mv debug_build.zip ../
+      - name: Zip Release Build
+        run: |
+          cd ./build/release
+          zip -r release_build.zip .
+          mv release_build.zip ../
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: v1.0.0
-          release_name: Release v1.0.0
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           body: |
             ## What's New
-            This release includes the following build artifacts:
-            - Debug Build
-            - Release Build
+            - Debug and Release builds
+            - Automated Release Process
           draft: false
           prerelease: false
         env:
-          DOTNET_ROOT: /usr/share/dotnet
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload Debug Build
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/debug
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./build/debug_build.zip
           asset_name: debug_build.zip
           asset_content_type: application/zip
-
       - name: Upload Release Build
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/release
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./build/release_build.zip
           asset_name: release_build.zip
           asset_content_type: application/zip
