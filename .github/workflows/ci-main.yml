@@ -96,9 +96,69 @@ jobs:
       - name: Run Release Unit Tests
         run: dotnet test "${{ env.TESTER_FILE }}" --configuration Release --no-restore --output ./build/release --verbosity normal
 
+  linux-debug-ci:
+    name: Linux Debug CI
+    runs-on: ubuntu-latest
+    needs: info
+    env:
+      SOLUTION_FILE: "SimpleFileIO.sln"
+      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
+      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+  
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
+  
+      - name: Build Release Dll
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
+  
+      - name: Run Debug Unit Tests
+        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Debug --no-restore --output ./build/debug --verbosity normal
+  
+  linux-release-ci:
+    name: Linux Release CI
+    runs-on: ubuntu-latest
+    needs: info
+    env:
+      SOLUTION_FILE: "SimpleFileIO.sln"
+      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
+      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+  
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
+  
+      - name: Build Release Dll
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
+  
+      - name: Run Release Unit Tests
+        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Release --no-restore --output ./build/release --verbosity normal
+
+  check-event:
+    name: Check Event
+    needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
+    runs-on: ubuntu-latest
+    if: ${{github.event_name == 'push'}}
+
   create-tag:
-    name: Create Main Tag
-    needs: [windows-debug-ci, windows-release-ci]
+    name: Create Tag
+    needs: check-event
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -111,3 +171,25 @@ jobs:
   
       - name: Create Tag
         run: .github/workflows/scripts/create-tag/create-tag.sh
+
+  create-release-note:
+    name: Create Release Note
+    needs: check-event
+    runs-on: ubuntu-latest
+    env:
+      SOLUTION_FILE: "SimpleFileIO.sln"
+      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
+      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
