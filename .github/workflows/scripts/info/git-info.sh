@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Read arguments from command line
-event_name="$1"
-ref="$2"
-head_ref="$3"
-base_ref="$4"
+event_name="${1:-unknown_event}"
+ref="${2:-unknown_ref}"
+head_ref="${3:-unknown_head_ref}"
+base_ref="${4:-unknown_base_ref}"
 
 echo "Git Info Script"
 echo "Event Name: $event_name"

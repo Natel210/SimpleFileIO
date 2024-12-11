@@ -12,6 +12,13 @@ solution_file="$1"
 dll_file="$2"
 tester_file="$3"
 
+# Ensure all arguments are provided
+if [[ -z "$solution_file" || -z "$dll_file" || -z "$tester_file" ]]; then
+  echo "Error: Missing required arguments."
+  echo "Usage: $0 <solution_file> <dll_file> <tester_file>"
+  exit 1
+fi
+
 # Initialize flags
 error_flag=0
 
