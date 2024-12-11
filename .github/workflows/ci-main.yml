@@ -17,55 +17,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Script Setting
+        run: chmod +x ./.github/workflows/scripts/info/*.sh
+
       - name: Git Info
         run: ./.github/workflows/scripts/git-info.sh
 
       - name: Exist Files
-        run: |
-          # Define required files or directories
-          solution_file="SimpleFileIO.sln"
-          dll_file="SimpleFileIO/SimpleFileIO.csproj"
-          tester_file="SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
-              
-          # Initialize flags
-          error_flag=0
-            
-          echo "Check Files"
+        run: ./.github/workflows/scripts/exist-files.sh
 
-          # Check solution file
-          if [ -f "$solution_file" ]; then
-            echo "> Solution : $solution_file"
-          else
-            echo "Error: $solution_file not found"
-            error_flag=1
-          fi
-              
-          # Check DLL file
-          if [ -f "$dll_file" ]; then
-            echo "> DLL : $dll_file"
-          else
-            echo "Error: $dll_file not found"
-            error_flag=1
-          fi
-              
-          # Check Tester project file
-          if [ -f "$tester_file" ]; then
-            echo "> Tester : $tester_file"
-          else
-            echo "Error: $tester_file not found"
-            error_flag=1
-          fi
-          
-          echo ""
-          echo "Result"
-
-          # Exit with error if any required file is missing
-          if [ $error_flag -eq 1 ]; then
-            echo "> One or more required files are missing."
-            exit 1
-          else
-            echo "> All required files are present."
-          fi
       - name: All Path List
         run: |
           ls -R

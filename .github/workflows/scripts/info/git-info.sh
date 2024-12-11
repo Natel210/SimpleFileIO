@@ -1,3 +1,4 @@
+#!/bin/bash
 if [[ "${{ github.event_name }}" == "push" ]]; then
     echo "Event: Push"
     # Push Event: Extract Branch or Tag Information
