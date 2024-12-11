@@ -18,57 +18,8 @@ jobs:
         with:
           fetch-depth: 0
       - name: Git Info
-        run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            echo "Event: Push"
-          
-            # Push Event: Extract Branch or Tag Information
-            ref=${{ github.ref }}
-            if [[ "$ref" == refs/heads/* ]]; then
-              branch_name=${ref#refs/heads/}
-              tag_name="N/A"
-            elif [[ "$ref" == refs/tags/* ]]; then
-              branch_name="N/A"
-              tag_name=${ref#refs/tags/}
-            else
-              echo "Unknown ref type for push: $ref"
-              exit 1
-            fi
-          
-            # Commit Information
-            commit_hash=$(git rev-parse HEAD)
-            commit_message=$(git log -1 --pretty=format:%s)
-            commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-          
-            # Output
-            echo "Branch Name      : $branch_name"
-            echo "Tag Name         : $tag_name"
-            echo "Commit Hash      : $commit_hash"
-            echo "Commit Message   : $commit_message"
-            echo "Author           : $commit_author"
-          
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "Event: Pull Request"
-          
-            # Pull Request Event: Extract Source and Target Branch Information
-            source_branch=${{ github.head_ref }}
-            target_branch=${{ github.base_ref }}
-          
-            # Commit Information
-            commit_hash=$(git rev-parse HEAD)
-            commit_message=$(git log -1 --pretty=format:%s)
-            commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-          
-            # Output
-            echo "Source Branch Name : $source_branch"
-            echo "Target Branch Name : $target_branch"
-            echo "Commit Hash        : $commit_hash"
-            echo "Commit Message     : $commit_message"
-            echo "Author             : $commit_author"
-          else
-            echo "Unknown event type: ${{ github.event_name }}"
-            exit 1
-          fi
+        run: ./scripts/git-info.sh
+
       - name: Exist Files
         run: |
           # Define required files or directories
@@ -156,21 +107,18 @@ jobs:
           echo "Fetching the latest tag..."
           
           # Fetch remote tags to ensure we have the latest state
-          git fetch --tags
-
-          # Fetch remote tags to ensure we have the latest state
-          git fetch --tags
-
+          git fetch --tags 2>/dev/null
+          
           # Get the latest tag or default to v0.0.0
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
           echo "Latest tag: $latest_tag"
-
+          
           # Extract version and increment
           if [[ "$latest_tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             major=${BASH_REMATCH[1]}
             minor=${BASH_REMATCH[2]}
             patch=${BASH_REMATCH[3]}
-            
+
             # Increment the patch version
             new_patch=$((patch + 1))
             new_tag="v$major.$minor.$new_patch"
@@ -178,13 +126,19 @@ jobs:
             # Default to v0.0.1 if no valid tag exists
             new_tag="v0.0.1"
           fi
-                  
+          
           echo "New tag: $new_tag"
-                  
-          # Optionally push the tag
-          git tag $new_tag
-          git push origin $new_tag
-
-          echo "Check tag :"
-          git ls-remote --tags origin
+          
+          # Create and push the new tag, suppressing success output
+          if git tag "$new_tag" 2>/dev/null; then
+            if git push origin "$new_tag" 2>/dev/null; then
+              echo "New tag $new_tag created and pushed successfully."
+            else
+              echo "Error: Failed to push the new tag $new_tag to the remote repository." >&2
+              exit 1
+            fi
+          else
+            echo "Error: Failed to create the new tag $new_tag locally." >&2
+            exit 1
+          fi
       
