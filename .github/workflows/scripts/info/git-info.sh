@@ -1,47 +1,35 @@
 #!/bin/bash
-if [[ "${{ github.event_name }}" == "push" ]]; then
-    echo "Event: Push"
-    # Push Event: Extract Branch or Tag Information
-    ref=${{ github.ref }}
-    if [[ "$ref" == refs/heads/* ]]; then
-        branch_name=${ref#refs/heads/}
-        tag_name="N/A"
-    elif [[ "$ref" == refs/tags/* ]]; then
-        branch_name="N/A"
-        tag_name=${ref#refs/tags/}
-    else
-        echo "Unknown ref type for push: $ref"
-        exit 1
-    fi
-    # Commit Information
-    commit_hash=$(git rev-parse HEAD)
-    commit_message=$(git log -1 --pretty=format:%s)
-    commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-    # Output
-    echo "Branch Name      : $branch_name"
-    echo "Tag Name         : $tag_name"
-    echo "Commit Hash      : $commit_hash"
-    echo "Commit Message   : $commit_message"
-    echo "Author           : $commit_author"
 
-elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+# Read arguments from command line
+event_name="$1"
+ref="$2"
+head_ref="$3"
+base_ref="$4"
+
+echo "Git Info Script"
+echo "Event Name: $event_name"
+echo "Ref: $ref"
+echo "Head Ref: $head_ref"
+echo "Base Ref: $base_ref"
+
+# Handle different GitHub events
+if [[ "$event_name" == "push" ]]; then
+  echo "Event: Push"
+  if [[ "$ref" == refs/heads/* ]]; then
+    branch_name=${ref#refs/heads/}
+    echo "Branch Name: $branch_name"
+  elif [[ "$ref" == refs/tags/* ]]; then
+    tag_name=${ref#refs/tags/}
+    echo "Tag Name: $tag_name"
+  else
+    echo "Unknown ref type: $ref"
+    exit 1
+  fi
+elif [[ "$event_name" == "pull_request" ]]; then
   echo "Event: Pull Request"
-  # Pull Request Event: Extract Source and Target Branch Information
-  source_branch=${{ github.head_ref }}
-  target_branch=${{ github.base_ref }}
-  # Commit Information
-  commit_hash=$(git rev-parse HEAD)
-  commit_message=$(git log -1 --pretty=format:%s)
-  commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-  # Output
-  echo "Source Branch Name : $source_branch"
-  echo "Target Branch Name : $target_branch"
-  echo "Commit Hash        : $commit_hash"
-  echo "Commit Message     : $commit_message"
-  echo "Author             : $commit_author"
-
+  echo "Source Branch: $head_ref"
+  echo "Target Branch: $base_ref"
 else
-  echo "Unknown event type: ${{ github.event_name }}"
+  echo "Unknown event type: $event_name"
   exit 1
-
 fi
