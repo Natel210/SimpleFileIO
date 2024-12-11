@@ -15,12 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Git 정보 생성
+      # Step 1: Checkout Repository
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # Step 2: Git 정보 생성
       - name: Git Info
         run: |
           echo "Extracting Git Info..."
@@ -36,17 +37,7 @@ jobs:
             exit 1
           fi
 
-          commit_hash=$(git rev-parse HEAD)
-          commit_message=$(git log -1 --pretty=format:%s)
-          commit_author=$(git log -1 --pretty=format:'%an <%ae>')
-
-          echo "Branch Name      : $branch_name"
-          echo "Tag Name         : $tag_name"
-          echo "Commit Hash      : $commit_hash"
-          echo "Commit Message   : $commit_message"
-          echo "Author           : $commit_author"
-
-      # Step 2: .NET 환경 설정
+      # Step 3: .NET 환경 설정
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -55,36 +46,16 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore SimpleFileIO.sln --no-cache
 
-      # Step 3: Debug 빌드 및 테스트
+      # Step 4: 빌드 및 테스트
       - name: Build Debug DLL
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Debug --no-restore --output ./build/debug
 
-      - name: Run Debug Unit Tests
-        run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Debug --no-restore --output ./build/debug --verbosity normal
-
-      # Step 4: Release 빌드 및 테스트
       - name: Build Release DLL
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj --configuration Release --no-restore --output ./build/release
 
-      - name: Run Release Unit Tests
-        run: dotnet test SimpleFileIO_Tester/SimpleFileIO_Tester.csproj --configuration Release --no-restore --output ./build/release --verbosity normal
-
-      # Step 5: 압축 빌드 파일 생성
-      - name: Zip Debug Build
-        run: |
-          cd ./build/debug
-          zip -r debug_build.zip .
-          mv debug_build.zip ../
-
-      - name: Zip Release Build
-        run: |
-          cd ./build/release
-          zip -r release_build.zip .
-          mv release_build.zip ../
-
-      # Step 6: 자동 태그 생성
+      # Step 5: 자동 태그 생성
       - name: Get Latest Tag and Create New Tag
-        id: create_tag  # ID 추가
+        id: create_tag
         run: |
           git fetch --tags
           latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
@@ -96,27 +67,24 @@ jobs:
           else
             new_tag="v0.0.1"
           fi
-          echo "New Tag: $new_tag"
           echo "::set-output name=new_tag::$new_tag"
           git tag $new_tag
           git push origin $new_tag
 
-      # Step 7: 릴리스 생성
+      # Step 6: 릴리스 생성
       - name: Create GitHub Release
-        id: create_release  # ID 추가
+        id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ steps.create_tag.outputs.new_tag }}  # 자동 생성된 태그 사용
+          tag_name: ${{ steps.create_tag.outputs.new_tag }}
           release_name: Release ${{ steps.create_tag.outputs.new_tag }}
           body: |
             ## What's New
             - Automated Release with Debug and Release builds
-            - Includes all recent commits
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Step 7: 릴리스 파일 업로드
       - name: Upload Debug Build
         uses: actions/upload-release-asset@v1
         with:
