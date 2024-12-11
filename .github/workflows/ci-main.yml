@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Git Info
-        run: ./workflows/scripts/git-info.sh
+        run: ./.github/workflows/scripts/git-info.sh
 
       - name: Exist Files
         run: |
