@@ -17,7 +17,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-        env: 
+
+      - name: Script Setting
+        run: chmod +x .github/workflows/scripts/info/*.sh
+
+      - name: Set Environment Variables
+        env:
           EVNET: "${{ github.event_name }}"
           REF: "${{ github.ref }}"
           HEAD_REF: "${{ github.head_ref }}"
@@ -25,12 +30,7 @@ jobs:
           SOLUTION_FILE: "CustomPath/CustomSolution.sln"
           DLL_FILE: "CustomPath/CustomProject.csproj"
           TESTER_FILE: "CustomPath/CustomTester.csproj"
-
-      - name: debug test
-        run: ls -R .github/workflows/scripts/
-
-      - name: Script Setting
-        run: chmod +x .github/workflows/scripts/info/*.sh
+        run: .github/workflows/scripts/info/env-value.sh  "$EVNET" "$REF" "$HEAD_REF" "$BASE_REF" "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
 
       - name: Git Info
         run: .github/workflows/scripts/info/git-info.sh  "$EVNET" "$REF" "$HEAD_REF" "$BASE_REF"
