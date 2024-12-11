@@ -18,9 +18,10 @@ jobs:
       REF: "${{ github.ref }}"
       HEAD_REF: "${{ github.head_ref }}"
       BASE_REF: "${{ github.base_ref }}"
-      SOLUTION_FILE: "CustomPath/CustomSolution.sln"
-      DLL_FILE: "CustomPath/CustomProject.csproj"
-      TESTER_FILE: "CustomPath/CustomTester.csproj"
+      SOLUTION_FILE: "SimpleFileIO.sln"
+      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
+      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,7 +37,7 @@ jobs:
         run: .github/workflows/scripts/info/git-info.sh  "$EVNET" "$REF" "$HEAD_REF" "$BASE_REF"
 
       - name: Exist Files
-        run: .github/workflows/scripts/info/exist-files.sh "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
+        run: .github/workflows/scripts/info/exist-dll-tester-files.sh "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
 
       - name: All Path List
         run: |
