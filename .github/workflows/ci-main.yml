@@ -118,10 +118,10 @@ jobs:
         run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
   
       - name: Build Release Dll
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/window/release
   
       - name: Run Debug Unit Tests
-        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Debug --no-restore --output ./build/debug --verbosity normal
+        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Debug --no-restore --output ./build/window/debug --verbosity normal
   
   linux-release-ci:
     name: Linux Release CI
@@ -145,10 +145,10 @@ jobs:
         run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
   
       - name: Build Release Dll
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/linux/release
   
       - name: Run Release Unit Tests
-        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Release --no-restore --output ./build/release --verbosity normal
+        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Release --no-restore --output ./build/linux/release --verbosity normal
 
   check-event:
     name: Check Event
@@ -159,6 +159,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Is Push Event
+        run: echo "Push Ok... Continue to Create Tag..."
 
   create-tag:
     name: Create Tag
@@ -176,30 +179,62 @@ jobs:
       - name: Create Tag
         run: .github/workflows/scripts/create-tag/create-tag.sh
 
+  # create-zip:
+  #   name: Create ZIP
+  #   needs: create-tag
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  
+  #     - name: Create Debug and Release ZIP
+  #       run: |
+  #         mkdir -p ./final-output/debug
+  #         mkdir -p ./final-output/release
+          
+  #         ##linux
+
+  #         # Copy Debug files
+  #         cp -r ./build/debug/*.dll ./final-output/debug/
+  #         cp -r ./build/debug/*.pdb ./final-output/debug/
+          
+  #         # Copy Release files
+  #         cp -r ./build/release/*.dll ./final-output/release/
+          
+  #         # Create a single ZIP file
+  #         zip -r final_build.zip ./final-output
+
   create-release-note:
     name: Create Release Note
-    needs: check-event
+    needs: create-tag
     runs-on: ubuntu-latest
     env:
       SOLUTION_FILE: "SimpleFileIO.sln"
       DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
       TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+      - name: Checkout Repository
+        run: ls -R
 
-      - name: Restore dependencies
-        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
 
-      - name: Build Debug
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output ./build/debug
 
-      - name: Build Release
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
+      # - name: Setup .NET
+      #   uses: actions/setup-dotnet@v4
+      #   with:
+      #     dotnet-version: '8.0.x'
+
+      # - name: Restore dependencies
+      #   run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
+
+      # - name: Build Debug
+      #   run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output ./build/debug
+
+      # - name: Build Release
+      #   run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
