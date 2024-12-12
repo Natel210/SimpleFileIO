@@ -55,14 +55,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run .NET Build and Test (Debug on Windows)
+      - name: Build and Test
         uses: ./.github/actions/build/dotnet/dll-and-tester
         with:
-          solution_file: "SimpleFileIO.sln"
-          dll_file: "SimpleFileIO/SimpleFileIO.csproj"
-          tester_file: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          solution_file: ${{ env.SOLUTION_FILE }}
+          dll_file: ${{ env.DLL_FILE }}
+          tester_file: ${{ env.TESTER_FILE }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
+          os_shell: "pwsh"
 
   windows-release-ci:
     name: Windows Release CI
@@ -73,19 +74,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Build and Test
+        uses: ./.github/actions/build/dotnet/dll-and-tester
         with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
-
-      - name: Build Release Dll
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
-
-      - name: Run Release Unit Tests
-        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Release --no-restore --output ./build/release --verbosity normal
+          solution_file: "SimpleFileIO.sln"
+          dll_file: "SimpleFileIO/SimpleFileIO.csproj"
+          tester_file: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          configuration: "Debug"
+          dotnet_version: "8.0.x"
 
   check-event:
     name: Check Event
