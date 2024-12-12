@@ -11,19 +11,19 @@ ref="${1:-unknown_ref}"
 
 if [[ "$ref" == refs/heads/* ]]; then
   branch_name=${ref#refs/heads/}
-  echo "> Push to branch : ${BOLD}${CYAN}$branch_name${RESET}"
+  echo -e "> Push to branch : ${BOLD}${CYAN}$branch_name${RESET}"
   echo "::group::"
   echo "  > Ref: $ref"
   echo "  > Branch Name: $branch_name"
   echo "::endgroup::"
 
   echo "> Push to tag : ${BOLD}${GREEN}$tag_name${RESET}"
-  echo "::group::"
+  echo -e "::group:: ${BOLD}${GREEN}$tag_name${RESET}"
   echo "  > Ref: $ref"
   echo "  > Tag Name: $tag_name"
   echo "::endgroup::"
 
-    echo "> ${BOLD}${RED}Unknown : $ref${RESET}"
+    echo -e "> ${BOLD}${RED}Unknown : $ref${RESET}"
   
 elif [[ "$ref" == refs/tags/* ]]; then
   tag_name=${ref#refs/tags/}
