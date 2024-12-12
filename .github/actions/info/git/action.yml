@@ -14,11 +14,10 @@ inputs:
     description: The base ref (target branch for PRs)
     required: false
 
-env:
-  SCRIPTS_DIR: "${{ github.action_path }}/scripts"
-
 runs:
   using: "composite"
+  env:
+  SCRIPTS_DIR: "${{ github.action_path }}/scripts"
   steps:
 
     - name: Add Execute Permission for Script
