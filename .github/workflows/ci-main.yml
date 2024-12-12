@@ -55,6 +55,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: check
+        run: ls -R
+
       - name: Run .NET Build and Test (Debug on Windows)
         uses: ./.github/actions/composite/dll-and-tester-build-in-dotnet
         with:
