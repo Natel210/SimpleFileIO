@@ -56,7 +56,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run .NET Build and Test (Debug on Windows)
-        uses: ./.github/actions/dll-and-tester-build-in-dotnet
+        uses: ./.github/actions/composite/dll-and-tester-build-in-dotnet
         with:
           solution_file: "SimpleFileIO.sln"
           dll_file: "SimpleFileIO/SimpleFileIO.csproj"
