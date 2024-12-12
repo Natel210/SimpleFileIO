@@ -125,6 +125,12 @@ jobs:
       - name: Create Tag
         run: .github/workflows/scripts/create-tag/create-tag.sh
 
+      # Retrieve and export the created tag name
+      - name: Get the Latest Tag
+        id: get_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0)
+          echo "TAG=$TAG" >> $GITHUB_ENV
   # create-zip:
   #   name: Create ZIP
   #   needs: create-tag
@@ -152,7 +158,7 @@ jobs:
   #         zip -r final_build.zip ./final-output
 
   cd:
-    name: cd
+    name: CD
     needs: create-tag
     runs-on: ubuntu-latest
     env:
@@ -187,16 +193,13 @@ jobs:
       - name: Zip Build File
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
 
-      - name: Zip Build File
-        run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
-
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: ${{ env.TAG }}
+          release_name: Release ${{ env.TAG }}
           body: |
-            ${{ github.ref_name }}
+            Release for version ${{ env.TAG }}
           draft: false
           prerelease: false
         env:
@@ -209,15 +212,3 @@ jobs:
           asset_path: "${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip"
           asset_name: "${{ env.RESULT_ZIP_NAME }}.zip"
           asset_content_type: application/zip
-
-
-
-
-      # - name: Restore dependencies
-      #   run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
-
-      # - name: Build Debug
-      #   run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output ./build/debug
-
-      # - name: Build Release
-      #   run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output ./build/release
