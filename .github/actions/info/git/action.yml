@@ -15,20 +15,20 @@ inputs:
     required: false
 
 env:
-  GIT_INFO_FILE: "${{ github.action_path }}/scripts/git-info.sh"
+  SCRIPTS_DIR: "${{ github.action_path }}/scripts"
 
 runs:
   using: "composite"
   steps:
 
     - name: Add Execute Permission for Script
-      run: chmod +x "${{ env.GIT_INFO_FILE }}"
+      run: chmod +x "${{ env.SCRIPTS_DIR }}/*.sh"
       shell: bash
 
     - name: Run Git Info Script
-      run: "${{ env.GIT_INFO_FILE }}" "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
+      run: "${{ env.SCRIPTS_DIR }}/git-info.sh" "${{ env.SCRIPTS_DIR }}" "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
       shell: bash
 
     - name: Remove Execute Permission for Script
-      run: chmod -x "${{ env.GIT_INFO_FILE }}"
+      run: chmod -x "${{ env.SCRIPTS_DIR }}/*.sh"
       shell: bash
