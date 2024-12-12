@@ -128,11 +128,7 @@ jobs:
       # Retrieve and export the created tag name
       - name: Get the Latest Tag
         id: get_tag
-        run: |
-          TAG=$(git describe --tags --abbrev=0)
-          echo "TAG=$TAG" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
 
   cd:
     name: CD
@@ -180,10 +176,10 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
+          tag_name: ${{ needs.create-tag.outputs.tag }}
+          release_name: Release ${{ needs.create-tag.outputs.tag }}
           body: |
-            Release for version ${{ env.TAG }}
+            Release for version ${{ needs.create-tag.outputs.tag }}
           draft: false
           prerelease: false
 
