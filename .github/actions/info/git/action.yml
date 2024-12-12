@@ -16,18 +16,20 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    SCRIPTS_DIR: ${{ github.action_path }}/scripts
   steps:
+    - name: Set Script Directory
+      id: set_script_dir
+      run: echo "SCRIPTS_DIR=$GITHUB_WORKSPACE/.github/scripts" >> $GITHUB_ENV
+      shell: bash
 
-    - name: Add Execute Permission for Script
-      run: chmod +x "${{ env.SCRIPTS_DIR }}/*.sh"
+    - name: Add Execute Permission for Scripts
+      run: chmod +x $SCRIPTS_DIR/*.sh
       shell: bash
 
     - name: Run Git Info Script
-      run: "${{ env.SCRIPTS_DIR }}/git-info.sh" "${{ env.SCRIPTS_DIR }}" "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
+      run: $SCRIPTS_DIR/git-info.sh $SCRIPTS_DIR "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
       shell: bash
 
-    - name: Remove Execute Permission for Script
-      run: chmod -x "${{ env.SCRIPTS_DIR }}/*.sh"
+    - name: Remove Execute Permission for Scripts
+      run: chmod -x $SCRIPTS_DIR/*.sh
       shell: bash
