@@ -131,31 +131,7 @@ jobs:
         run: |
           TAG=$(git describe --tags --abbrev=0)
           echo "TAG=$TAG" >> $GITHUB_ENV
-  # create-zip:
-  #   name: Create ZIP
-  #   needs: create-tag
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  
-  #     - name: Create Debug and Release ZIP
-  #       run: |
-  #         mkdir -p ./final-output/debug
-  #         mkdir -p ./final-output/release
-          
-  #         ##linux
-
-  #         # Copy Debug files
-  #         cp -r ./build/debug/*.dll ./final-output/debug/
-  #         cp -r ./build/debug/*.pdb ./final-output/debug/
-          
-  #         # Copy Release files
-  #         cp -r ./build/release/*.dll ./final-output/release/
-          
-  #         # Create a single ZIP file
-  #         zip -r final_build.zip ./final-output
+          echo "::set-output name=tag_name::$TAG"
 
   cd:
     name: CD
