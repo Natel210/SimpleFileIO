@@ -131,7 +131,8 @@ jobs:
         run: |
           TAG=$(git describe --tags --abbrev=0)
           echo "TAG=$TAG" >> $GITHUB_ENV
-          echo "::set-output name=tag_name::$TAG"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   cd:
     name: CD
@@ -142,12 +143,19 @@ jobs:
       DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
       BUILD_PATH: "./build/"
       RESULT_ZIP_NAME: "SimpleFileIO"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+
+
 
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Checkout Repository
+        run: |
+          echo "Current TAG: ${{ env.TAG }}"
 
       - name: Script Setting
         run: chmod +x .github/workflows/scripts/cd/*.sh
@@ -179,7 +187,7 @@ jobs:
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
 
       - name: Upload Zip
         uses: actions/upload-release-asset@v1
