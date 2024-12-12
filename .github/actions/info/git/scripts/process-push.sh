@@ -17,8 +17,8 @@ if [[ "$ref" == refs/heads/* ]]; then
   echo "  > Branch Name: $branch_name"
   echo "::endgroup::"
 
-  echo "> Push to tag : ${BOLD}${GREEN}$tag_name${RESET}"
-  echo -e "::group:: ${BOLD}${GREEN}$tag_name${RESET}"
+  echo -e "> Push to tag : ${BOLD}${GREEN}$tag_name${RESET}"
+  echo -e "::group::detail ${BOLD}${GREEN}$tag_name${RESET}"
   echo "  > Ref: $ref"
   echo "  > Tag Name: $tag_name"
   echo "::endgroup::"
