@@ -15,7 +15,7 @@ echo "        Event Name: $event_name"
 echo "        Ref: $ref"
 echo "        Head Ref: $head_ref"
 echo "        Base Ref: $base_ref"
-echo "::endgroup::"
+
 
 # Handle different events
 case "$event_name" in
@@ -24,13 +24,11 @@ case "$event_name" in
     "$scripts_path/process-push.sh" "$ref"
     echo "|   |"
     echo "::endgroup::"
-    echo "::endgroup::"
     ;;
   pull_request)
     echo "::group::Pull Request Info (source : $head_ref, target : $base_ref)"
     "$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref"
     echo "================================================================================"
-    echo "::endgroup::"
     echo "::endgroup::"
     ;;
   *)
