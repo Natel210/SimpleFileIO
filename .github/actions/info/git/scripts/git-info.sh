@@ -11,14 +11,14 @@ base_ref="${5:-unknown_base_ref}"
 echo " "
 echo "---- Enter Git Info Script----"
 echo " "
-echo "::group::Script Argument"
+echo "> Argument"
+echo "::group::"
 echo "  > Script Directory : $scripts_path"
 echo "  > Event Name: $event_name"
 echo "  > Ref: $ref"
 echo "  > Head Ref: $head_ref"
 echo "  > Base Ref: $base_ref"
 echo "::endgroup::"
-
 echo " "
 
 # Handle different events
