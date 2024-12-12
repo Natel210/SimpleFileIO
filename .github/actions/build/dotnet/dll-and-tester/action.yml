@@ -16,8 +16,11 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
+  os_shell:
+    description: Shell to use (e.g., bash, pwsh)
+    required: true
 shell:
-  shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+  shell: ${{ inputs.os_shell }}
 runs:
   using: "composite"
   steps:
@@ -33,7 +36,7 @@ runs:
       run: dotnet restore "${{ inputs.solution_file }}" --no-cache
 
     - name: Build Project
-      run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration | toLower }}
+      run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }}
 
     - name: Run Unit Tests
-      run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration | toLower }} --verbosity normal
+      run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }} --verbosity normal
