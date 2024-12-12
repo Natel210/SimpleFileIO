@@ -127,8 +127,8 @@ jobs:
 
       # Retrieve and export the created tag name
       - name: Get the Latest Tag
-        id: get_tag
-        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+        run: |
+          echo "TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
 
   cd:
     name: CD
@@ -149,9 +149,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout Repository
+      - name: Show Current Tag
         run: |
-          echo "Current TAG: ${{ env.TAG }}"
+          echo "Current TAG: $TAG"
 
       - name: Script Setting
         run: chmod +x .github/workflows/scripts/cd/*.sh
@@ -176,10 +176,10 @@ jobs:
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ needs.create-tag.outputs.tag }}
-          release_name: Release ${{ needs.create-tag.outputs.tag }}
+          tag_name: $TAG
+          release_name: Release $TAG
           body: |
-            Release for version ${{ needs.create-tag.outputs.tag }}
+            Release for version $TAG
           draft: false
           prerelease: false
 
