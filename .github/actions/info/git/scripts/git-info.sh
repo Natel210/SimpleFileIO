@@ -7,8 +7,8 @@ event_name="${2}"
 ref="${3:-unknown_ref}"
 head_ref="${4:-unknown_head_ref}"
 base_ref="${5:-unknown_base_ref}"
-echo " "
-echo "================================================================================"
+
+echo "::group::Git Info ($event_name)"
 echo "Git Info"
 echo "|- Script Directory"
 echo "|   |- $scripts_path"
@@ -21,21 +21,23 @@ echo "|   |- Base Ref: $base_ref"
 # Handle different events
 case "$event_name" in
   push)
-    echo "|- Push"
+    echo "::group::Push Info (Branch : $ref)"
     "$scripts_path/process-push.sh" "$ref"
-    echo "================================================================================"
-    echo " "
+    echo "|   |"
+    echo "::endgroup::"
+    echo "::endgroup::"
     ;;
   pull_request)
-    echo "|- Pull Request"
+    echo "::group::Pull Request Info (source : $head_ref, target : $base_ref)"
     "$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref"
     echo "================================================================================"
-    echo " "
+    echo "::endgroup::"
+    echo "::endgroup::"
     ;;
   *)
     echo "|- Unknown event type: $event_name"
     echo "================================================================================"
-    echo " "
+    echo "::endgroup::"
     exit 1
     ;;
 esac
