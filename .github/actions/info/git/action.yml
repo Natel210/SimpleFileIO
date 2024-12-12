@@ -17,7 +17,7 @@ inputs:
 runs:
   using: "composite"
   env:
-    SCRIPTS_DIR: "${{ github.action_path }}/scripts"
+    SCRIPTS_DIR: ${{ github.action_path }}/scripts
   steps:
 
     - name: Add Execute Permission for Script
