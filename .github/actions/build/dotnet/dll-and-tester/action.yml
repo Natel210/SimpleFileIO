@@ -16,6 +16,8 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
+shell:
+  shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
 runs:
   using: "composite"
   steps:
@@ -23,6 +25,9 @@ runs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
+
+    - name: Make Build Directory
+      run: mkdir -p ./build/${{ inputs.configuration }}
 
     - name: Restore Dependencies
       run: dotnet restore "${{ inputs.solution_file }}" --no-cache
