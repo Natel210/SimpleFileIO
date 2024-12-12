@@ -186,8 +186,6 @@ jobs:
             Release for version ${{ env.TAG }}
           draft: false
           prerelease: false
-        env:
-          
 
       - name: Upload Zip
         uses: actions/upload-release-asset@v1
