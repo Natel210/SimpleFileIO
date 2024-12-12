@@ -17,6 +17,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Add Execute Permission for Script
+      run: chmod +x ${{ github.action_path }}/git-info.sh
+      shell: bash
+      
     - name: Run Git Info Script
       run: ${{ github.action_path }}/git-info.sh "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
       shell: bash
