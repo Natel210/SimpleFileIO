@@ -6,7 +6,7 @@ inputs:
     required: true
   ref:
     description: The GitHub ref (e.g., refs/heads/main)
-    required: true
+    required: false
   head_ref:
     description: The head ref (source branch for PRs)
     required: false
@@ -14,13 +14,21 @@ inputs:
     description: The base ref (target branch for PRs)
     required: false
 
+env:
+  GIT_INFO_FILE: "${{ github.action_path }}/scripts/git-info.sh"
+
 runs:
   using: "composite"
   steps:
+
     - name: Add Execute Permission for Script
-      run: chmod +x ${{ github.action_path }}/git-info.sh
+      run: chmod +x "${{ env.GIT_INFO_FILE }}"
       shell: bash
-      
+
     - name: Run Git Info Script
-      run: ${{ github.action_path }}/git-info.sh "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
+      run: "${{ env.GIT_INFO_FILE }}" "${{ inputs.event_name }}" "${{ inputs.ref }}" "${{ inputs.head_ref }}" "${{ inputs.base_ref }}"
+      shell: bash
+
+    - name: Remove Execute Permission for Script
+      run: chmod -x "${{ env.GIT_INFO_FILE }}"
       shell: bash
