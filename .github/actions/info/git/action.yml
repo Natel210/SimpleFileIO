@@ -19,8 +19,10 @@ runs:
   steps:
     - name: Set Script Directory
       id: set_script_dir
-      run: echo "SCRIPTS_DIR=$GITHUB_WORKSPACE/.github/scripts" >> $GITHUB_ENV
+      run: echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV
       shell: bash
+
+
 
     - name: Add Execute Permission for Scripts
       run: chmod +x $SCRIPTS_DIR/*.sh
