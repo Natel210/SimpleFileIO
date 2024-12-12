@@ -22,10 +22,10 @@ echo "::endgroup::"
 # Handle different events
 case "$event_name" in
   push)
-    push_result=$("$scripts_path/process-push.sh" "$ref")
+    "$scripts_path/process-push.sh" "$ref"
     ;;
   pull_request)
-    pull_request_result=$("$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref")
+    "$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref"
 
     echo " "
     ;;
