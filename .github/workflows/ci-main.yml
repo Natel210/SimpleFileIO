@@ -183,6 +183,7 @@ jobs:
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
 
       - name: Create GitHub Release
+        id: create_github_release
         uses: actions/create-release@v1
         with:
           tag_name: $TAG
@@ -195,7 +196,7 @@ jobs:
       - name: Upload Zip
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload_url: ${{ steps.create_github_release.outputs.upload_url }}
           asset_path: "${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip"
           asset_name: "${{ env.RESULT_ZIP_NAME }}.zip"
           asset_content_type: application/zip
