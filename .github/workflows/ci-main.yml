@@ -9,6 +9,13 @@ permissions:
   contents: write
   statuses: write
 
+env:
+  SOLUTION_FILE: "SimpleFileIO.sln"
+  DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
+  TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+  BUILD_PATH: "./build/"
+  RESULT_ZIP_NAME: "Produced Dll"
+
 jobs:
   info:
     name: Info
@@ -18,9 +25,6 @@ jobs:
       REF: "${{ github.ref }}"
       HEAD_REF: "${{ github.head_ref }}"
       BASE_REF: "${{ github.base_ref }}"
-      SOLUTION_FILE: "SimpleFileIO.sln"
-      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
 
     steps:
       - uses: actions/checkout@v4
@@ -46,37 +50,24 @@ jobs:
     name: Windows Debug CI
     runs-on: windows-latest
     needs: info
-    env:
-      SOLUTION_FILE: "SimpleFileIO.sln"
-      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Run .NET Build and Test (Debug on Windows)
+        uses: ./.github/actions/dll-and-tester-build-in-dotnet
         with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
-
-      - name: Build Release Dll
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output ./build/debug
-
-      - name: Run Debug Unit Tests
-        run: dotnet test "${{ env.TESTER_FILE }}" --configuration Debug --no-restore --output ./build/debug --verbosity normal
+          solution_file: "SimpleFileIO.sln"
+          dll_file: "SimpleFileIO/SimpleFileIO.csproj"
+          tester_file: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          configuration: "Debug"
+          dotnet_version: "8.0.x"
 
   windows-release-ci:
     name: Windows Release CI
     runs-on: windows-latest
     needs: info
-    env:
-      SOLUTION_FILE: "SimpleFileIO.sln"
-      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-      TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -150,10 +141,6 @@ jobs:
     needs: create-tag
     runs-on: ubuntu-latest
     env:
-      SOLUTION_FILE: "SimpleFileIO.sln"
-      DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-      BUILD_PATH: "./build/"
-      RESULT_ZIP_NAME: "SimpleFileIO"
       TAG: ${{ needs.create-tag.outputs.latest_tag }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
