@@ -22,17 +22,11 @@ echo "::endgroup::"
 # Handle different events
 case "$event_name" in
   push)
-    echo "::group::Push Info"
-    "$scripts_path/process-push.sh" "$ref"
-    echo "::endgroup::"
-    echo "---- End Git Info Script----"
-    echo " "
+    push_result=$("$scripts_path/process-push.sh" "$ref")
     ;;
   pull_request)
-    echo "::group::Pull Request Info"
-    "$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref"
-    echo "::endgroup::"
-    echo "---- End Git Info Script----"
+    pull_request_result=$("$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref")
+
     echo " "
     ;;
   *)
@@ -42,3 +36,6 @@ case "$event_name" in
     exit 1
     ;;
 esac
+
+echo "---- End Git Info Script----"
+echo " "
