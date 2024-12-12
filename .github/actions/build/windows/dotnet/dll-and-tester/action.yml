@@ -16,11 +16,6 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
-  os_shell:
-    description: Shell to use (e.g., bash, pwsh)
-    required: true
-shell:
-  shell: ${{ inputs.os_shell }}
 runs:
   using: "composite"
   steps:
@@ -31,12 +26,16 @@ runs:
 
     - name: Make Build Directory
       run: mkdir -p ./build/${{ inputs.configuration }}
+      shell: pwsh
 
     - name: Restore Dependencies
       run: dotnet restore "${{ inputs.solution_file }}" --no-cache
+      shell: pwsh
 
     - name: Build Project
       run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }}
+      shell: pwsh
 
     - name: Run Unit Tests
       run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }} --verbosity normal
+      shell: pwsh
