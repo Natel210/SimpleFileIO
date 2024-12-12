@@ -155,6 +155,7 @@ jobs:
       BUILD_PATH: "./build/"
       RESULT_ZIP_NAME: "SimpleFileIO"
       TAG: ${{ needs.create-tag.outputs.latest_tag }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
       - name: Checkout Repository
