@@ -179,10 +179,10 @@ jobs:
         run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
 
       - name: Build Debug
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output "${{ env.BUILD_PATH }}/debug"
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output "${{ env.BUILD_PATH }}debug"
 
       - name: Build Release
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output "${{ env.BUILD_PATH }}/release"
+        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output "${{ env.BUILD_PATH }}release"
 
       - name: Zip Build File
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"

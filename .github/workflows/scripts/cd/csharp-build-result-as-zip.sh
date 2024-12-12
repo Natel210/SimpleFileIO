@@ -22,6 +22,5 @@ old_path="${pow}"
 
 cd "${target_path}"
 zip -r "${target_name}.zip" .
-mv "${target_name}.zip" ../
 
 cd "${old_path}"
