@@ -59,7 +59,7 @@ jobs:
         run: ls -R
 
       - name: Run .NET Build and Test (Debug on Windows)
-        uses: ./.github/actions/composite/dll-and-tester-build-in-dotnet
+        uses: ./.github/actions/build/dotnet/dll-and-tester
         with:
           solution_file: "SimpleFileIO.sln"
           dll_file: "SimpleFileIO/SimpleFileIO.csproj"
