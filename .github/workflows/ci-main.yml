@@ -8,15 +8,15 @@ on:
     inputs:
       solution_file:
         description: "Solution file path"
-        required: true
+        required: false
         default: "SimpleFileIO.sln"
       dll_file:
         description: "DLL file path"
-        required: true
+        required: false
         default: "SimpleFileIO/SimpleFileIO.csproj"
       tester_file:
         description: "Tester file path"
-        required: true
+        required: false
         default: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
 
 permissions:
