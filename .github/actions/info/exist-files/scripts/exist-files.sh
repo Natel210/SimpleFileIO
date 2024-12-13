@@ -9,8 +9,7 @@ fi
 is_miss_files=0
 
 for file in "$@"; do
-  if [ -f "$file" ]; then
-  else
+  if [ ! -f "$file" ]; then
     is_miss_files=1
   fi
 done
