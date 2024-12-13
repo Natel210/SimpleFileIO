@@ -144,7 +144,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      latest_tag: ${{ steps.get_tag.outputs.tag }}
+      latest_versuion: ${{ steps.create_tag.outputs.new_version  }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -156,7 +156,7 @@ jobs:
           prefix: "v"
 
       - name: Create Tag
-      id: create_tag
+        id: create_tag
         uses: ./.github/actions/tag/version/create
         with:
           prefix: "v"
