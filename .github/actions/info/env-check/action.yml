@@ -9,10 +9,15 @@ inputs:
 runs:
   using: composite
   steps:
+
+    - name: Add Execute Permission for Scripts
+      run: chmod +x ${{ github.action_path }}/scripts/*.sh
+      shell: bash
+
     - name: Process Dynamic JSON Config
-      run: |
-        CONFIG='${{ inputs.config }}'
-        echo "::group::Env Values"
-        echo "$CONFIG" | jq -r '. | to_entries[] | "> \(.key): \(.value)"'
-        echo "::endgroup::"
+      run: ${{ github.action_path }}/scripts/env-check.sh '${{ inputs.config }}'
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      run: chmod -x ${{ github.action_path }}/scripts/*.sh
       shell: bash
