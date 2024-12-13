@@ -4,15 +4,26 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
+    inputs:
+      solution_file:
+        description: "Solution file path"
+        required: true
+        default: "SimpleFileIO.sln"
+      dll_file:
+        description: "DLL file path"
+        required: true
+        default: "SimpleFileIO/SimpleFileIO.csproj"
+      tester_file:
+        description: "Tester file path"
+        required: true
+        default: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
 
 permissions:
   contents: write
   statuses: write
 
 env:
-  SOLUTION_FILE: "SimpleFileIO.sln"
-  DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-  TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
   BUILD_PATH: "./build/"
   RESULT_ZIP_NAME: "Produced Dll"
 
@@ -35,7 +46,7 @@ jobs:
         run: chmod +x .github/workflows/scripts/info/*.sh
 
       - name: Check ENV Value
-        run: .github/workflows/scripts/info/check-env-value.sh  "$EVNET_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
+        run: .github/workflows/scripts/info/check-env-value.sh  "$EVNET_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "${{ github.event.inputs.solution_file }}" "${{ github.event.inputs.dll_file }}" "${{ github.event.inputs.tester_file }}"
 
       - name: Git Info
         uses: ./.github/actions/info/git
@@ -46,7 +57,7 @@ jobs:
           base_ref: ${{ env.BASE_REF }}
 
       - name: Exist Files
-        run: .github/workflows/scripts/info/exist-dll-tester-files.sh "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
+        run: ./.github/actions/info/exist-files "${{ github.event.inputs.solution_file }}" "${{ github.event.inputs.dll_file }}" "${{ github.event.inputs.tester_file }}"
 
       - name: All Path List
         run: ls -R
@@ -63,9 +74,9 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/windows/dotnet/dll-and-tester
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
+          solution_file: ${{ github.event.inputs.solution_file }}
+          dll_file: ${{ github.event.inputs.dll_file }}
+          tester_file: ${{ github.event.inputs.tester_file }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
 
@@ -81,9 +92,9 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/windows/dotnet/dll-and-tester
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
+          solution_file: ${{ github.event.inputs.solution_file }}
+          dll_file: ${{ github.event.inputs.dll_file }}
+          tester_file: ${{ github.event.inputs.tester_file }}
           configuration: "Release"
           dotnet_version: "8.0.x"
 
@@ -99,9 +110,9 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/linux/dotnet/dll-and-tester
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
+          solution_file: ${{ github.event.inputs.solution_file }}
+          dll_file: ${{ github.event.inputs.dll_file }}
+          tester_file: ${{ github.event.inputs.tester_file }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
   
@@ -117,9 +128,9 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/linux/dotnet/dll-and-tester
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
+          solution_file: ${{ github.event.inputs.solution_file }}
+          dll_file: ${{ github.event.inputs.dll_file }}
+          tester_file: ${{ github.event.inputs.tester_file }}
           configuration: "Release"
           dotnet_version: "8.0.x"
 
@@ -199,13 +210,13 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
+        run: dotnet restore "${{ github.event.inputs.solution_file }}" --no-cache
 
       - name: Build Debug
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output "${{ env.BUILD_PATH }}debug"
+        run: dotnet build "${{ github.event.inputs.dll_file }}" --configuration Debug --no-restore --output "${{ env.BUILD_PATH }}debug"
 
       - name: Build Release
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output "${{ env.BUILD_PATH }}release"
+        run: dotnet build "${{ github.event.inputs.dll_file }}" --configuration Release --no-restore --output "${{ env.BUILD_PATH }}release"
 
       - name: Zip Build File
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
