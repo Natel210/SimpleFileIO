@@ -17,12 +17,6 @@ runs:
       run: ${{ github.action_path }}/scripts/create-tag.sh
       shell: bash
 
-    - name: Debug Git Tag
-      run: |
-        git tag
-        git describe --tags --abbrev=0
-      shell: bash
-
     - name: Create and Fetch Git Tag
       id: get_tag
       run: |
@@ -30,12 +24,6 @@ runs:
         echo "Generated TAG: $TAG"
         echo "TAG=$TAG" >> $GITHUB_ENV
         echo "::set-output name=tag::$TAG"
-      shell: bash
-
-    - name: Debug Tags
-      run: |
-        echo "Available Tags:"
-        git tag
       shell: bash
 
 
