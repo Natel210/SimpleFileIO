@@ -8,11 +8,11 @@ echo "Fetching the latest tags..."
 git fetch --tags
 
 # Find the highest tag
-highest_version=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 || echo "${prefix}0.0.0")
-# echo "Highest Tag Found: $highest_version"
+latest_version=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 || echo "${prefix}0.0.0")
+echo -e "Latest Version : \033[34m${latest_version}\033[0m"
 
 # Calculate new tag
-if [[ "$highest_version" =~ ^${prefix}([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+if [[ "$latest_version" =~ ^${prefix}([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
   major=${BASH_REMATCH[1]}
   minor=${BASH_REMATCH[2]}
   patch=${BASH_REMATCH[3]}
@@ -22,21 +22,36 @@ else
   new_version="${prefix}0.0.1"
 fi
 
-echo "try update version [${highest_version}] -> [${new_version}]"
+echo "Trying to update version [${latest_version}] -> [${new_version}]"
 
 # Create and push new tag
+check_error_code=0
 if git tag "$new_version" > /dev/null; then
   if git push origin "$new_version" > /dev/null; then
-    echo "::notice::new version[${new_version}]"
+    echo "::notice::New version created and pushed: [${new_version}]"
+    check_error_code=0
   else
-    echo "::error::push origin fail [${new_version}]"
-    exit 1
+    check_error_code=1
   fi
 else
-  echo "::error::create tag fail [${new_version}]"
+  check_error_code=2
+fi
+
+# Handle error codes
+if [[ "$check_error_code" -eq 0 ]]; then
+  echo "::notice::Operation successful : New version [${new_version}]"
+elif [[ "$check_error_code" -eq 1 ]]; then
+  echo "::error::Failed to push new version to origin : [${new_version}]"
+  exit 1
+elif [[ "$check_error_code" -eq 2 ]]; then
+  echo "::error::Failed to create tag locally : [${new_version}]"
+  exit 1
+else
+  echo "::error::Unknown error occurred during tag creation : [${new_version}]"
   exit 1
 fi
 
+# Export the new version to GitHub environment and state
 if [[ -n "$GITHUB_ENV" ]]; then
   echo "NEW_VERSION=$new_version" >> "$GITHUB_ENV"
 fi

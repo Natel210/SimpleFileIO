@@ -156,6 +156,7 @@ jobs:
           prefix: "v"
 
       - name: Create Tag
+      id: create_tag
         uses: ./.github/actions/tag/version/create
         with:
           prefix: "v"
