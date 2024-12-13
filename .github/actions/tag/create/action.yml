@@ -1,13 +1,5 @@
 name: "Create Tag"
 description: "Create and debug a Git tag."
-inputs:
-  tag_script_path:
-    description: "Path to the tag creation script"
-    required: true
-  debug_tags:
-    description: "Enable debug information for tags"
-    required: false
-    default: "true"
 
 outputs:
   tag:
@@ -17,14 +9,18 @@ runs:
   using: "composite"
   steps:
 
-
-    - name: Script Setting
-      run: chmod +x ${{ inputs.tag_script_path }}
+    - name: Add Execute Permission for Scripts
+      run: chmod +x ${{ github.action_path }}/scripts/*.sh
       shell: bash
 
-    - name: Create Tag
-      run: ${{ inputs.tag_script_path }}
+    - name: Run Git Info Script
+      run: ${{ github.action_path }}/scripts/create-tag.sh
       shell: bash
+
+    - name: Debug Git Tag
+      run: |
+        git tag
+        git describe --tags --abbrev=0
 
     - name: Create and Fetch Git Tag
       id: get_tag
@@ -33,11 +29,14 @@ runs:
         echo "Generated TAG: $TAG"
         echo "TAG=$TAG" >> $GITHUB_ENV
         echo "::set-output name=tag::$TAG"
-      shell: bash
 
-    - name: Debug Git Tag
-      if: ${{ inputs.debug_tags == 'true' }}
+    - name: Debug Tags
       run: |
         echo "Available Tags:"
         git tag
+
+
+
+    - name: Remove Execute Permission for Scripts
+      run: chmod -x ${{ github.action_path }}/scripts/*.sh
       shell: bash
