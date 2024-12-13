@@ -12,12 +12,12 @@ if [[ "$ref" == refs/heads/* ]]; then
   
 elif [[ "$ref" == refs/tags/* ]]; then
   tag_name=${ref#refs/tags/}
-  echo -e "::group::Push Info (tag : \033[34m$tag_name\033[0m)"
+  echo -e "::group::Info (tag : \033[34m$tag_name\033[0m)"
   echo "> Ref: $ref"
   echo -e "> Tag Name: \033[34m$tag_name\033[0m"
   echo "::endgroup::"
 else
-  echo -e "::group::Push Info (\033[31mUnknown\033[0m)"
+  echo -e "::group::Info (\033[31mUnknown\033[0m)"
   echo "> Ref: $ref"
   echo "::endgroup::"
   exit 1
