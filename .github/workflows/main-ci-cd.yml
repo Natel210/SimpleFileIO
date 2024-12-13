@@ -163,9 +163,9 @@ jobs:
 
       - name: debug
         run: |
-          echo $steps.create-tag.outputs.new_version
-          echo $steps.outputs.latest_versuion
-          echo $env.NEW_VERSION
+          echo ${{ steps.create-tag.outputs.new_version }}
+          echo ${{ steps.outputs.latest_versuion }}
+          echo ${{ env.NEW_VERSION }}
 
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
