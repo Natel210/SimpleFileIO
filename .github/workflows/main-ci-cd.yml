@@ -217,8 +217,8 @@ jobs:
             base_ref=$(git rev-parse HEAD^)
           fi
       
-          # Generate the changelog with commit title, short hash (hyperlinked), and body
-          changelog=$(git log $base_ref..$head_sha --pretty=format:"* %s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n  > %b" --no-merges)
+          # Generate the changelog: commit title, separator, and body
+          changelog=$(git log $base_ref..$head_sha --pretty=format:"%s #%h%n------------------------%n%b" --no-merges)
       
           if [ -z "$changelog" ]; then
             echo "No changes to log."
@@ -226,8 +226,6 @@ jobs:
           fi
       
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-          echo "Commits" >> $GITHUB_ENV
-          echo "------------" >> $GITHUB_ENV
           echo "$changelog" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
         env:
@@ -239,7 +237,8 @@ jobs:
           tag_name: ${{ env.CREATE_NEW_VERSION }}
           name: Release ${{ env.CREATE_NEW_VERSION }}
           body: | 
-            Release for version ${{ env.CREATE_NEW_VERSION }}
+            ## Release
+            version ${{ env.CREATE_NEW_VERSION }}
       
             ## Changelog
             ${{ env.CHANGELOG }}
