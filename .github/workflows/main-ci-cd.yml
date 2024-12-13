@@ -146,10 +146,13 @@ jobs:
     outputs:
       latest_tag: ${{ steps.get_tag.outputs.tag }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Create Tag
         uses: ./.github/actions/tag/create
         with:
-          fetch_depth: 0
           tag_script_path: .github/workflows/scripts/create-tag/create-tag.sh
           debug_tags: true        
 
