@@ -1,0 +1,42 @@
+name: "Check Tags"
+description: "Browse the highest version tag and the entire list."
+
+inputs:
+  prefix:
+    description: "Prefix to filter tags (e.g., 'v' or 'tag')"
+    required: false
+    default: "v"
+
+outputs:
+  all_tags:
+    description: "List of all Git tags with formatted output"
+  highest_tag:
+    description: "The highest Git version tag"
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Add Execute Permission for Scripts
+      run: chmod +x ${{ github.action_path }}/scripts/*.sh
+      shell: bash
+
+    - name: Fetch All Git Tags
+      id: all_tags
+      run: |
+        output=$(${github.action_path}/scripts/all-list.sh ${{ inputs.prefix }})
+        echo "ALL_TAGS=$output" >> $GITHUB_ENV
+        echo "::set-output name=all_tags::$output"
+      shell: bash
+
+    - name: Fetch Highest Git Version
+      id: highest_tag
+      run: |
+        output=$(${github.action_path}/scripts/top-version.sh ${{ inputs.prefix }})
+        echo "HIGHEST_TAG=$output" >> $GITHUB_ENV
+        echo "::set-output name=highest_tag::$output"
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      run: chmod -x ${{ github.action_path }}/scripts/*.sh
+      shell: bash
