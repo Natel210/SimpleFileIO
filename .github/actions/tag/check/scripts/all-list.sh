@@ -4,9 +4,10 @@
 prefix=${1:-v}
 
 echo "::group::All Tags"
-echo "Listing all Git tags..."
-
-# List all tags, format with `>`, and filter by prefix
-git tag | grep "^$prefix" | sort -V | sed 's/^/> /'
-
+git tag | grep "^v" | sort -V | sed 's/^/> /'
 echo "::endgroup::"
+
+# Save tags as a single line for environment variable
+tags=$(git tag | grep "^v" | sort -V | tr '\n' ' ')
+echo "ALL_TAGS=$tags" >> $GITHUB_ENV
+echo "::set-output name=all_tags::$tags"
