@@ -39,10 +39,10 @@ jobs:
         with:
           config: |
             {
-              "event_name": "${{ env.EVNET_NAME }}"
-              "ref": "${{ env.REF }}"
-              "head_ref": "${{ env.HEAD_REF }}"
-              "base_ref": "${{ env.BASE_REF }}"
+              "event_name": "${{ env.EVNET_NAME }}",
+              "ref": "${{ env.REF }}",
+              "head_ref": "${{ env.HEAD_REF }}",
+              "base_ref": "${{ env.BASE_REF }}",
               "solution_file": "${{ env.SOLUTION_FILE }}",
               "dll_file": "${{ env.DLL_FILE }}",
               "tester_file": "${{ env.TESTER_FILE }}"
