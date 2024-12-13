@@ -48,7 +48,7 @@ jobs:
       - name: Exist Files
         uses: ./.github/actions/info/exist-files
         with:
-          event_name: ${{ env.SOLUTION_FILE }} ${{ env.DLL_FILE }} ${{ env.TESTER_FILE }}
+          files: ${{ env.SOLUTION_FILE }} ${{ env.DLL_FILE }} ${{ env.TESTER_FILE }}
 
       - name: All Path List
         run: ls -R
