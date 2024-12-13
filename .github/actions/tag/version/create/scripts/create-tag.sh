@@ -37,5 +37,13 @@ else
   exit 1
 fi
 
+if [[ -n "$GITHUB_ENV" ]]; then
+  echo "NEW_TAG=$new_tag" >> "$GITHUB_ENV"
+fi
+
+if [[ -n "$GITHUB_STATE" ]]; then
+  echo "new_tag=$new_tag" >> "$GITHUB_STATE"
+fi
+
 # Output the new tag (ensure only the tag itself is printed)
 echo "$new_tag"

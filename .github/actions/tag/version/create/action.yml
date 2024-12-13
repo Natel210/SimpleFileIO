@@ -20,11 +20,11 @@ runs:
 
     - name: Generate and Push New Tag
       id: create_tag
-      run: |
-        new_tag=$(${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }})
-        echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
-        echo "new_tag=$new_tag" >> $GITHUB_STATE
-        echo $new_tag
+      run: ${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }}
+        # new_tag=$(${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }})
+        # echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+        # echo "new_tag=$new_tag" >> $GITHUB_STATE
+        # echo $new_tag
       shell: bash
 
     - name: Remove Execute Permission for Scripts
