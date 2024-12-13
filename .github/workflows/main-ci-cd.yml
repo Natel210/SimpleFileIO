@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - 'main'
-      
-concurrency:
-  group: main-${{ github.ref }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -21,22 +17,6 @@ env:
   RESULT_ZIP_NAME: "Produced Dll"
 
 jobs:
-
-  check-run-main:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Check if a workflow is running
-        id: check
-        run: |
-          RUNNING_WORKFLOWS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs?status=in_progress" | jq '.total_count')
-          if [[ "$RUNNING_WORKFLOWS" -gt 0 ]]; then
-            echo "::error::A workflow is currently running. Push has been rejected."
-            exit 1
-          fi
-      - name: Allow push
-        run: echo "No workflows are running. Proceeding with the push."
 
   info:
     name: Info
