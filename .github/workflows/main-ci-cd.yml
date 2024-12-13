@@ -207,10 +207,23 @@ jobs:
       - name: Generate Changelog
         id: generate_changelog
         run: |
-          changelog=$(git log $(git describe --tags --abbrev=0 || echo "")..HEAD --pretty=format:"** %s" --no-merges)
-          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-          echo "$changelog" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          git fetch --all
+          base_ref=${{ github.base_ref }}
+          head_sha=${{ github.sha }}
+          
+          if [ -z "$base_ref" ]; then
+            # Default to the previous commit if base_ref is not set
+            base_ref=$(git rev-parse HEAD^)
+          fi
+          
+          changelog=$(git log $base_ref..$head_sha --pretty=format:"** %h %s" --no-merges)
+          
+          if [ -z "$changelog" ]; then
+            echo "No changes to log."
+            changelog="No changes available for this release."
+          fi
+          
+          echo "CHANGELOG=${changelog}" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
