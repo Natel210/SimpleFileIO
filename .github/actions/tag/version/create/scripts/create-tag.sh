@@ -4,11 +4,12 @@
 prefix=${1:-v}
 
 # Fetch remote tags to ensure we have the latest state
+echo "Fetching the latest tags..."
 git fetch --tags
 
 # Find the highest tag
 highest_tag=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 || echo "${prefix}0.0.0")
-echo -e "Highest Version : \033[34m${highest_tag}\033[0m"
+echo "Highest Tag Found: $highest_tag"
 
 # Calculate new tag
 if [[ "$highest_tag" =~ ^${prefix}([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
