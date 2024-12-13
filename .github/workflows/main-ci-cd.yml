@@ -208,8 +208,9 @@ jobs:
         id: generate_changelog
         run: |
           changelog=$(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"** %s" --no-merges)
-          echo -e "CHANGELOG<<EOF\n$changelog\nEOF" >> $GITHUB_ENV
-
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "$changelog" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         # id: create_github_release
