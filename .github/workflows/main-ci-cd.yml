@@ -210,6 +210,12 @@ jobs:
       - name: Zip Build File
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
 
+      - name: Generate Changelog
+        id: generate_changelog
+        run: |
+          changelog=$(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"** %s" --no-merges)
+          echo "CHANGELOG=${changelog}" >> $GITHUB_ENV
+
       - name: Create GitHub Release
         # id: create_github_release
         uses: softprops/action-gh-release@v1
@@ -218,9 +224,9 @@ jobs:
           name: Release ${{ env.CREATE_NEW_VERSION }}
           body: | 
             Release for version ${{ env.CREATE_NEW_VERSION }}
-            
+
             ## Changelog
-            $(git log $(git describe --tags --abbrev=0)..HEAD --oneline --no-merges)
+            ${{ env.CHANGELOG }}
           files: ${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip
           draft: false
           prerelease: false

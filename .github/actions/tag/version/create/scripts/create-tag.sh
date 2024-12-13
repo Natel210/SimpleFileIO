@@ -38,7 +38,7 @@ fi
 
 # Handle error codes
 if [[ "$check_error_code" -eq 0 ]]; then
-  echo "::notice::Operation successful : New version \033[34m[${new_version}]\033[0m"
+  echo -e "::notice::Operation successful : New version \033[34m[${new_version}]\033[0m"
 elif [[ "$check_error_code" -eq 1 ]]; then
   echo "::error::Failed to push new version to origin : [${new_version}]"
   exit 1
