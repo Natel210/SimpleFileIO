@@ -11,7 +11,7 @@ runs:
   steps:
     - name: Process Dynamic JSON Config
       run: |
-        CONFIG="${{ inputs.config }}"
+        CONFIG='${{ inputs.config }}'
         echo "Processing dynamic JSON configuration:"
-        echo "$CONFIG" | jq -c 'to_entries[] | "\(.key): \(.value)"'
+        echo "$CONFIG" | jq -c '. | to_entries[] | "\(.key): \(.value)"'
       shell: bash
