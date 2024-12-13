@@ -4,17 +4,17 @@ head_ref="${1:-unknown_head_ref}"
 base_ref="${2:-unknown_base_ref}"
 
 if [[ "$head_ref" == refs/heads/* ]]; then
-  echo "::group::Push Info (Invalid Source)"
-  echo "> Source Ref : $head_ref"
+  echo -e "::group::Push Info (\033[31mInvalid Source\033[0m)"
+  echo -e "> Source Ref : \033[31m$head_ref\033[0m"
   echo "> Target Ref : $base_ref"
   echo "::endgroup::"
   exit 1
 fi
 
 if [[ "$base_ref" == refs/heads/* ]]; then
-  echo "::group::Push Info (Invalid Target)"
+  echo -e "::group::Push Info (\033[31mInvalid Target\033[0m)"
   echo "> Source Ref : $head_ref"
-  echo "> Target Ref : $base_ref"
+  echo -e "> Target Ref : \033[31m$base_ref\033[0m"
   echo "::endgroup::"
   exit 1
 fi
