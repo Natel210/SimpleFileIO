@@ -19,11 +19,11 @@ runs:
   steps:
     - name: Set SCRIPTS_DIR from Environment
       id: set_script_dir
-      run: { echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV; } 2>&1
+      run: | { echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV; } 2>&1
       shell: bash
 
     - name: Add Execute Permission for Scripts
-      run: { chmod +x $SCRIPTS_DIR/*.sh; } 2>&1
+      run: | { chmod +x $SCRIPTS_DIR/*.sh; } 2>&1
       shell: bash
 
     - name: Run Git Info Script
