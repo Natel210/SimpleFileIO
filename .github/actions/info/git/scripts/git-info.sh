@@ -9,7 +9,7 @@ head_ref="${4:-unknown_head_ref}"
 base_ref="${5:-unknown_base_ref}"
 
 echo -e "\033[32m⤷ Git Info\033[0m"
-echo -e "::group::Arguments"
+echo -e "\t::group::Arguments"
 echo "> Script Directory : $scripts_path"
 echo -e "> Event Name: \033[32m$event_name\033[0m"
 echo "> Ref: $ref"
