@@ -17,13 +17,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Test Info Output
-      run: |
-        echo "::info::This is an info message"
-        echo "::warning::This is a warning message"
-        echo -e "::error::\033[31mThis\033[0m is an error message"
-        echo "::notice::This is an error message"
-      shell: bash
 
     - name: Add Execute Permission for Scripts
       run: chmod +x ${{ github.action_path }}/scripts/*.sh
