@@ -24,7 +24,7 @@ runs:
     - name: Fetch All Git Tags
       id: all_tags
       run: |
-        output=$(${github.action_path}/scripts/all-list.sh ${{ inputs.prefix }})
+        output=$(${{github.action_path}}/scripts/all-list.sh ${{ inputs.prefix }})
         echo "ALL_TAGS=$output" >> $GITHUB_ENV
         echo "::set-output name=all_tags::$output"
       shell: bash
@@ -32,7 +32,7 @@ runs:
     - name: Fetch Highest Git Version
       id: highest_tag
       run: |
-        output=$(${github.action_path}/scripts/top-version.sh ${{ inputs.prefix }})
+        output=$(${{github.action_path}}/scripts/top-version.sh ${{ inputs.prefix }})
         echo "HIGHEST_TAG=$output" >> $GITHUB_ENV
         echo "::set-output name=highest_tag::$output"
       shell: bash
