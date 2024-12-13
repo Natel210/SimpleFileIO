@@ -5,8 +5,8 @@ prefix=${1:-v}
 
 git fetch --tags
 
-echo "::group::All"
+echo "::group::All Versions"
 # List all tags, format them, and combine into a single line
-all_tags=$(git tag | grep "^$prefix" | sort -rV | sed 's/^/> /')
-echo "$all_tags"
+all_versions=$(git tag | grep "^$prefix" | sort -rV | sed 's/^/> /')
+echo "$all_versions"
 echo "::endgroup::"
