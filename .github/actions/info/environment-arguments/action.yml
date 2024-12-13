@@ -17,13 +17,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set SCRIPTS_DIR from Environment
+    - name: Set Script Directory
       id: set_script_dir
-      run: { echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV } 2>&1
+      run: echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV
       shell: bash
 
     - name: Add Execute Permission for Scripts
-      run: { chmod +x $SCRIPTS_DIR/*.sh } 2>&1
+      run: chmod +x $SCRIPTS_DIR/*.sh
       shell: bash
 
     - name: Run Git Info Script
@@ -32,12 +32,4 @@ runs:
 
     - name: Remove Execute Permission for Scripts
       run: chmod -x $SCRIPTS_DIR/*.sh
-      shell: bash
-
-    - name: Remove SCRIPTS_DIR from Environment
-      run: echo "SCRIPTS_DIR=" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Unset SCRIPTS_DIR in Current Session
-      run: unset SCRIPTS_DIR
       shell: bash
