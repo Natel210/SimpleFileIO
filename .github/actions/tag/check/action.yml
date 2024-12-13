@@ -7,12 +7,6 @@ inputs:
     required: false
     default: "v"
 
-outputs:
-  all_tags:
-    description: "List of all Git tags with formatted output"
-  highest_tag:
-    description: "The highest Git version tag"
-
 runs:
   using: "composite"
   steps:
@@ -27,7 +21,7 @@ runs:
 
 
     - name: List All Tags
-      run: ${github.action_path}/scripts/all-list.sh ${{ inputs.prefix }}
+      run: ${{github.action_path}}/scripts/all-list.sh ${{ inputs.prefix }}
       shell: bash
 
     # - name: Fetch Highest Git Version
