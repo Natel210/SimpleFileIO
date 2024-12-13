@@ -11,4 +11,4 @@ if [[ -z "$highest_tag" ]]; then
   highest_tag="${prefix}0.0.0"
 fi
 
-echo -e "Highest Tag : ${highest_tag}"
+echo -e "Highest Tag : \033[34m${highest_tag}\033[0m"
