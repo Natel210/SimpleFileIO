@@ -1,4 +1,16 @@
 #!/bin/bash
+echo -e "\033[36m● Create Tag ---------------------------\033[0m"
+
+# echo "::group::befor all tags (at last : ${git describe --tags --abbrev=0})"
+# git tag
+# echo "::endgroup::"
+
+
+
+
+
+
+
 echo "Fetching the latest tag..."
 
 # Fetch remote tags to ensure we have the latest state
@@ -35,3 +47,6 @@ else
   echo "Error: Failed to create the new tag $new_tag locally." >&2
   exit 1
 fi
+
+
+echo -e "\033[36m----------------------------------------\033[0m"

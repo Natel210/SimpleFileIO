@@ -152,9 +152,6 @@ jobs:
 
       - name: Create Tag
         uses: ./.github/actions/tag/create
-        with:
-          tag_script_path: .github/workflows/scripts/create-tag/create-tag.sh
-          debug_tags: true        
 
   cd:
     name: CD
