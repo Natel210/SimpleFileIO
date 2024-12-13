@@ -17,6 +17,7 @@ env:
   RESULT_ZIP_NAME: "Produced Dll"
 
 jobs:
+  
   info:
     name: Info
     runs-on: ubuntu-latest
@@ -24,10 +25,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      # - name: Script Setting
-      #   run: chmod +x .github/workflows/scripts/info/*.sh
-
+          
       - name: Check ENV Value
         uses: ./.github/actions/info/env-check
         with:
@@ -41,7 +39,6 @@ jobs:
               "Dll File": "${{ env.DLL_FILE }}",
               "Tester file": "${{ env.TESTER_FILE }}"
             }
-
       - name: Git Info
         uses: ./.github/actions/info/git
         with:
@@ -49,15 +46,11 @@ jobs:
           ref: ${{ github.ref }}
           head_ref: ${{ github.head_ref }}
           base_ref: ${{ github.base_ref }}
-
       - name: Exist Files
         uses: ./.github/actions/info/exist-files
         with:
           files: ${{ env.SOLUTION_FILE }} ${{ env.DLL_FILE }} ${{ env.TESTER_FILE }}
-
-      - name: All Path List
-        run: ls -R
-
+          
   windows-debug-ci:
     name: Windows Debug CI
     runs-on: windows-latest

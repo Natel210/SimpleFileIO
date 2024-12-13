@@ -20,10 +20,10 @@ echo "::endgroup::"
 # Handle different events
 case "$event_name" in
   push)
-    "$scripts_path/process-push.sh" "$ref"
+    "$scripts_path/git-info-push.sh" "$ref"
     ;;
   pull_request)
-    "$scripts_path/process-pull-request.sh" "$head_ref" "$base_ref"
+    "$scripts_path/git-info-pull-request.sh" "$head_ref" "$base_ref"
     ;;
   *)
     echo -e "⤷ \033[31mUnknown event type: $event_name\033[0m"

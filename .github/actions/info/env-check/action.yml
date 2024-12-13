@@ -14,7 +14,7 @@ runs:
       run: chmod +x ${{ github.action_path }}/scripts/*.sh
       shell: bash
 
-    - name: Process Dynamic JSON Config
+    - name: Parsing Config
       run: ${{ github.action_path }}/scripts/env-check.sh '${{ inputs.config }}'
       shell: bash
 
