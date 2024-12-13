@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "\033[1m▷ Run Exist Files\033[0m"
+echo -e "▷ \033[3mRun Exist Files\033[0m"
 
 if [ "$#" -lt 1 ]; then
   echo "::error::No arguments. \n Usage: $0 <file1> [file2] [file3] ..."
