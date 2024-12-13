@@ -25,11 +25,12 @@ esac
 
 echo "::group::Arguments"
 echo "> Script Directory : $scripts_path"
-echo "> Event Name: $event_name"
-echo "> Ref: $ref"
-echo "> Head Ref: $head_ref"
-echo "> Base Ref: $base_ref"
+echo "> Event Name : $event_name"
+echo "> Ref : $ref"
+echo "> Head Ref : $head_ref"
+echo "> Base Ref : $base_ref"
 echo "::endgroup::"
+echo " "
 
 if [[ "$is_error" != 0 ]]; then
     exit 1
