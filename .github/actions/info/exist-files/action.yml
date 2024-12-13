@@ -1,5 +1,5 @@
-name: Git Info
-description: Retrieve and handle Git information based on event type
+name: Exist Files
+description: Check the existence of provided files and validate their paths
 inputs:
   files:
     description: Space-separated list of file paths to check.
