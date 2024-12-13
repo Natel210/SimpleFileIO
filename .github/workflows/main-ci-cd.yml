@@ -153,17 +153,17 @@ jobs:
       - name: Before Check Tags
         uses: ./.github/actions/tag/check
         with:
-          step-name: "Before"
-          version-head: "v"
+          prefix: "v"
 
       - name: Create Tag
         uses: ./.github/actions/tag/create
+        with:
+          prefix: "v"
 
       - name: After Check Tags
         uses: ./.github/actions/tag/check
         with:
-          step-name: "After"
-          version-head: "v"
+          prefix: "v"
 
 
   cd:
