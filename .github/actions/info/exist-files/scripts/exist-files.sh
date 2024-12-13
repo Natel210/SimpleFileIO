@@ -20,6 +20,7 @@ for file in "$@"; do
     error_flag=1
   fi
 done
+echo "::endgroup::"
 
 # Exit with error if any file is missing
 if [ $error_flag -eq 1 ]; then
