@@ -208,22 +208,28 @@ jobs:
         id: generate_changelog
         run: |
           git fetch --all
+      
           base_ref=${{ github.base_ref }}
           head_sha=${{ github.sha }}
-          
+      
           if [ -z "$base_ref" ]; then
-            # Default to the previous commit if base_ref is not set
+            # If base_ref is not provided, fallback to the previous commit
             base_ref=$(git rev-parse HEAD^)
           fi
-          
-          changelog=$(git log $base_ref..$head_sha --pretty=format:"** %h %s" --no-merges)
-          
+      
+          # Generate the changelog with commit title, short hash (hyperlinked), and body
+          changelog=$(git log $base_ref..$head_sha --pretty=format:"* %s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n  > %b" --no-merges)
+      
           if [ -z "$changelog" ]; then
             echo "No changes to log."
             changelog="No changes available for this release."
           fi
-          
-          echo "CHANGELOG=${changelog}" >> $GITHUB_ENV
+      
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "Commits" >> $GITHUB_ENV
+          echo "------------" >> $GITHUB_ENV
+          echo "$changelog" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
