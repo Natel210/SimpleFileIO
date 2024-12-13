@@ -1,28 +1,24 @@
 #!/bin/bash
 
+
 ref="${1:-unknown_ref}"
 
 if [[ "$ref" == refs/heads/* ]]; then
   branch_name=${ref#refs/heads/}
-  echo "::group::  - Info (Push - branch : $branch_name)"
+  echo -e "::group::  - Info (\033[32mPush\033[0m - branch : \033[34m$branch_name\033[0m)"
   echo "    > Ref: $ref"
-  echo "    > Branch Name: $branch_name"
+  echo -e "    > Branch Name: \033[34m$branch_name\033[0m"
   echo "::endgroup::"
-  echo "::info::Push Branch: $branch_name"
-
+  
 elif [[ "$ref" == refs/tags/* ]]; then
   tag_name=${ref#refs/tags/}
-  echo "::group::  - Info (Push - tag : $tag_name)"
+  echo -e "::group::  - Info (\033[32mPush\033[0m - tag : \033[34m$tag_name\033[0m)"
   echo "    > Ref: $ref"
-  echo "    > Tag Name: $tag_name"
+  echo -e "    > Tag Name: \033[34m$tag_name\033[0m"
   echo "::endgroup::"
-  echo "::info::Push Tag: $tag_name"
-
 else
-  echo "::group::  - Info (Push - Unknown)"
+  echo -e "::group::  - Info (\033[32mPush\033[0m - \033[31mUnknown\033[0m)"
   echo "    > Ref: $ref"
   echo "::endgroup::"
-  echo "::error::Unknown push reference: $ref"
   exit 1
-
 fi

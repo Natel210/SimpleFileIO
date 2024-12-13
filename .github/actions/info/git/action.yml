@@ -21,7 +21,7 @@ runs:
       run: |
         echo "::info::This is an info message"
         echo "::warning::This is a warning message"
-        echo "::error::This is an error message"
+        echo "::error::\033[31mThis\033[0m is an error message"
         echo "::notice::This is an error message"
       shell: bash
 
