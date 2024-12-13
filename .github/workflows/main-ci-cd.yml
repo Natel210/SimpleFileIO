@@ -213,7 +213,7 @@ jobs:
       - name: Generate Changelog
         id: generate_changelog
         run: |
-          $(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"** %s" --no-merges)
+          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"** %s" --no-merges
           changelog=$(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"** %s" --no-merges)
           echo "Debig \n ${{ changelog }}"
           echo "CHANGELOG=${{ changelog }}" >> $GITHUB_ENV
