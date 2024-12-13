@@ -57,7 +57,9 @@ jobs:
           base_ref: ${{ env.BASE_REF }}
 
       - name: Exist Files
-        run: ./.github/actions/info/exist-files "${{ github.event.inputs.solution_file }}" "${{ github.event.inputs.dll_file }}" "${{ github.event.inputs.tester_file }}"
+        uses: ./.github/actions/info/exist-files
+        with:
+          files: ${{ github.event.inputs.solution_file }} ${{ github.event.inputs.dll_file }} ${{ github.event.inputs.tester_file }}
 
       - name: All Path List
         run: ls -R
