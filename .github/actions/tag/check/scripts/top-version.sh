@@ -7,8 +7,8 @@ prefix=${1:-v}
 highest_tag=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1)
 
 if [[ -z "$highest_tag" ]]; then
-  echo "No valid tags found. Defaulting to v0.0.0"
-  highest_tag="v0.0.0"
+  echo "No valid tags found. Defaulting to ${prefix}0.0.0"
+  highest_tag="${prefix}0.0.0"
 fi
 
-echo "Highest Tag : $highest_tag"
+echo -e "Highest Tag : ${highest_tag}"

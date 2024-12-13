@@ -19,18 +19,9 @@ runs:
       run: ${{github.action_path}}/scripts/top-version.sh ${{ inputs.prefix }}
       shell: bash
 
-
     - name: List All Tags
       run: ${{github.action_path}}/scripts/all-list.sh ${{ inputs.prefix }}
       shell: bash
-
-    # - name: Fetch Highest Git Version
-    #   id: highest_tag
-    #   run: |
-    #     output=$(${{github.action_path}}/scripts/top-version.sh ${{ inputs.prefix }})
-    #     echo "HIGHEST_TAG=$output" >> $GITHUB_ENV
-    #     echo "::set-output name=highest_tag::$output"
-    #   shell: bash
 
     - name: Remove Execute Permission for Scripts
       run: chmod -x ${{ github.action_path }}/scripts/*.sh
