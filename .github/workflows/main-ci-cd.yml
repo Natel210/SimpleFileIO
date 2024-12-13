@@ -17,7 +17,7 @@ env:
   RESULT_ZIP_NAME: "Produced Dll"
 
 jobs:
-  
+
   info:
     name: Info
     runs-on: ubuntu-latest
@@ -134,7 +134,7 @@ jobs:
           fetch-depth: 0
 
       - name: Is Push Event
-        run: echo "Push Ok... Continue to Create Tag..."
+        run: echo -e "\033[32mPush Ok...\033[0m Continue to Create Tag..."
 
   create-tag:
     name: Create Tag
