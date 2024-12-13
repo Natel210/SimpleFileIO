@@ -7,39 +7,11 @@ inputs:
     default: "{}"
 
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - name: Set SCRIPTS_DIR from Environment
-      run: echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Parse JSON Config
+    - name: Process Dynamic JSON Config
       run: |
-        cat <<EOF >> $GITHUB_ENV
-        CONFIG=${{ inputs.config }}
-        EOF
-      shell: bash
-
-    - name: Process Config with Bash
-      run: |
-        # Load CONFIG from $GITHUB_ENV
-        CONFIG="${CONFIG:-{}}"
-
-        # Debug: Print the received JSON
-        echo "Received config: $CONFIG"
-
-        # Parse JSON using jq
-        solution_file=$(echo "$CONFIG" | jq -r '.solution_file')
-        dll_file=$(echo "$CONFIG" | jq -r '.dll_file')
-        tester_file=$(echo "$CONFIG" | jq -r '.tester_file')
-
-        # Display parsed values
-        echo "Solution File: $solution_file"
-        echo "DLL File: $dll_file"
-        echo "Tester File: $tester_file"
-      shell: bash
-
-    - name: Clean Up Environment Variables
-      run: |
-        sed -i '/^CONFIG=/d' $GITHUB_ENV
+        CONFIG="${{ inputs.config }}"
+        echo "Processing dynamic JSON configuration:"
+        echo "$CONFIG" | jq -c 'to_entries[] | "\(.key): \(.value)"'
       shell: bash
