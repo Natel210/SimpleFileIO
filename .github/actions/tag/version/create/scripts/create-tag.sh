@@ -28,7 +28,6 @@ echo "Trying to update version [${latest_version}] -> [${new_version}]"
 check_error_code=0
 if git tag "$new_version" > /dev/null; then
   if git push origin "$new_version" > /dev/null; then
-    echo "::notice::New version created and pushed: [${new_version}]"
     check_error_code=0
   else
     check_error_code=1
@@ -39,7 +38,7 @@ fi
 
 # Handle error codes
 if [[ "$check_error_code" -eq 0 ]]; then
-  echo "::notice::Operation successful : New version [${new_version}]"
+  echo "::notice::Operation successful : New version \033[34m[${new_version}]\033[0m"
 elif [[ "$check_error_code" -eq 1 ]]; then
   echo "::error::Failed to push new version to origin : [${new_version}]"
   exit 1
