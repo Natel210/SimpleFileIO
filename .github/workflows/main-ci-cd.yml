@@ -171,7 +171,7 @@ jobs:
     needs: create-tag
     runs-on: ubuntu-latest
     env:
-      TAG: ${{ needs.create-tag.outputs.latest_versuion }}
+      VERSION: ${{ needs.create-tag.outputs.latest_versuion }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
@@ -182,7 +182,7 @@ jobs:
 
       - name: Show Current Tag
         run: |
-          echo "Current TAG: ${{ env.TAG }}"
+          echo "Current VERSION: ${{ env.VERSION }}"
 
       - name: Script Setting
         run: chmod +x .github/workflows/scripts/cd/*.sh
@@ -208,10 +208,10 @@ jobs:
         id: create_github_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
           body: |
-            Release for version ${{ env.TAG }}
+            Release for version ${{ env.VERSION }}
           draft: false
           prerelease: false
 
