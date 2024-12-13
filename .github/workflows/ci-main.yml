@@ -37,17 +37,16 @@ jobs:
       - name: Check ENV Value
         uses: ./.github/actions/info/env-check
         with:
-          config: |
-            ${{ toJson(
-              { event_name: github.event_name,
-                ref: github.ref,
-                head_ref: github.head_ref || "",
-                base_ref: github.base_ref || "",
-                solution_file: env.SOLUTION_FILE,
-                dll_file: env.DLL_FILE,
-                tester_file: env.TESTER_FILE
-              }
-            ) }}
+          config: >
+            {
+              "event_name": "${{ github.event_name }}",
+              "ref": "${{ github.ref }}",
+              "head_ref": "${{ github.head_ref }}",
+              "base_ref": "${{ github.base_ref }}",
+              "solution_file": "${{ env.SOLUTION_FILE }}",
+              "dll_file": "${{ env.DLL_FILE }}",
+              "tester_file": "${{ env.TESTER_FILE }}"
+            }
 
       - name: Git Info
         uses: ./.github/actions/info/git
