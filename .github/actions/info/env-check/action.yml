@@ -27,29 +27,29 @@ runs:
     #   shell: bash
 
     - name: Parse JSON Config
-    run: |
-      echo "CONFIG=${{ inputs.config }}" >> $GITHUB_ENV
-    shell: bash
+      run: |
+        echo "CONFIG=${{ inputs.config }}" >> $GITHUB_ENV
+      shell: bash
 
     - name: Process Config with Bash
       run: |
         # Load CONFIG from $GITHUB_ENV
         CONFIG="${CONFIG:-{}}"
-  
+
         # Debug: Print the received JSON
         echo "Received config: $CONFIG"
-  
+
         # Parse JSON using jq
         solution_file=$(echo "$CONFIG" | jq -r '.solution_file')
         dll_file=$(echo "$CONFIG" | jq -r '.dll_file')
         tester_file=$(echo "$CONFIG" | jq -r '.tester_file')
-  
+
         # Display parsed values
         echo "Solution File: $solution_file"
         echo "DLL File: $dll_file"
         echo "Tester File: $tester_file"
       shell: bash
-  
+
     - name: Clean Up Environment Variables
       run: |
         # Remove CONFIG from $GITHUB_ENV
