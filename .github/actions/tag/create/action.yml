@@ -1,41 +1,50 @@
-name: .NET DLL and Tester Build
-description: Build and Test .NET projects with configurable .NET version
+name: "Create Tag"
+description: "Create and debug a Git tag."
 inputs:
-  solution_file:
-    description: The solution file path
+  fetch_depth:
+    description: "Fetch depth for checkout"
+    required: false
+    default: "0"
+  tag_script_path:
+    description: "Path to the tag creation script"
     required: true
-  dll_file:
-    description: The DLL file path
-    required: true
-  tester_file:
-    description: The tester project file path
-    required: true
-  configuration:
-    description: Build configuration (e.g., Debug, Release)
-    required: true
-  dotnet_version:
-    description: .NET version to use
-    required: true
+  debug_tags:
+    description: "Enable debug information for tags"
+    required: false
+    default: "true"
+
+outputs:
+  tag:
+    description: "Generated Git tag"
+
 runs:
   using: "composite"
   steps:
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
       with:
-        dotnet-version: ${{ inputs.dotnet_version }}
+        fetch-depth: ${{ inputs.fetch_depth }}
 
-    - name: Make Build Directory
-      run: mkdir -p ./build/${{ inputs.configuration }}
-      shell: pwsh
+    - name: Script Setting
+      run: chmod +x ${{ inputs.tag_script_path }}
+      shell: bash
 
-    - name: Restore Dependencies
-      run: dotnet restore "${{ inputs.solution_file }}" --no-cache
-      shell: pwsh
+    - name: Create Tag
+      run: ${{ inputs.tag_script_path }}
+      shell: bash
 
-    - name: Build Project
-      run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }}
-      shell: pwsh
+    - name: Create and Fetch Git Tag
+      id: get_tag
+      run: |
+        TAG=$(git describe --tags --abbrev=0)
+        echo "Generated TAG: $TAG"
+        echo "TAG=$TAG" >> $GITHUB_ENV
+        echo "::set-output name=tag::$TAG"
+      shell: bash
 
-    - name: Run Unit Tests
-      run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ./build/${{ inputs.configuration }} --verbosity normal
-      shell: pwsh
+    - name: Debug Git Tag
+      if: ${{ inputs.debug_tags == 'true' }}
+      run: |
+        echo "Available Tags:"
+        git tag
+      shell: bash
