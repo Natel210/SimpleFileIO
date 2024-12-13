@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo -e "\033[36m● Git Info -----------------------------\033[0m"
+
 # Read arguments
 scripts_path="${1}"
 event_name="${2}"
@@ -30,7 +32,7 @@ echo "> Ref : $ref"
 echo "> Head Ref : $head_ref"
 echo "> Base Ref : $base_ref"
 echo "::endgroup::"
-echo " "
+echo -e "\033[36m----------------------------------------\033[0m"
 
 if [[ "$is_error" != 0 ]]; then
     exit 1

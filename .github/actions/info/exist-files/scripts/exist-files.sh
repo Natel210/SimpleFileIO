@@ -1,7 +1,6 @@
 #!/bin/bash
 
-echo -e "\033[36m● Exist Files ----\033[0m"
-
+echo -e "\033[36m● Exist Files --------------------------\033[0m"
 if [ "$#" -lt 1 ]; then
   echo "::error::No arguments. \n Usage: $0 <file1> [file2] [file3] ..."
   exit 1
@@ -30,4 +29,4 @@ for file in "$@"; do
   fi
 done
 echo "::endgroup::"
-echo -e "\033[36m---- ----\033[0m"
+echo -e "\033[36m----------------------------------------\033[0m"
