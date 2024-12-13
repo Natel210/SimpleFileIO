@@ -3,6 +3,8 @@
 # Input: Prefix (default is "v")
 prefix=${1:-v}
 
+git fetch --tags
+
 # Find the highest tag
 highest_tag=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1)
 
@@ -11,4 +13,4 @@ if [[ -z "$highest_tag" ]]; then
   highest_tag="${prefix}0.0.0"
 fi
 
-echo -e "Highest Tag : \033[34m${highest_tag}\033[0m"
+echo -e "Highest Version : \033[34m${highest_tag}\033[0m"
