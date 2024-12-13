@@ -10,11 +10,11 @@ fi
 # Initialize error flag
 error_flag=0
 
-echo -e "::group:: - Check Files List -"
+echo -e "::group:: - Check Files List"
 # Iterate through all provided arguments
 for file in "$@"; do
   if [ -f "$file" ]; then
-    echo "    > File found: $file"
+    echo "   > File found: $file"
   else
     echo -e "\033[31mError: File not found - $file\033[0m"
     error_flag=1
