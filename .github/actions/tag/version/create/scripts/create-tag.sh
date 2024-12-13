@@ -37,5 +37,5 @@ else
   exit 1
 fi
 
-# Save the new tag to an environment file
-echo "NEW_TAG=$new_tag" >> $GITHUB_ENV
+# Output the new tag (ensure only the tag itself is printed)
+echo "$new_tag"
