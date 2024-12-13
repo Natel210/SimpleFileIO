@@ -31,11 +31,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Script Setting
-        run: chmod +x .github/workflows/scripts/info/*.sh
+      # - name: Script Setting
+      #   run: chmod +x .github/workflows/scripts/info/*.sh
 
       - name: Check ENV Value
-        run: .github/workflows/scripts/info/check-env-value.sh  "$EVNET_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "$SOLUTION_FILE" "$DLL_FILE" "$TESTER_FILE"
+        uses: ./.github/actions/info/env-check
+        with:
+          config: |
+            {
+              "event_name": "${{ env.EVNET_NAME }}"
+              "ref": "${{ env.REF }}"
+              "head_ref": "${{ env.HEAD_REF }}"
+              "base_ref": "${{ env.BASE_REF }}"
+              "solution_file": "${{ env.SOLUTION_FILE }}",
+              "dll_file": "${{ env.DLL_FILE }}",
+              "tester_file": "${{ env.TESTER_FILE }}"
+            }
 
       - name: Git Info
         uses: ./.github/actions/info/git
