@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - 'main'
-      
+
 concurrency:
   group: tag-creation-${{ github.ref }}
   cancel-in-progress: false
@@ -144,6 +144,9 @@ jobs:
     name: Create Tag
     needs: check-event
     runs-on: ubuntu-latest
+    concurrency:
+      group: tag-creation-${{ github.ref }}
+      cancel-in-progress: false
     outputs:
       latest_tag: ${{ steps.get_tag.outputs.tag }}
     steps:
