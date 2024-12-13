@@ -23,9 +23,12 @@ runs:
       run: |
         output=$(${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }})
         echo "NEW_TAG=$output" >> $GITHUB_ENV
-        echo "::set-output name=new_tag::$output"
+        echo "new_tag=$output" >> $GITHUB_STATE
       shell: bash
 
+    - name: Set Output
+      run: echo "new_tag=${{ steps.create_tag.outputs.new_tag }}" >> $GITHUB_ENV
+      shell: bash
 
     - name: Remove Execute Permission for Scripts
       run: chmod -x ${{ github.action_path }}/scripts/*.sh
