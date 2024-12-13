@@ -17,7 +17,12 @@ inputs:
 runs:
   using: "composite"
   steps:
-
+    - name: Test Info Output
+      run: |
+        echo "::info::This is an info message"
+        echo "::warning::This is a warning message"
+        echo "::error::This is an error message"
+        
     - name: Add Execute Permission for Scripts
       run: chmod +x ${{ github.action_path }}/scripts/*.sh
       shell: bash
