@@ -10,7 +10,7 @@ fi
 # Initialize error flag
 error_flag=0
 
-echo -e "⤷ ---- \033[32mCheck Files\033[0m ----"
+echo -e "::group:: -- Check Files List"
 # Iterate through all provided arguments
 for file in "$@"; do
   if [ -f "$file" ]; then
@@ -23,8 +23,8 @@ done
 
 # Exit with error if any file is missing
 if [ $error_flag -eq 1 ]; then
-  echo "⤷ \033[31mOne or more files are missing.\033[0m"
+  echo -e "⤷ \033[31mOne or more files are missing.\033[0m"
   exit 1
 else
-  echo "⤷ \033[32mAll files are present.\033[0m"
+  echo -e "⤷ \033[32mAll files are present.\033[0m"
 fi
