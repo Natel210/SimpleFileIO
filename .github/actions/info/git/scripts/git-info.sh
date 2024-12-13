@@ -10,11 +10,11 @@ base_ref="${5:-unknown_base_ref}"
 
 echo -e "⤷ - \033[32mGit Info\033[0m -"
 echo -e "::group::   - Arguments"
-echo "> Script Directory : $scripts_path"
-echo -e "> Event Name: \033[32m$event_name\033[0m"
-echo "> Ref: $ref"
-echo "> Head Ref: $head_ref"
-echo "> Base Ref: $base_ref"
+echo "      > Script Directory : $scripts_path"
+echo -e "      > Event Name: \033[32m$event_name\033[0m"
+echo "      > Ref: $ref"
+echo "      > Head Ref: $head_ref"
+echo "      > Base Ref: $base_ref"
 echo "::endgroup::"
 
 # Handle different events
