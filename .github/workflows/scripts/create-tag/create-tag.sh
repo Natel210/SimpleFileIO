@@ -2,10 +2,10 @@
 echo "Fetching the latest tag..."
 
 # Fetch remote tags to ensure we have the latest state
-git fetch --tags 2>/dev/null
+git fetch --tags 
 
 # Get the latest tag or default to v0.0.0
-latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
+latest_tag=$(git describe --tags $(git rev-list --tags --max-count=1) || echo "v0.0.0")
 echo "Latest tag: $latest_tag"
 
 # Extract version and increment
@@ -24,8 +24,8 @@ fi
 echo "New tag: $new_tag"
 
 # Create and push the new tag, suppressing success output
-if git tag "$new_tag" 2>/dev/null; then
-  if git push origin "$new_tag" 2>/dev/null; then
+if git tag "$new_tag" ; then
+  if git push origin "$new_tag" ; then
     echo "New tag $new_tag created and pushed successfully."
   else
     echo "Error: Failed to push the new tag $new_tag to the remote repository." >&2
