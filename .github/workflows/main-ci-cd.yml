@@ -5,10 +5,6 @@ on:
     branches:
       - 'main'
 
-concurrency:
-  group: tag-creation
-  cancel-in-progress: false
-
 permissions:
   contents: write
   statuses: write
