@@ -9,27 +9,16 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Set SCRIPTS_DIR from Environment
-      id: set_script_dir
-      run: echo "SCRIPTS_DIR=${{ github.action_path }}/scripts" >> $GITHUB_ENV
-      shell: bash
 
     - name: Add Execute Permission for Scripts
-      run: chmod +x $SCRIPTS_DIR/*.sh
+      run: chmod +x ${{ github.action_path }}/scripts/*.sh
       shell: bash
 
     - name: Run File Check Script
-      run: $SCRIPTS_DIR/exist-files.sh ${{ inputs.files }}
+      run: ${{ github.action_path }}/scripts/exist-files.sh ${{ inputs.files }}
       shell: bash
 
     - name: Remove Execute Permission for Scripts
-      run: chmod -x $SCRIPTS_DIR/*.sh
+      run: chmod -x ${{ github.action_path }}/scripts/*.sh
       shell: bash
 
-    - name: Remove SCRIPTS_DIR from Environment
-      run: echo "SCRIPTS_DIR=" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Unset SCRIPTS_DIR in Current Session
-      run: unset SCRIPTS_DIR
-      shell: bash
