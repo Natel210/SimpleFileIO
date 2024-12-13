@@ -55,7 +55,3 @@ fi
 if [[ -n "$GITHUB_ENV" ]]; then
   echo "NEW_VERSION=$new_version" >> "$GITHUB_ENV"
 fi
-
-if [[ -n "$GITHUB_STATE" ]]; then
-  echo "new_version=$new_version" >> "$GITHUB_STATE"
-fi

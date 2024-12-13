@@ -144,7 +144,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      latest_versuion: ${{ steps.create-tag.outputs.new_version  }}
+      create_new_versuion: ${{ env.NEW_VERSION  }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -177,7 +177,7 @@ jobs:
     needs: create-tag
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ needs.create-tag.outputs.latest_versuion }}
+      CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
@@ -188,7 +188,7 @@ jobs:
 
       - name: Show Current Tag
         run: |
-          echo "Current VERSION: ${{ env.VERSION }}"
+          echo "Current VERSION: ${{ env.CREATE_NEW_VERSION }}"
 
       - name: Script Setting
         run: chmod +x .github/workflows/scripts/cd/*.sh
@@ -214,10 +214,10 @@ jobs:
         id: create_github_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
+          tag_name: ${{ env.CREATE_NEW_VERSION }}
+          release_name: Release ${{ env.CREATE_NEW_VERSION }}
           body: |
-            Release for version ${{ env.VERSION }}
+            Release for version ${{ env.CREATE_NEW_VERSION }}
           draft: false
           prerelease: false
 
