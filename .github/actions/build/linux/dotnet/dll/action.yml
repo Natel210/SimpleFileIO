@@ -1,0 +1,54 @@
+name: Build .NET DLL (Linux)
+description: Build .NET DLLs in a Linux environment, with optional unit tests.
+inputs:
+  solution_file:
+    description: The solution file path
+    required: true
+  dll_file:
+    description: The DLL file path
+    required: true
+  tester_file:
+    description: The tester project file path (optional)
+    required: false
+  build_path:
+    description: Path to Built Files.
+    required: false
+    default: "./build"
+  configuration:
+    description: Build configuration (e.g., Debug, Release)
+    required: true
+  dotnet_version:
+    description: .NET version to use
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet_version }}
+
+    - name: Make Build Directory
+      run: mkdir -p ./build/${{ inputs.configuration }}
+      shell: bash
+
+    - name: Restore Dependencies
+      run: dotnet restore "${{ inputs.solution_file }}" --no-cache
+      shell: bash
+
+    - name: Build Project
+      run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ${{ inputs.build_path }}/${{ inputs.configuration }}
+      shell: bash
+
+    - name: Check Tester File
+      run: |
+        if [[ -z "${{ inputs.tester_file }}" ]]; then
+          echo "No tester file provided. Skipping unit tests."
+        fi
+      shell: bash
+
+    - name: Run Unit Tests
+      if: ${{ inputs.tester_file != '' }}
+      run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ${{ inputs.build_path }}/${{ inputs.configuration }} --verbosity normal
+      shell: bash

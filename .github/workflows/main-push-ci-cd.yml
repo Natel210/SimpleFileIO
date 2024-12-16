@@ -13,7 +13,7 @@ env:
   SOLUTION_FILE: "SimpleFileIO.sln"
   DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
   TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
-  BUILD_PATH: "./build/"
+  BUILD_PATH: "./build"
   RESULT_ZIP_NAME: "Produced Dll"
 
 jobs:
@@ -61,11 +61,12 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll-and-tester
+        uses: ./.github/actions/build/windows/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
 
@@ -79,11 +80,12 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll-and-tester
+        uses: ./.github/actions/build/windows/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Release"
           dotnet_version: "8.0.x"
 
@@ -97,11 +99,12 @@ jobs:
           fetch-depth: 0
   
       - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll-and-tester
+        uses: ./.github/actions/build/linux/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
   
@@ -115,11 +118,12 @@ jobs:
           fetch-depth: 0
   
       - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll-and-tester
+        uses: ./.github/actions/build/linux/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Release"
           dotnet_version: "8.0.x"
 
@@ -184,9 +188,6 @@ jobs:
         run: |
           echo "Current VERSION: ${{ env.CREATE_NEW_VERSION }}"
 
-      - name: Script Setting
-        run: chmod +x .github/workflows/scripts/cd/*.sh
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -196,13 +197,29 @@ jobs:
         run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
 
       - name: Build Debug
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Debug --no-restore --output "${{ env.BUILD_PATH }}debug"
+        uses: ./.github/actions/build/linux/dotnet/dll
+        with:
+          solution_file: ${{ env.SOLUTION_FILE }}
+          dll_file: ${{ env.DLL_FILE }}
+          build_path: ${{ env.BUILD_PATH }}/debug
+          configuration: "Debug"
+          dotnet_version: "8.0.x"
 
       - name: Build Release
-        run: dotnet build "${{ env.DLL_FILE }}" --configuration Release --no-restore --output "${{ env.BUILD_PATH }}release"
+        uses: ./.github/actions/build/linux/dotnet/dll
+        with:
+          solution_file: ${{ env.SOLUTION_FILE }}
+          dll_file: ${{ env.DLL_FILE }}
+          tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}/release
+          configuration: "Release"
+          dotnet_version: "8.0.x"
 
       - name: Zip Build File
-        run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
+        uses: ./.github/actions/deploy/build-result-as-zip
+        with:
+          build_path: ${{ env.BUILD_PATH }}
+          result_zip_name: ${{ env.RESULT_ZIP_NAME }}
 
       - name: Generate Changelog
         id: generate_changelog
