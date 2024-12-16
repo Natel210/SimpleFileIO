@@ -176,6 +176,8 @@ jobs:
           echo ${{ toJSON(steps.version-create-tag.outputs) }}
           echo 4
           echo ${{steps.version-create-tag.outputs.new_version }}
+          echo 5
+          cat "$GITHUB_OUTPUT"
 
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check

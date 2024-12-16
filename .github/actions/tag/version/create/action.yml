@@ -27,6 +27,7 @@ runs:
       run: |
         echo $(cat ./new_version.txt)
         echo echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Remove Execute Permission for Scripts
