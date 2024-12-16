@@ -170,6 +170,49 @@ jobs:
         with:
           prefix: "v"
 
+  update-version:
+    name: Update Version Info
+    needs: create-tag
+    runs-on: ubuntu-latest
+    outputs:
+      updated_commit: ${{ steps.commit.outputs.commit_hash }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+  
+      - name: Get Current Commit Hash
+        id: commit_hash
+        run: |
+          CURRENT_HASH=$(git rev-parse --short HEAD)
+          echo "Current Commit Hash: $CURRENT_HASH"
+          echo "commit_hash=$CURRENT_HASH" >> $GITHUB_ENV
+  
+      - name: Update .csproj Files with Version and Commit Hash
+        run: |
+          VERSION=${{ needs.create-tag.outputs.create_new_versuion }}
+          HASH=${{ env.commit_hash }}
+          
+          # Update SimpleFileIO.csproj
+          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" SimpleFileIO/SimpleFileIO.csproj
+          sed -i "s|<CommitHash>.*</CommitHash>|<CommitHash>$HASH</CommitHash>|g" SimpleFileIO/SimpleFileIO.csproj
+  
+          # Update SimpleFileIO_Tester.csproj
+          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+          sed -i "s|<CommitHash>.*</CommitHash>|<CommitHash>$HASH</CommitHash>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+  
+      - name: Commit and Push Changes
+        id: commit
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add SimpleFileIO/SimpleFileIO.csproj SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+          git commit -m "Update version and commit hash to ${{ needs.create-tag.outputs.create_new_versuion }} (${{ env.commit_hash }})"
+          git push
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+
   cd:
     name: CD
     needs: create-tag
