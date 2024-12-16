@@ -8,7 +8,7 @@ inputs:
     default: "v"
 
 outputs:
-  new_version: ${{ steps.create-tag.outputs.new_version }}
+  new_version:
     description: "Generated Git tag"
 
 runs:
