@@ -128,7 +128,7 @@ jobs:
           dotnet_version: "8.0.x"
 
   check-event:
-    name: Check Event
+    name: Check Git Event
     needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
     runs-on: ubuntu-latest
     if: ${{github.event_name == 'push'}}
@@ -165,8 +165,6 @@ jobs:
         with:
           prefix: "v"
 
-
-
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
         with:
@@ -192,7 +190,6 @@ jobs:
           commit_hash: "${{ github.sha }}"
           user_name: "${{ github.event.pusher.username }}"
           user_email: "${{ github.event.pusher.email }}"
-
 
   cd:
     name: CD
