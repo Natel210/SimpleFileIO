@@ -1,0 +1,46 @@
+name: "Auto Project Apply"
+description: "Create and push a new Git tag based on the highest version tag."
+
+inputs:
+  dll_file:
+    description: The DLL file path
+    required: true
+  tester_file:
+    description: The tester project file path (optional)
+    required: false
+  prefix:
+    description: "Prefix to filter tags (e.g., 'v' or 'tag')"
+    required: false
+    default: "v"
+  version:
+    description: "The version to apply to the project files"
+    required: true
+  commit_hash:
+    description: "The commit hash to apply to the project files"
+    required: true
+  user_name:
+    description: "The Git username to set (optional)"
+    required: false
+  user_email:
+    description: "The Git email to set (optional)"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Project Apply Version
+      run: chmod +x ${{ github.action_path }}/scripts/*.sh
+      shell: bash
+
+    - name: Edit Project Version
+      run: ${{ github.action_path }}/scripts/edit-project-version.sh ${{ inputs.version }} ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }}
+      shell: bash
+
+    - name: Overwrite Commit
+      run: ${{ github.action_path }}/scripts/overwrite-commit.sh ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }} ${{ inputs.user_name }} ${{ inputs.user_email }}
+      shell: bash
+      continue-on-error: true
+
+    - name: Remove Execute Permission for Scripts
+      run: chmod -x ${{ github.action_path }}/scripts/*.sh
+      shell: bash

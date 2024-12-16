@@ -170,65 +170,31 @@ jobs:
         with:
           prefix: "v"
 
-  add-project-version:
+  auto-project-apply:
     name: Update Version Info
     needs: create-tag
     runs-on: ubuntu-latest
-    outputs:
-      updated_commit: ${{ steps.commit.outputs.commit_hash }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
   
-      - name: Get Current Commit Hash
-        id: commit_hash
-        run: |
-          CURRENT_HASH=$(git rev-parse --short HEAD)
-          echo "Current Commit Hash: $CURRENT_HASH"
-          echo "commit_hash=$CURRENT_HASH" >> $GITHUB_ENV
-  
       - name: Update .csproj Files with Version and Commit Hash
-        run: |
-          VERSION=${{ needs.create-tag.outputs.create_new_versuion }}
-          HASH=${{ env.commit_hash }}
-          
-          # Update SimpleFileIO.csproj
-          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" SimpleFileIO/SimpleFileIO.csproj
-          sed -i "s|<CommitHash>.*</CommitHash>|<CommitHash>$HASH</CommitHash>|g" SimpleFileIO/SimpleFileIO.csproj
-  
-          # Update SimpleFileIO_Tester.csproj
-          sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
-          sed -i "s|<CommitHash>.*</CommitHash>|<CommitHash>$HASH</CommitHash>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
-  
-      - name: Update and Commit Changes
-        id: commit
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          
-          # Check if .csproj files are updated
-          echo "Checking .csproj files..."
-          cat SimpleFileIO/SimpleFileIO.csproj
-          cat SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
-          
-          # Add and commit changes if they exist
-          git add SimpleFileIO/SimpleFileIO.csproj SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
-          if git diff --cached --exit-code; then
-            echo "No changes to commit."
-          else
-            git commit -m "Update version and commit hash to ${{ needs.create-tag.outputs.create_new_versuion }} (${{ env.commit_hash }})"
-            git push
-          fi
-          
-          # Get the current commit hash
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+        uses: ./.github/actions/tag/version/auto-project-apply
+        with:
+          dll_file: ${{ env.DLL_FILE }}
+          tester_file: ${{ env.TESTER_FILE }}
+          prefix: "v"
+          version: ${{ needs.create-tag.outputs.create_new_versuion }}
+          commit_hash: "${{ github.sha }}"
+          user_name: "${{ github.event.pusher.username }}"
+          user_email: "${{ github.event.pusher.email }}"
+
 
   cd:
     name: CD
-    needs: [create-tag, add-project-version]
+    needs: [create-tag, auto-project-apply]
     runs-on: ubuntu-latest
     env:
       CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
@@ -244,14 +210,6 @@ jobs:
         run: |
           echo "Current VERSION: ${{ env.CREATE_NEW_VERSION }}"
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      - name: Restore dependencies
-        run: dotnet restore "${{ env.SOLUTION_FILE }}" --no-cache
-
       - name: Build Debug
         uses: ./.github/actions/build/linux/dotnet/dll
         with:
@@ -266,7 +224,6 @@ jobs:
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
           build_path: ${{ env.BUILD_PATH }}
           configuration: "Release"
           dotnet_version: "8.0.x"
