@@ -23,7 +23,7 @@ fi
 
 source_branch_name=${head_ref#refs/heads/}
 target_branch_name=${base_ref#refs/heads/}
-echo "::notice::\033[32mPull Request\033[0m - $source_branch_name -> $target_branch_name"
+echo -e "::notice::\033[32mPull Request\033[0m - $source_branch_name -> $target_branch_name"
 echo "::group::Info (\033[32mPull Request\033[0m - $source_branch_name -> $target_branch_name)"
 echo "> Source Branch: $source_branch_name"
 echo "> Target Branch: $target_branch_name"

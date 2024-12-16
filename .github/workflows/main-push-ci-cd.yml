@@ -148,7 +148,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      create_new_versuion: ${{ env.NEW_VERSION  }}
+      create_new_versuion: ${{ env.NEW_VERSION }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -170,7 +170,7 @@ jobs:
         with:
           prefix: "v"
 
-  update-version:
+  add-project-version:
     name: Update Version Info
     needs: create-tag
     runs-on: ubuntu-latest
@@ -228,7 +228,7 @@ jobs:
 
   cd:
     name: CD
-    needs: update-version
+    needs: [create-tag, add-project-version]
     runs-on: ubuntu-latest
     env:
       CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
