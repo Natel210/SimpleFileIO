@@ -168,6 +168,8 @@ jobs:
 
       - name: Test
         run: |
+          echo $(cat ./new_version.txt)
+          echo echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_OUTPUT"
           echo ${{ toJSON(steps.version-create-tag.outputs) }}
           echo ${{steps.version-create-tag.outputs.new_version }}
 
