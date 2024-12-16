@@ -7,10 +7,6 @@ inputs:
     required: false
     default: "v"
 
-outputs:
-  new_version:
-    description: "Generated Git tag"
-
 runs:
   using: "composite"
   steps:
@@ -19,15 +15,11 @@ runs:
       shell: bash
 
     - name: Generate and Push New Tag
-      id: create_tag
       run: ${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }}
       shell: bash
 
-    - name: test
-      run: |
-        echo $(cat ./new_version.txt)
-        echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_OUTPUT"
-        cat "$GITHUB_OUTPUT"
+    - name: Register Environment Variables
+      run: echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_ENV"
       shell: bash
 
     - name: Remove Execute Permission for Scripts

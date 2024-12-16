@@ -148,8 +148,10 @@ jobs:
     concurrency:
       group: tag-creation
       cancel-in-progress: false
+    env:
+      new_versuion: ""
     outputs:
-      new_versuion: ${{ steps.version-create-tag.outputs.new_version }}
+      new_versuion: ${{ env.new_versuion }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -161,25 +163,9 @@ jobs:
           prefix: "v"
 
       - name: Version Create Tag
-        id: version-create-tag
         uses: ./.github/actions/tag/version/create
         with:
           prefix: "v"
-
-      - name: Test
-        run: |
-          echo 0
-          cat "$GITHUB_OUTPUT"
-          echo 1
-          echo $(cat ./new_version.txt)
-          echo 2
-          echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_OUTPUT"
-          echo 3
-          echo ${{ toJSON(steps.version-create-tag.outputs) }}
-          echo 4
-          echo ${{steps.version-create-tag.outputs.new_version }}
-          echo 5
-          cat "$GITHUB_OUTPUT"
 
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
