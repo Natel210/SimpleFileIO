@@ -148,7 +148,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      create_new_versuion: ${{ env.NEW_VERSION }}
+      new_versuion: ${{ steps.create-tag.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -186,7 +186,7 @@ jobs:
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
           prefix: "v"
-          version: ${{ needs.create-tag.outputs.create_new_versuion }}
+          version: ${{ needs.create-tag.outputs.new_versuion }}
           commit_hash: "${{ github.sha }}"
           user_name: "${{ github.event.pusher.username }}"
           user_email: "${{ github.event.pusher.email }}"
@@ -197,7 +197,7 @@ jobs:
     needs: [create-tag, auto-project-apply]
     runs-on: ubuntu-latest
     env:
-      CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
+      CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.new_versuion }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
