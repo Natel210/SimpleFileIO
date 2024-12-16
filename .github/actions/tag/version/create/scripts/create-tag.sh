@@ -51,6 +51,6 @@ else
 fi
 
 # Export the new version to GitHub environment and state
-if [[ -n "$GITHUB_ENV" ]]; then
-  echo "NEW_VERSION=$new_version" >> "$GITHUB_ENV"
+if [[ -n "$GITHUB_OUTPUT" ]]; then
+  echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
 fi
