@@ -51,43 +51,43 @@ jobs:
         with:
           files: ${{ env.SOLUTION_FILE }} ${{ env.DLL_FILE }} ${{ env.TESTER_FILE }}
           
-  # windows-debug-ci:
-  #   name: Windows Debug CI
-  #   runs-on: windows-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
+  windows-debug-ci:
+    name: Windows Debug CI
+    runs-on: windows-latest
+    needs: info
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/windows/dotnet/dll
-  #       with:
-  #         solution_file: ${{ env.SOLUTION_FILE }}
-  #         dll_file: ${{ env.DLL_FILE }}
-  #         tester_file: ${{ env.TESTER_FILE }}
-  #         build_path: ${{ env.BUILD_PATH }}
-  #         configuration: "Debug"
-  #         dotnet_version: "8.0.x"
+      - name: Build and Test
+        uses: ./.github/actions/build/windows/dotnet/dll
+        with:
+          solution_file: ${{ env.SOLUTION_FILE }}
+          dll_file: ${{ env.DLL_FILE }}
+          tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
+          configuration: "Debug"
+          dotnet_version: "8.0.x"
 
-  # windows-release-ci:
-  #   name: Windows Release CI
-  #   runs-on: windows-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
+  windows-release-ci:
+    name: Windows Release CI
+    runs-on: windows-latest
+    needs: info
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/windows/dotnet/dll
-  #       with:
-  #         solution_file: ${{ env.SOLUTION_FILE }}
-  #         dll_file: ${{ env.DLL_FILE }}
-  #         tester_file: ${{ env.TESTER_FILE }}
-  #         build_path: ${{ env.BUILD_PATH }}
-  #         configuration: "Release"
-  #         dotnet_version: "8.0.x"
+      - name: Build and Test
+        uses: ./.github/actions/build/windows/dotnet/dll
+        with:
+          solution_file: ${{ env.SOLUTION_FILE }}
+          dll_file: ${{ env.DLL_FILE }}
+          tester_file: ${{ env.TESTER_FILE }}
+          build_path: ${{ env.BUILD_PATH }}
+          configuration: "Release"
+          dotnet_version: "8.0.x"
 
   linux-debug-ci:
     name: Linux Debug CI
@@ -129,7 +129,8 @@ jobs:
 
   check-event:
     name: Check Git Event
-    needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
+    # needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
+    needs: [linux-debug-ci, linux-release-ci]
     runs-on: ubuntu-latest
     if: ${{github.event_name == 'push'}}
     steps:
