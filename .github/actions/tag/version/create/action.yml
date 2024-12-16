@@ -24,7 +24,9 @@ runs:
       shell: bash
 
     - name: test
-      run: echo ${{ step.create_tag.outputs.new_version }}
+      run: |
+        echo $(cat ./new_version.txt)
+        echo echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_OUTPUT"
       shell: bash
 
     - name: Remove Execute Permission for Scripts
