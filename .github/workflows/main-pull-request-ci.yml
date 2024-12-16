@@ -60,7 +60,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll-and-tester
+        uses: ./.github/actions/build/windows/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
@@ -78,7 +78,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll-and-tester
+        uses: ./.github/actions/build/windows/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
@@ -96,7 +96,7 @@ jobs:
           fetch-depth: 0
   
       - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll-and-tester
+        uses: ./.github/actions/build/linux/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
@@ -113,7 +113,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll-and-tester
+        uses: ./.github/actions/build/linux/dotnet/dll
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
