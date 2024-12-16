@@ -144,7 +144,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      latest_versuion: ${{ steps.create-tag.outputs.new_version  }}
+      create_new_versuion: ${{ env.NEW_VERSION  }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -171,7 +171,7 @@ jobs:
     needs: create-tag
     runs-on: ubuntu-latest
     env:
-      TAG: ${{ needs.create-tag.outputs.latest_versuion }}
+      CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
@@ -182,7 +182,7 @@ jobs:
 
       - name: Show Current Tag
         run: |
-          echo "Current TAG: ${{ env.TAG }}"
+          echo "Current VERSION: ${{ env.CREATE_NEW_VERSION }}"
 
       - name: Script Setting
         run: chmod +x .github/workflows/scripts/cd/*.sh
@@ -204,21 +204,40 @@ jobs:
       - name: Zip Build File
         run: .github/workflows/scripts/cd/csharp-build-result-as-zip.sh "${{ env.BUILD_PATH }}" "${{ env.RESULT_ZIP_NAME }}"
 
+      - name: Generate Changelog
+        id: generate_changelog
+        run: |
+          git fetch --all
+      
+          base_ref=${{ github.base_ref }}
+          head_sha=${{ github.sha }}
+      
+          if [ -z "$base_ref" ]; then
+            # If base_ref is not provided, fallback to the previous commit
+            base_ref=$(git rev-parse HEAD^)
+          fi
+      
+          # Generate the changelog with commit title, hyperlinked hash, and body
+          changelog=$(git log $base_ref..$head_sha --pretty=format:"%s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n------------------------%n%b" --no-merges)
+      
+          if [ -z "$changelog" ]; then
+            echo "No changes to log."
+            changelog="No changes available for this release."
+          fi
+      
+          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+          echo "$changelog" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
       - name: Create GitHub Release
-        id: create_github_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
-          body: |
-            Release for version ${{ env.TAG }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Zip
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_github_release.outputs.upload_url }}
-          asset_path: "${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip"
-          asset_name: "${{ env.RESULT_ZIP_NAME }}.zip"
-          asset_content_type: application/zip
+          tag_name: ${{ env.CREATE_NEW_VERSION }}
+          name: Release ${{ env.CREATE_NEW_VERSION }}
+          body: ${{ env.CHANGELOG }}
+          files: ${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CHANGELOG: ${{ env.CHANGELOG }}
