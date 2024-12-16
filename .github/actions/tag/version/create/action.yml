@@ -10,7 +10,6 @@ inputs:
 outputs:
   new_version:
     description: "Generated Git tag"
-    required: true
 
 runs:
   using: "composite"
