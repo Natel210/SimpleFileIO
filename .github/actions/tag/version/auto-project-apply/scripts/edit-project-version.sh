@@ -47,5 +47,5 @@ if [ -n "$TESTER_FILE" ] && [ -f "$TESTER_FILE" ]; then
   fi
 fi
 
-echo "Update complete."
+echo "File updates complete."
 exit 0

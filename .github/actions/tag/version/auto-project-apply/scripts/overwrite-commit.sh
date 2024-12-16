@@ -24,32 +24,24 @@ echo "Using Git user.email: $USER_EMAIL"
 git config --global user.name "$USER_NAME"
 git config --global user.email "$USER_EMAIL"
 
-# Start interactive rebase
-echo "Starting interactive rebase for commit: $TARGET_COMMIT"
-if ! git rebase -i "$TARGET_COMMIT"^; then
-  echo "::error::Rebase failed for commit: $TARGET_COMMIT"
-  exit 1
-fi
-
-# Stage files and amend the commit
+# Stage changes
+echo "Staging changes for $DLL_FILE and $TESTER_FILE..."
 git add "$DLL_FILE"
 if [ -n "$TESTER_FILE" ] && [ -f "$TESTER_FILE" ]; then
   git add "$TESTER_FILE"
 fi
 
+# Amend the target commit
+echo "Amending changes to commit: $TARGET_COMMIT"
 if ! git commit --amend --no-edit; then
-  echo "::error::Failed to amend the commit"
+  echo "::error::Failed to amend the commit."
   exit 1
 fi
 
-if ! git rebase --continue; then
-  echo "::error::Failed to continue rebase"
-  exit 1
-fi
-
-# Force push changes
+# Force push the amended commit
+echo "Force pushing amended commit..."
 if ! git push --force; then
-  echo "::error::Force push failed"
+  echo "::error::Failed to push the amended commit."
   exit 1
 fi
 
