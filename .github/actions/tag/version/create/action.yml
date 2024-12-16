@@ -8,7 +8,7 @@ inputs:
     default: "v"
 
 outputs:
-  new_version:
+  new_version:  ${{ steps.create-tag.outputs.new_version }}
     description: "Generated Git tag"
 
 runs:
@@ -19,7 +19,7 @@ runs:
       shell: bash
 
     - name: Generate and Push New Tag
-      id: create_tag
+      id: create-tag
       run: ${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }}
       shell: bash
 
