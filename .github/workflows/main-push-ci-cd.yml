@@ -166,6 +166,13 @@ jobs:
         with:
           prefix: "v"
 
+      - name: Test
+        run: |
+          echo ${{steps.create-tag.outputs }}
+          echo ${{steps.create-tag.outputs.new_version }}
+        with:
+          prefix: "v"          
+
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
         with:
