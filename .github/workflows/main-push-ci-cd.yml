@@ -202,16 +202,29 @@ jobs:
           sed -i "s|<Version>.*</Version>|<Version>$VERSION</Version>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
           sed -i "s|<CommitHash>.*</CommitHash>|<CommitHash>$HASH</CommitHash>|g" SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
   
-      - name: Commit and Push Changes
-        id: commit
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add SimpleFileIO/SimpleFileIO.csproj SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
-          git commit -m "Update version and commit hash to ${{ needs.create-tag.outputs.create_new_versuion }} (${{ env.commit_hash }})"
-          git push
-          COMMIT_HASH=$(git rev-parse --short HEAD)
-          echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
+          - name: Update and Commit Changes
+          id: commit
+          run: |
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            
+            # Check if .csproj files are updated
+            echo "Checking .csproj files..."
+            cat SimpleFileIO/SimpleFileIO.csproj
+            cat SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+            
+            # Add and commit changes if they exist
+            git add SimpleFileIO/SimpleFileIO.csproj SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+            if git diff --cached --exit-code; then
+              echo "No changes to commit."
+            else
+              git commit -m "Update version and commit hash to ${{ needs.create-tag.outputs.create_new_versuion }} (${{ env.commit_hash }})"
+              git push
+            fi
+        
+            # Get the current commit hash
+            COMMIT_HASH=$(git rev-parse --short HEAD)
+            echo "commit_hash=$COMMIT_HASH" >> $GITHUB_OUTPUT
 
   cd:
     name: CD
