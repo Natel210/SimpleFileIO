@@ -149,7 +149,7 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     outputs:
-      new_versuion: ${{ steps.create-tag.outputs.new_version }}
+      new_versuion: ${{ steps.version-create-tag.outputs.new_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -160,16 +160,16 @@ jobs:
         with:
           prefix: "v"
 
-      - name: Create Tag
-        id: create-tag
+      - name: Version Create Tag
+        id: version-create-tag
         uses: ./.github/actions/tag/version/create
         with:
           prefix: "v"
 
       - name: Test
         run: |
-          echo ${{steps.create-tag.outputs }}
-          echo ${{steps.create-tag.outputs.new_version }}
+          echo ${{steps.version-create-tag.outputs }}
+          echo ${{steps.version-create-tag.outputs.new_version }}
 
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
