@@ -179,13 +179,17 @@ namespace SimpleFileIO.State.Ini
                             }
                         }
                     }
+#if DEBUG
                     catch (Exception ex)
+#else
+                    catch (Exception)
+#endif
                     {
 #if DEBUG
                         Debug.WriteLine($"Error during file reading: {ex.Message}");
                         throw;
 #endif
-                    }
+                }
                     finally
                     {
                         _isLoading = false;
@@ -195,7 +199,11 @@ namespace SimpleFileIO.State.Ini
                             {
                                 tempCopyFileInfo.Delete();
                             }
+#if DEBUG
                             catch (Exception ex)
+#else
+                            catch (Exception)
+#endif
                             {
 #if DEBUG
                                 Debug.WriteLine($"Error during file deletion: {ex.Message}");
@@ -205,7 +213,11 @@ namespace SimpleFileIO.State.Ini
                     }
                 }).Wait();
             }
+#if DEBUG
             catch (Exception ex)
+#else
+            catch (Exception)
+#endif
             {
 #if DEBUG
                 Console.WriteLine($"Error during file operation: {ex.Message}");
