@@ -53,4 +53,7 @@ fi
 # Export the new version to GitHub environment and state
 if [[ -n "$GITHUB_OUTPUT" ]]; then
   echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+  echo "GITHUB_OUTPUT exist"
+else
+  echo "GITHUB_OUTPUT not exist"
 fi
