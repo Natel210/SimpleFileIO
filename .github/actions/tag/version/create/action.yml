@@ -8,8 +8,7 @@ inputs:
     default: "v"
 
 outputs:
-  new_version:
-    description: "Generated Git tag"
+  new_version: {{ step.create_tag.outputs.new_version }}
 
 runs:
   using: "composite"
@@ -19,8 +18,12 @@ runs:
       shell: bash
 
     - name: Generate and Push New Tag
-      id: create-tag
+      id: create_tag
       run: ${{ github.action_path }}/scripts/create-tag.sh ${{ inputs.prefix }}
+      shell: bash
+
+    - name: test
+      run: echo ${{ step.create_tag.outputs.new_version }}
       shell: bash
 
     - name: Remove Execute Permission for Scripts
