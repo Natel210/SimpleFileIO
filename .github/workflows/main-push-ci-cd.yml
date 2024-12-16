@@ -244,7 +244,7 @@ jobs:
         with:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
-          build_path: ${{ env.BUILD_PATH }}/debug
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Debug"
           dotnet_version: "8.0.x"
 
@@ -254,7 +254,7 @@ jobs:
           solution_file: ${{ env.SOLUTION_FILE }}
           dll_file: ${{ env.DLL_FILE }}
           tester_file: ${{ env.TESTER_FILE }}
-          build_path: ${{ env.BUILD_PATH }}/release
+          build_path: ${{ env.BUILD_PATH }}
           configuration: "Release"
           dotnet_version: "8.0.x"
 
