@@ -168,6 +168,8 @@ jobs:
 
       - name: Test
         run: |
+          echo 0
+          cat "$GITHUB_OUTPUT"
           echo 1
           echo $(cat ./new_version.txt)
           echo 2
