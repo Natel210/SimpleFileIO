@@ -215,7 +215,7 @@ jobs:
 
   cd:
     name: CD
-    needs: create-tag
+    needs: update-version
     runs-on: ubuntu-latest
     env:
       CREATE_NEW_VERSION: ${{ needs.create-tag.outputs.create_new_versuion }}
