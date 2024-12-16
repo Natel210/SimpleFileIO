@@ -36,10 +36,23 @@ runs:
       run: ${{ github.action_path }}/scripts/edit-project-version.sh ${{ inputs.version }} ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }}
       shell: bash
 
+    - name: Disable Branch Protection
+      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh disable
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+      shell: bash
+      continue-on-error: true
+
     - name: Overwrite Commit
       run: ${{ github.action_path }}/scripts/overwrite-commit.sh ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }} ${{ inputs.user_name }} ${{ inputs.user_email }}
       shell: bash
       continue-on-error: true
+
+    - name: Restore Branch Protection
+      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh enable
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
+      shell: bash
 
     - name: Remove Execute Permission for Scripts
       run: chmod -x ${{ github.action_path }}/scripts/*.sh
