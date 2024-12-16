@@ -254,7 +254,7 @@ jobs:
           tag_name: ${{ env.CREATE_NEW_VERSION }}
           name: Release ${{ env.CREATE_NEW_VERSION }}
           body: ${{ env.CHANGELOG }}
-          files: ${{ env.BUILD_PATH }}${{ env.RESULT_ZIP_NAME }}.zip
+          files: ${{ env.BUILD_PATH }}/${{ env.RESULT_ZIP_NAME }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHANGELOG: ${{ env.CHANGELOG }}
