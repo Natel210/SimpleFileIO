@@ -175,6 +175,7 @@ jobs:
   auto-project-apply:
     name: Auto Project Apply
     runs-on: ubuntu-latest
+    needs: create-tag
     steps:
       - uses: actions/checkout@v4
         with:
@@ -183,9 +184,9 @@ jobs:
       - name: Apply Project Updates
         uses: ./.github/actions/auto-project-apply
         with:
-          dll_file: "SimpleFileIO/SimpleFileIO.csproj"
-          tester_file: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
-          version: "v0.1.115"
+          dll_file: "${{ env.DLL_FILE }}"
+          tester_file: ${{ env.TESTER_FILE }}
+          version: "${{ needs.create-tag.outputs.new_version }}"
           commit_hash: "${{ github.sha }}"
           user_name: "${{ github.event.pusher.username }}"
           user_email: "${{ github.event.pusher.email }}"
