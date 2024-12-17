@@ -1,49 +1,62 @@
 #!/bin/bash
+set -e
 
-# Input variables
-TARGET_COMMIT=$1
-DLL_FILE=$2
-TESTER_FILE=$3
-USER_NAME=${4:-"Default User"}
-USER_EMAIL=${5:-"default@example.com"}
+# Input parameters
+ACTION=$1         # "disable" or "enable"
+GITHUB_ORDER_USER=$2    # GitHub username or organization
+GITHUB_REPO=$3    # Repository name
+BRANCH_NAME=$4    # Branch name
+GH_PAT=${GH_PAT}  # GitHub Personal Access Token
+BACKUP_FILE="branch_protection_backup_${BRANCH_NAME}.json"
 
-# Validate inputs
-if [ -z "$TARGET_COMMIT" ] || [ -z "$DLL_FILE" ]; then
-  echo "::warning::Target commit and DLL file path are required."
-  exit 0
-fi
-
-if [ ! -f "$DLL_FILE" ]; then
-  echo "::warning::DLL file not found at path: $DLL_FILE"
-  exit 0
-fi
-
-# Set Git user information
-echo "Using Git user.name: $USER_NAME"
-echo "Using Git user.email: $USER_EMAIL"
-git config --global user.name "$USER_NAME"
-git config --global user.email "$USER_EMAIL"
-
-# Stage changes
-echo "Staging changes for $DLL_FILE and $TESTER_FILE..."
-git add "$DLL_FILE"
-if [ -n "$TESTER_FILE" ] && [ -f "$TESTER_FILE" ]; then
-  git add "$TESTER_FILE"
-fi
-
-# Amend the target commit
-echo "Amending changes to commit: $TARGET_COMMIT"
-if ! git commit --amend --no-edit; then
-  echo "::error::Failed to amend the commit."
+# Check action input
+if [[ "$ACTION" != "disable" && "$ACTION" != "enable" ]]; then
+  echo "Usage: $0 [disable|enable] <github_user> <github_repo> <branch_name>"
   exit 1
 fi
 
-# Force push the amended commit
-echo "Force pushing amended commit..."
-if ! git push --force; then
-  echo "::error::Failed to push the amended commit."
-  exit 1
-fi
+# API URL
+API_URL="https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/branches/$BRANCH_NAME/protection"
 
-echo "Commit overwrite complete."
-exit 0
+# Function to backup current protection rules
+backup_protection() {
+  echo "Backing up current branch protection rules for branch: $BRANCH_NAME..."
+  curl -s -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
+    "$API_URL" > "$BACKUP_FILE"
+
+  if [[ -s "$BACKUP_FILE" ]]; then
+    echo "Branch protection rules backed up to $BACKUP_FILE."
+  else
+    echo "::error::Failed to backup branch protection rules!"
+    exit 1
+  fi
+}
+
+# Function to disable branch protection
+disable_protection() {
+  echo "Disabling branch protection for branch: $BRANCH_NAME..."
+  curl -s -X DELETE -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
+    "$API_URL"
+  echo "Branch protection disabled."
+}
+
+# Function to restore branch protection
+restore_protection() {
+  if [[ -f "$BACKUP_FILE" ]]; then
+    echo "Restoring branch protection rules for branch: $BRANCH_NAME from backup..."
+    curl -s -X PUT -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
+      "$API_URL" -d @"$BACKUP_FILE"
+    echo "Branch protection rules restored."
+  else
+    echo "::error::Backup file not found! Cannot restore protection."
+    exit 1
+  fi
+}
+
+# Main action
+if [[ "$ACTION" == "disable" ]]; then
+  backup_protection
+  disable_protection
+elif [[ "$ACTION" == "enable" ]]; then
+  restore_protection
+fi

@@ -24,6 +24,15 @@ inputs:
   user_email:
     description: "The Git email to set (optional)"
     required: false
+  github_order_name:
+    description: "The GitHub username or organization name"
+    required: true
+  github_repo:
+    description: "The repository name"
+    required: true
+  branch_name:
+    description: "The branch name to apply changes to"
+    required: true
 
 runs:
   using: "composite"
@@ -37,19 +46,19 @@ runs:
       shell: bash
 
     - name: Disable Branch Protection
-      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh disable
+      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh disable ${{ inputs.github_user }} ${{ inputs.github_repo }} ${{ inputs.branch_name }}
       env:
         GH_PAT: ${{ secrets.GH_PAT }}
       shell: bash
       continue-on-error: true
 
     - name: Overwrite Commit
-      run: ${{ github.action_path }}/scripts/overwrite-commit.sh ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }} ${{ inputs.user_name }} ${{ inputs.user_email }}
+      run: ${{ github.action_path }}/scripts/overwrite-commit.sh ${{ inputs.commit_hash }} ${{ inputs.dll_file }} ${{ inputs.tester_file }} ${{ inputs.github_username }} ${{ inputs.github_email }}
       shell: bash
       continue-on-error: true
 
     - name: Restore Branch Protection
-      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh enable
+      run: ${{ github.action_path }}/scripts/disable-enable-branch-protection.sh enable ${{ inputs.github_user }} ${{ inputs.github_repo }} ${{ inputs.branch_name }}
       env:
         GH_PAT: ${{ secrets.GH_PAT }}
       shell: bash

@@ -173,25 +173,27 @@ jobs:
           prefix: "v"
 
   auto-project-apply:
-    name: Update Version Info
-    needs: create-tag
+    name: Auto Project Apply
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
   
-      - name: Update .csproj Files with Version and Commit Hash
-        uses: ./.github/actions/tag/version/auto-project-apply
+      - name: Apply Project Updates
+        uses: ./.github/actions/auto-project-apply
         with:
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
-          prefix: "v"
-          version: ${{ needs.create-tag.outputs.new_version }}
+          dll_file: "SimpleFileIO/SimpleFileIO.csproj"
+          tester_file: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          version: "v0.1.115"
           commit_hash: "${{ github.sha }}"
           user_name: "${{ github.event.pusher.username }}"
-          user_email: "${{ github.event.pusher.email }}"
+          github_user: "Natel210"
+          github_email: "${{ github.event.pusher.email }}"
+          github_repo: "SimpleFileIO"
+          branch_name: "main"
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
 
   cd:
     name: CD
