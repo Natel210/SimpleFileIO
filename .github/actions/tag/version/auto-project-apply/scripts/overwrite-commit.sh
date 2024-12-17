@@ -1,62 +1,36 @@
 #!/bin/bash
 set -e
 
-# Input parameters
-ACTION=$1         # "disable" or "enable"
-GITHUB_ORDER_USER=$2    # GitHub username or organization
-GITHUB_REPO=$3    # Repository name
-BRANCH_NAME=$4    # Branch name
-GH_PAT=${GH_PAT}  # GitHub Personal Access Token
-BACKUP_FILE="branch_protection_backup_${BRANCH_NAME}.json"
+# Input variables
+DLL_FILE=$1        # DLL file path
+TESTER_FILE=$2     # Tester file path (optional)
+USER_NAME=$3       # Git user name
+USER_EMAIL=$4      # Git user email
 
-# Check action input
-if [[ "$ACTION" != "disable" && "$ACTION" != "enable" ]]; then
-  echo "Usage: $0 [disable|enable] <github_user> <github_repo> <branch_name>"
+# Validate inputs
+if [[ -z "$DLL_FILE" || -z "$USER_NAME" || -z "$USER_EMAIL" ]]; then
+  echo "Usage: $0 <dll_file> [<tester_file>] <user_name> <user_email>"
   exit 1
 fi
 
-# API URL
-API_URL="https://api.github.com/repos/$GITHUB_USER/$GITHUB_REPO/branches/$BRANCH_NAME/protection"
+# Set Git user information
+git config --global user.name "$USER_NAME"
+git config --global user.email "$USER_EMAIL"
 
-# Function to backup current protection rules
-backup_protection() {
-  echo "Backing up current branch protection rules for branch: $BRANCH_NAME..."
-  curl -s -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
-    "$API_URL" > "$BACKUP_FILE"
-
-  if [[ -s "$BACKUP_FILE" ]]; then
-    echo "Branch protection rules backed up to $BACKUP_FILE."
-  else
-    echo "::error::Failed to backup branch protection rules!"
-    exit 1
-  fi
-}
-
-# Function to disable branch protection
-disable_protection() {
-  echo "Disabling branch protection for branch: $BRANCH_NAME..."
-  curl -s -X DELETE -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
-    "$API_URL"
-  echo "Branch protection disabled."
-}
-
-# Function to restore branch protection
-restore_protection() {
-  if [[ -f "$BACKUP_FILE" ]]; then
-    echo "Restoring branch protection rules for branch: $BRANCH_NAME from backup..."
-    curl -s -X PUT -H "Authorization: token $GH_PAT" -H "Accept: application/vnd.github.v3+json" \
-      "$API_URL" -d @"$BACKUP_FILE"
-    echo "Branch protection rules restored."
-  else
-    echo "::error::Backup file not found! Cannot restore protection."
-    exit 1
-  fi
-}
-
-# Main action
-if [[ "$ACTION" == "disable" ]]; then
-  backup_protection
-  disable_protection
-elif [[ "$ACTION" == "enable" ]]; then
-  restore_protection
+# Add modified project files to staging
+echo "Staging changes for files..."
+git add "$DLL_FILE"
+if [[ -n "$TESTER_FILE" && -f "$TESTER_FILE" ]]; then
+  git add "$TESTER_FILE"
 fi
+
+# Amend the current commit
+echo "Amending the current commit with new changes..."
+git commit --amend --no-edit
+
+# Force push to overwrite the existing commit
+echo "Force pushing the updated commit to the remote branch..."
+git push origin HEAD --force
+
+echo "Commit has been successfully updated."
+exit 0

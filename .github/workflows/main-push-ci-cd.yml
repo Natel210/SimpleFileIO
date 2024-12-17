@@ -188,8 +188,8 @@ jobs:
           version: "v0.1.115"
           commit_hash: "${{ github.sha }}"
           user_name: "${{ github.event.pusher.username }}"
+          user_email: "${{ github.event.pusher.email }}"
           github_user: "Natel210"
-          github_email: "${{ github.event.pusher.email }}"
           github_repo: "SimpleFileIO"
           branch_name: "main"
         env:
