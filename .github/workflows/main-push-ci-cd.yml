@@ -182,7 +182,7 @@ jobs:
           fetch-depth: 0
   
       - name: Apply Project Updates
-        uses: ./.github/actions/auto-project-apply
+        uses: ./.github/actions/tag/version/auto-project-apply
         with:
           dll_file: "${{ env.DLL_FILE }}"
           tester_file: ${{ env.TESTER_FILE }}
