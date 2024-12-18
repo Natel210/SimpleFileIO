@@ -71,8 +71,8 @@ runs:
     # Check if tester file is provided
     - name: Check Tester File
       run: |
-        if (-not ${{ inputs.tester_project_file_path }}) {
-          Write-Host "No tester project file provided. Skipping unit tests."
+        if (-not (Test-Path "${{ inputs.tester_project_file_path }}")) {
+          Write-Host "No tester project file provided. Skipping this step."
           exit 0
         }
       shell: pwsh
