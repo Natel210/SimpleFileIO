@@ -56,8 +56,6 @@ runs:
         chmod +x ./.scripts/check/*.sh
       shell: bash
 
-
-
     - name: Check Solution & Project Values
       run: ./.scripts/check/values.sh "${{ env.list }}" "solution_project_value.result"
       env: 
@@ -69,6 +67,7 @@ runs:
             "Tester File Path": "${{ inputs.tester_project_file_path }}",
             "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }
+      shell: bash
 
     - name: Check Deploy Values
       run: ./.scripts/check/values.sh "${{ env.list }}" "deploy_value.result"
@@ -78,6 +77,7 @@ runs:
             "Result Zip Name": "${{ inputs.result_zip_name }}",
             "Tag Prefix": "${{ inputs.tag_prefix }}",
           }
+      shell: bash
 
     - name: Check Git Values
       run: ./.scripts/check/values.sh "${{ env.list }}" "git_value.result"
@@ -89,7 +89,7 @@ runs:
             "Head Ref": "${{ inputs.head_ref }}",
             "Base Ref": "${{ inputs.base_ref }}",
           }
-
+      shell: bash
 
     - name: Output
       run: |
@@ -103,6 +103,7 @@ runs:
         echo ::group::Git
         echo git_value.result
         echo ::groupend::
+      shell: bash
 
     - name: Remove Execute Permission for Scripts
       run: |
