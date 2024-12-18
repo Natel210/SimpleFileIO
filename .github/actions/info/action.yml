@@ -46,11 +46,9 @@ inputs:
     required: false
     default: "N/A"
 
-
 runs:
   using: "composite"
   steps:
-
     - name: Add Execute Permission for Scripts
       run: |
         chmod +x ./.scripts/check/*.sh
@@ -75,7 +73,7 @@ runs:
         list: |
           {
             "Result Zip Name": "${{ inputs.result_zip_name }}",
-            "Tag Prefix": "${{ inputs.tag_prefix }}",
+            "Tag Prefix": "${{ inputs.tag_prefix }}"
           }
       shell: bash
 
@@ -87,22 +85,21 @@ runs:
             "Event": "${{ inputs.git_event_name }}",
             "Ref": "${{ inputs.git_ref }}",
             "Head Ref": "${{ inputs.head_ref }}",
-            "Base Ref": "${{ inputs.base_ref }}",
+            "Base Ref": "${{ inputs.base_ref }}"
           }
       shell: bash
 
     - name: Output
       run: |
-        echo Values
         echo ::group:: Solution & Project
-        echo solution_project_value.result
-        echo ::groupend::
+        cat solution_project_value.result
+        echo ::endgroup::
         echo ::group:: Deploy
-        echo deploy_value.result
-        echo ::groupend::
-        echo ::group::Git
-        echo git_value.result
-        echo ::groupend::
+        cat deploy_value.result
+        echo ::endgroup::
+        echo ::group:: Git
+        cat git_value.result
+        echo ::endgroup::
       shell: bash
 
     - name: Remove Execute Permission for Scripts
