@@ -1,5 +1,5 @@
 name: Build .NET DLL (Linux)
-description: Build .NET DLLs in a Linux environment, with optional unit tests.
+description: Build .NET DLLs in a Linux environment, with optional unit tests or executables.
 inputs:
   solution_file_path:
     description: The solution file path
@@ -8,8 +8,12 @@ inputs:
     description: The DLL project file path
     required: true
   tester_project_file_path:
-    description: The tester project file path (optional)
+    description: The project file path for an executable (optional)
     required: false
+  tester_executable_file_name:
+    description: The expected output file name for the project (e.g., test, custom executable name)
+    required: false
+    default: ""
   build_directory_path:
     description: Path to built files
     required: false
@@ -68,13 +72,13 @@ runs:
     - name: Check Tester File
       run: |
         if [ -z "${{ inputs.tester_project_file_path }}" ]; then
-          echo "No tester project file provided. Skipping unit tests."
+          echo "No executable project file provided. Skipping this step."
           exit 0
         fi
       shell: bash
 
-    # Build and output test project
-    - name: Build Test Project
+    # Build and output executable project
+    - name: Build Executable Project
       if: ${{ inputs.tester_project_file_path != '' }}
       run: |
         dotnet publish "${{ inputs.tester_project_file_path }}" \
@@ -83,21 +87,26 @@ runs:
           --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
-    - name: List Build Directory
+    # Validate executable file name if provided
+    - name: Validate Executable File Name
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
       run: |
-        echo "Listing build directory contents:"
-        ls -al ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
-      shell: bash
-
-    # Execute test
-    - name: Run Test
-      if: ${{ inputs.tester_project_file_path != '' }}
-      run: |
-        test_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test"
-        if [ ! -f "$test_path" ]; then
-          echo "Test executable not found: $test_path"
+        exec_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/${{ inputs.tester_executable_file_name }}"
+        if [ ! -f "$exec_path" ]; then
+          echo "::error::Executable file not found: $exec_path"
+          echo "Ensure the tester_executable_file_name matches the project's actual output file name."
           exit 1
         fi
-        echo "Executing test file..."
-        $test_path
+        echo "Executable file validated: $exec_path"
+      shell: bash
+
+    # Execute the built executable
+    - name: Run Executable
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
+      run: |
+        exec_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/${{ inputs.tester_executable_file_name }}"
+        echo "Granting execute permission to the file..."
+        chmod +x "$exec_path"
+        echo "Executing the file..."
+        "$exec_path"
       shell: bash

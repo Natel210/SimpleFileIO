@@ -15,6 +15,7 @@ env:
   SOLUTION_FILE_PATH: "SimpleFileIO.sln"
   DLL_PROJECT_FILE_PATH: "SimpleFileIO/SimpleFileIO.csproj"
   TESTER_PROJECT_FILE_PATH: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+  TESTER_EXECUTABLE_FILE_NAME: "SimpleFileIO_Tester"
   BUILD_DIRECTORY_PATH: "./build"
   RESULT_ZIP_NAME: "Produced Dll"
 
@@ -68,6 +69,7 @@ jobs:
           solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
           dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
           tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          tester_executable_file_name: ${{ env.TESTER_EXECUTABLE_FILE_NAME }}
           build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Debug"
           dotnet_version: ${{ env.DOTNET_VERSION }}
@@ -87,6 +89,7 @@ jobs:
           solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
           dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
           tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          tester_executable_file_name: ${{ env.TESTER_EXECUTABLE_FILE_NAME }}
           build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Release"
           dotnet_version: ${{ env.DOTNET_VERSION }}
@@ -106,6 +109,7 @@ jobs:
           solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
           dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
           tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          tester_executable_file_name: ${{ env.TESTER_EXECUTABLE_FILE_NAME }}
           build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Debug"
           dotnet_version: ${{ env.DOTNET_VERSION }}
@@ -125,6 +129,7 @@ jobs:
           solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
           dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
           tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          tester_executable_file_name: ${{ env.TESTER_EXECUTABLE_FILE_NAME }}
           build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Release"
           dotnet_version: ${{ env.DOTNET_VERSION }}

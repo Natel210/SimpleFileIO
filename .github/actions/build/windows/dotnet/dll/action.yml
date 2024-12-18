@@ -1,5 +1,5 @@
 name: Build .NET DLL (Windows)
-description: Build .NET DLLs in a Windows environment, with optional unit tests.
+description: Build .NET DLLs in a Windows environment, with optional unit tests or executables.
 inputs:
   solution_file_path:
     description: The solution file path
@@ -10,6 +10,10 @@ inputs:
   tester_project_file_path:
     description: The tester project file path (optional)
     required: false
+  tester_executable_file_name:
+    description: The expected output file name for the project (e.g., test.exe, custom executable name)
+    required: false
+    default: ""
   build_directory_path:
     description: Path to built files
     required: false
@@ -74,7 +78,7 @@ runs:
       shell: pwsh
 
     # Build and output test project
-    - name: Build Test Project
+    - name: Build Executable Project
       if: ${{ inputs.tester_project_file_path != '' }}
       run: |
         dotnet publish "${{ inputs.tester_project_file_path }}" `
@@ -83,21 +87,25 @@ runs:
           --output "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
       shell: pwsh
 
-    - name: List Build Directory
+    # Validate executable file name if provided
+    - name: Validate Executable File Name
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
       run: |
-        echo "Listing build directory contents:"
-        ls -al ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
-      shell: pwsh
-
-    # Execute test executable
-    - name: Run Test
-      if: ${{ inputs.tester_project_file_path != '' }}
-      run: |
-        $testPath = "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}\\test.exe"
-        if (-not (Test-Path $testPath)) {
-          Write-Error "Test executable not found: $testPath"
+        $execPath = "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}\\${{ inputs.tester_executable_file_name }}"
+        if (-not (Test-Path $execPath)) {
+          Write-Error "Executable file not found: $execPath"
+          Write-Error "Ensure the tester_executable_file_name matches the project's actual output file name."
           exit 1
         }
-        Write-Host "Executing test.exe..."
-        & $testPath
+        Write-Host "Executable file validated: $execPath"
+      shell: pwsh
+
+    # Execute the built executable
+    - name: Run Executable
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
+      run: |
+        $execPath = "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}\\${{ inputs.tester_executable_file_name }}"
+        Write-Host "Granting execute permission to the file (Windows)..."
+        Write-Host "Executing the file: $execPath"
+        & $execPath
       shell: pwsh
