@@ -1,27 +1,12 @@
 #!/bin/bash
 
-# Check if jq is installed
-if ! command -v jq &> /dev/null; then
-  echo "Error: jq is not installed. Please install jq and try again."
-  exit 1
-fi
 
-# Load the JSON config from file or string
-if [ -f "$1" ]; then
-  CONFIG=$(cat "$1")
-else
-  CONFIG="$1"
-fi
 
-echo $CONFIG
 
-RESULT_FILE="${2:-values.result}"
+JSON_FILE="$1"
 
-# Validate JSON
-if ! echo "$SINGLE_LINE_JSON" | jq empty; then
-  echo "Error: Invalid JSON format"
-  exit 1
-fi
+while IFS="=" read -r key value; do
+  echo "${key} : ${value}"
+done < <(cat $JSON_FILE | jq -r 'to_entries[] | "\(.key)=\(.value)"')
 
-# Process JSON and format output
-echo $CONFIG | jq -r '. | to_entries[] | "Key: \(.key) -> Value: \(.value)"'
+
