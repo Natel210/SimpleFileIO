@@ -55,8 +55,11 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
+      run: |
+        echo "JSON Configuration: $JSON_DATA"
+        ./.scripts/check/values.sh $JSON_DATA solution_project_value.result
       env:
-        list: |
+        JSON_DATA: |
           {
             "Solution File Path": "SimpleFileIO.sln",
             "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
@@ -64,9 +67,6 @@ runs:
             "Tester File Path": "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj",
             "Tester Executable File Name": "SimpleFileIO_Tester"
           }
-      run: |
-        echo "JSON Configuration: $list"
-        ./.scripts/check/values.sh ${{ env.list }} solution_project_value.result
       shell: bash
 
     - name: Check Deploy Values
