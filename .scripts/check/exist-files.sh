@@ -1,32 +1,49 @@
 #!/bin/bash
 
-echo -e "\033[36m● Exist Files --------------------------\033[0m"
-if [ "$#" -lt 1 ]; then
-  echo "::error::No arguments. \n Usage: $0 <file1> [file2] [file3] ..."
+JSON_DATA="$1"
+RESULT_FILE="$2"
+
+GREEN="\033[32m"
+BLUE="\033[34m"
+RED="\033[31m"
+RESET="\033[0m"
+
+if [ -z "$JSON_DATA" ]; then
+  echo "::error::No JSON data provided. Usage: $0 '<JSON String>' [result_file]"
   exit 1
 fi
 
-is_miss_files=0
+FILES=$(echo "$JSON_DATA" | jq -r 'to_entries[] | "\(.key) \(.value)"')
 
-for file in "$@"; do
-  if [ ! -f "$file" ]; then
-    is_miss_files=1
-  fi
-done
-
-if [ $is_miss_files != 0 ]; then
-  echo -e "::warning::One or more files are missing."
-else
-  echo -e "::notice::\033[32mAll files Exist.\033[0m"
+if [ -z "$FILES" ]; then
+  echo "::error::Invalid JSON structure."
+  exit 1
 fi
 
-echo -e "::group::Files List"
-for file in "$@"; do
-  if [ -f "$file" ]; then
-    echo -e "> $file : \033[34mExist\033[0m"
+total_count=0
+missing_count=0
+output=""
+
+while read -r key path; do
+  total_count=$((total_count + 1))
+  if [ -f "$path" ]; then
+    output+="● $key\n    - Path : $path\n    - Exist : ${BLUE}Exist${RESET}\n"
   else
-    echo -e "> $file : \033[31mNot Exist\033[0m"
+    missing_count=$((missing_count + 1))
+    output+="● $key\n    - Path : $path\n    - Exist : ${RED}Not Exist${RESET}\n"
   fi
-done
-echo "::endgroup::"
-echo -e "\033[36m----------------------------------------\033[0m"
+done <<< "$FILES"
+
+if [ "$missing_count" -eq 0 ]; then
+  summary="${GREEN}All OK.. ($total_count/$total_count)${RESET}\n"
+else
+  summary="${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
+fi
+
+result="$summary\n$output"
+
+if [ -z "$RESULT_FILE" ]; then
+  echo -e "$result"
+else
+  echo -e "$result" > "$RESULT_FILE"
+fi

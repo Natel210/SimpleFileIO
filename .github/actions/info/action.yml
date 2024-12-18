@@ -1,4 +1,4 @@
-name: Info
+name: Info And Check
 description: ""
 inputs:
   # solution & project
@@ -51,11 +51,14 @@ runs:
   steps:
     - name: Add Execute Permission for Scripts
       run: |
+        echo Add Execute Permission for Scripts
         chmod +x ./.scripts/check/*.sh
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh "$JSON_DATA" "solution_project_value.result"
+      run: |
+        echo Check Solution & Project Values
+        ./.scripts/check/values.sh "$JSON_DATA" "solution_project_value.result"
       env:
         JSON_DATA: |
           {
@@ -68,7 +71,9 @@ runs:
       shell: bash
 
     - name: Check Deploy Values
-      run: ./.scripts/check/values.sh "$JSON_DATA" "deploy_value.result"
+      run: |
+        echo Check Deploy Values
+        ./.scripts/check/values.sh "$JSON_DATA" "deploy_value.result"
       env: 
         JSON_DATA: |
           {
@@ -78,7 +83,9 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: ./.scripts/check/values.sh "$JSON_DATA" "git_value.result"
+      run: |
+        echo Check Git Values
+        ./.scripts/check/values.sh "$JSON_DATA" "git_value.result"
       env: 
         JSON_DATA: |
           {
@@ -89,15 +96,38 @@ runs:
           }
       shell: bash
 
+    - name: Check Exist Files
+      run: |
+        echo Check Exist Files
+        ./.scripts/check/exist-files.sh "$JSON_DATA" "exist_files.result"
+      env: 
+        JSON_DATA: |
+          {
+            "Solution File Path": "SimpleFileIO.sln",
+            "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
+            "Build Directory Path": "./build",
+            "Tester Executable File Name": "SimpleFileIO_Tester",
+            "Tester File Path": "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+          }
+      shell: bash
+
+
+
+
+
     - name: Remove Execute Permission for Scripts
       run: |
+        echo Remove Execute Permission for Scripts
         chmod -x ./.scripts/check/*.sh
       shell: bash
 
-    - name: Output Logs
+    - name: Output  Logs
       run: |
-        echo ""
-        echo -e "\033[0;36mInfom\033[0m"
+        echo " "
+        echo " "
+        echo -e "\033[0;36m----Git Event----\033[0m"
+        echo -e "\033[0;36m----File Exist----\033[0m"
+        echo -e "\033[0;36m----Values----\033[0m"
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
         echo ::Endgroup::

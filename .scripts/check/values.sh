@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "$#" -lt 1 ]; then
+  echo "::error::No arguments. \n Usage: $0 '<JSON String>'"
+  exit 1
+fi
 
 JSON_FILE="$1"
 RESULT_FILE="$2"

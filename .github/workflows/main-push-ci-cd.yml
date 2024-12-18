@@ -12,7 +12,7 @@ permissions:
 jobs:
 
   info:
-    name: Info
+    name: Info And Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/info
-        name: Info  
+        name: Info And Check
         with:
           # solution & project
           solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"
