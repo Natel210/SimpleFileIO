@@ -55,7 +55,7 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh $JSON_DATA solution_project_value.result
+      run: ./.scripts/check/values.sh "$JSON_DATA" "solution_project_value.result"
       env:
         JSON_DATA: |
           {
