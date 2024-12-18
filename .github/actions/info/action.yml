@@ -68,9 +68,9 @@ runs:
       shell: bash
 
     - name: Check Deploy Values
-      run: ./.scripts/check/values.sh "${{ env.list }}" "deploy_value.result"
+      run: ./.scripts/check/values.sh "$JSON_DATA" "deploy_value.result"
       env: 
-        list: |
+        JSON_DATA: |
           {
             "Result Zip Name": "${{ inputs.result_zip_name }}",
             "Tag Prefix": "${{ inputs.tag_prefix }}"
@@ -78,9 +78,9 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: ./.scripts/check/values.sh "${{ env.list }}" "git_value.result"
+      run: ./.scripts/check/values.sh "$JSON_DATA" "git_value.result"
       env: 
-        list: |
+        JSON_DATA: |
           '{
             "Event": "${{ inputs.git_event_name }}",
             "Ref": "${{ inputs.git_ref }}",
