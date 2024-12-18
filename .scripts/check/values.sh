@@ -22,4 +22,4 @@ if ! echo "$SINGLE_LINE_JSON" | jq empty; then
 fi
 
 # Process JSON and format output
-cat $CONFIG | jq -r '. | to_entries[] | "Key: \(.key) -> Value: \(.value)"'
+echo $CONFIG | jq -r '. | to_entries[] | "Key: \(.key) -> Value: \(.value)"'
