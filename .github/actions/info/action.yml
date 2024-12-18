@@ -58,9 +58,9 @@ runs:
     - name: Check Solution & Project Values
       run: |
         echo Check Solution & Project Values
-        ./.scripts/check/values.sh "$JSON_DATA" "solution_project_value.result"
+        ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
       env:
-        JSON_DATA: |
+        SOLUTION_AND_PROJECT_JSON_DATA: |
           {
             "Solution File Path": "SimpleFileIO.sln",
             "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
@@ -73,9 +73,9 @@ runs:
     - name: Check Deploy Values
       run: |
         echo Check Deploy Values
-        ./.scripts/check/values.sh "$JSON_DATA" "deploy_value.result"
+        ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
       env: 
-        JSON_DATA: |
+        DEPLOY_JSON_DATA: |
           {
             "Result Zip Name": "${{ inputs.result_zip_name }}",
             "Tag Prefix": "${{ inputs.tag_prefix }}"
@@ -85,9 +85,9 @@ runs:
     - name: Check Git Values
       run: |
         echo Check Git Values
-        ./.scripts/check/values.sh "$JSON_DATA" "git_value.result"
+        ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
       env: 
-        JSON_DATA: |
+        GIT_JSON_DATA: |
           {
             "Event": "${{ inputs.git_event_name }}",
             "Ref": "${{ inputs.git_ref }}",
@@ -99,9 +99,9 @@ runs:
     - name: Check Exist Files
       run: |
         echo Check Exist Files
-        ./.scripts/check/exist-files.sh "$JSON_DATA" "exist_files.result"
+        ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
       env: 
-        JSON_DATA: |
+        EXIST_FILES_JSON_DATA: |
           {
             "Solution File Path": "SimpleFileIO.sln",
             "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
@@ -127,7 +127,7 @@ runs:
         echo " "
         echo -e "\033[0;36m----Git Event----\033[0m"
         echo -e "\033[0;36m----File Exist----\033[0m"
-        cat solution_project_value.result
+        cat exist_files.result
         echo -e "\033[0;36m----Values----\033[0m"
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
