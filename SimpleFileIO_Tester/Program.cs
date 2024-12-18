@@ -12,14 +12,14 @@ namespace SimpleFileIO_Tester
     {
         static void Main(string[] args)
         {
-            Manager.CreateTextLog("TestTextLog",new() { RootDirectory = new("./Test"), FileName="TestTextLog", Extension=".txtlog" });
+            Manager.CreateTextLog("TestTextLog",new() { RootDirectory = new("./Test"), FileName="TestTextLog", Extension="txtlog" });
             ITextLog? textLog = Manager.GetTextLog("TestTextLog") ?? null;
             if (textLog is null)
                 throw new Exception("not create text log.");
             textLog.Add("aaa");
             textLog.Add("bbb");
             textLog.Write();
-            Manager.CreateCsvLog("TestCSVLog", new() { RootDirectory = new("./Test"), FileName = "TestCSVLog", Extension = ".csvlog" });
+            Manager.CreateCsvLog("TestCSVLog", new() { RootDirectory = new("./Test"), FileName = "TestCSVLog", Extension = "csvlog" });
             ICSVLog? csvLog = Manager.GetCsvLog("TestCSVLog") ?? null;
             if (csvLog is null)
                 throw new Exception("not create csv log.");
@@ -28,7 +28,7 @@ namespace SimpleFileIO_Tester
             csvLog.Add(data2);
             csvLog.Write();
             List<testdata2> temp1;
-            using (var reader = new StreamReader("./TEST.csvlog"))
+            using (var reader = new StreamReader("./Test/TestCSVLog.csvlog"))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 temp1 = csv.GetRecords<testdata2>().ToList();
 

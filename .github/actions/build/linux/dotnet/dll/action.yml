@@ -1,16 +1,16 @@
 name: Build .NET DLL (Linux)
 description: Build .NET DLLs in a Linux environment, with optional unit tests.
 inputs:
-  solution_file:
+  solution_file_path:
     description: The solution file path
     required: true
-  dll_file:
+  dll_project_file_path:
     description: The DLL file path
     required: true
-  tester_file:
+  tester_project_file_path:
     description: The tester project file path (optional)
     required: false
-  build_path:
+  build_directory_path:
     description: Path to Built Files.
     required: false
     default: "./build"
@@ -20,6 +20,18 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
+  assembly_version:
+    description: Assembly version to apply
+    required: false
+    default: "0.0.1"
+  file_version:
+    description: File version to apply
+    required: false
+    default: "0.0.1"
+  informational_version:
+    description: Informational version (e.g., pre-release info)
+    required: false
+    default: "0.0.1"
 
 runs:
   using: "composite"
@@ -34,21 +46,34 @@ runs:
       shell: bash
 
     - name: Restore Dependencies
-      run: dotnet restore "${{ inputs.solution_file }}" --no-cache
+      run: dotnet restore "${{ inputs.solution_file_path }}" --no-cache
       shell: bash
 
     - name: Build Project
-      run: dotnet build "${{ inputs.dll_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ${{ inputs.build_path }}/${{ inputs.configuration }}
+      run: |
+        dotnet publish "${{ inputs.dll_project_file }}" --configuration ${{ inputs.configuration }} --no-restore \
+        -p:Version=${{ inputs.assembly_version }} \
+        -p:FileVersion=${{ inputs.file_version }} \
+        -p:InformationalVersion=${{ inputs.informational_version }} \
+        --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
     - name: Check Tester File
       run: |
-        if [[ -z "${{ inputs.tester_file }}" ]]; then
+        if [[ -z "${{ inputs.tester_project_file }}" ]]; then
           echo "No tester file provided. Skipping unit tests."
         fi
       shell: bash
 
-    - name: Run Unit Tests
-      if: ${{ inputs.tester_file != '' }}
-      run: dotnet test "${{ inputs.tester_file }}" --configuration ${{ inputs.configuration }} --no-restore --output ${{ inputs.build_path }}/${{ inputs.configuration }} --verbosity normal
+    - name: Build Test Project
+      if: ${{ inputs.tester_project_file != '' }}
+      run: |
+        dotnet publish "${{ inputs.tester_project_file }}" --configuration ${{ inputs.configuration }} --no-restore \
+        -p:OutputName=test \
+        --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }} --verbosity normal
       shell: bash
+
+    - name: Run Test
+      if: ${{ inputs.tester_project_file != '' }}
+      run: & ${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test.exe
+      shell: pwsh

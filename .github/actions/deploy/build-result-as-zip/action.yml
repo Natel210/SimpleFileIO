@@ -1,7 +1,7 @@
 name: Build Results As Zip
 description: Creates a Zip for Build Files.
 inputs:
-  build_path:
+  build_directory_path:
     description: Path to Built Files.
     required: true
     default: "./build/"
@@ -19,7 +19,7 @@ runs:
       shell: bash
 
     - name: Run File Check Script
-      run: ${{ github.action_path }}/scripts/build-result-as-zip.sh "${{ inputs.build_path }}" "${{ inputs.result_zip_name }}"
+      run: ${{ github.action_path }}/scripts/build-result-as-zip.sh "${{ inputs.build_directory_path }}" "${{ inputs.result_zip_name }}"
       shell: bash
 
     - name: Remove Execute Permission for Scripts
