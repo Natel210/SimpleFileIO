@@ -5,8 +5,10 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
-JSON_FILE="$1"
+JSON_DATA="$1"
 RESULT_FILE="$2"
+
+
 
 if [ -z "$RESULT_FILE" ]; then
   echo "$JSON_DATA" | jq -r 'to_entries[] | "\(.key) : \(.value)"'
