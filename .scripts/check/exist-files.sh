@@ -27,10 +27,10 @@ output=""
 while IFS=$'\t' read -r key path; do
   total_count=$((total_count + 1))
   if [ -f "$path" ] || [ -d "$path" ]; then
-    output+="● $key\n    - Path : $path\n    - Exist : ${BLUE}Exist${RESET}\n"
+    output+="● $key\n  - $path : ${BLUE}Exist${RESET}\n"
   else
     missing_count=$((missing_count + 1))
-    output+="● $key\n    - Path : $path\n    - Exist : ${RED}Not Exist${RESET}\n"
+    output+="● $key\n  - $path : ${RED}Not Exist${RESET}\n"
   fi
 done <<< "$FILES"
 
@@ -40,7 +40,7 @@ else
   summary="${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
 fi
 
-result="$summary\n$output"
+result="$summary$output"
 
 if [ -z "$RESULT_FILE" ]; then
   echo -e "$result"

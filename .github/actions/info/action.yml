@@ -125,10 +125,10 @@ runs:
       run: |
         echo " "
         echo " "
-        echo -e "\033[0;36m----Git Event----\033[0m"
-        echo -e "\033[0;36m----File Exist----\033[0m"
+        echo -e "\033[0;36m----  Git Event  ----\033[0m"
+        echo -e "\033[0;36m----  File Exist  ----\033[0m"
         cat exist_files.result
-        echo -e "\033[0;36m----Values----\033[0m"
+        echo -e "\033[0;36m----  Values  ----\033[0m"
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
         echo ::Endgroup::
