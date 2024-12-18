@@ -15,8 +15,6 @@ fi
 
 RESULT_FILE="${2:-values.result}"
 
-SINGLE_LINE_JSON=$(echo "$CONFIG" | jq -c .)
-
 # Validate JSON
 if ! echo "$SINGLE_LINE_JSON" | jq empty; then
   echo "Error: Invalid JSON format"
@@ -24,4 +22,4 @@ if ! echo "$SINGLE_LINE_JSON" | jq empty; then
 fi
 
 # Process JSON and format output
-echo "$SINGLE_LINE_JSON" | jq -r '. | to_entries[] | "> [\(.key)] : \(.value)"' > $RESULT_FILE
+cat $CONFIG | jq -r '. | to_entries[] | "Key: \(.key) -> Value: \(.value)"'
