@@ -92,13 +92,13 @@ runs:
     - name: Output
       run: |
         echo ::group:: Solution & Project
-        cat solution_project_value.result
+        echo solution_project_value.result
         echo ::endgroup::
         echo ::group:: Deploy
-        cat deploy_value.result
+        echo deploy_value.result
         echo ::endgroup::
         echo ::group:: Git
-        cat git_value.result
+        echo git_value.result
         echo ::endgroup::
       shell: bash
 
