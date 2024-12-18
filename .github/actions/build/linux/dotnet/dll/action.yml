@@ -5,13 +5,13 @@ inputs:
     description: The solution file path
     required: true
   dll_project_file_path:
-    description: The DLL file path
+    description: The DLL project file path
     required: true
   tester_project_file_path:
     description: The tester project file path (optional)
     required: false
   build_directory_path:
-    description: Path to Built Files.
+    description: Path to built files
     required: false
     default: "./build"
   configuration:
@@ -36,44 +36,63 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Setup .NET environment
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
 
+    # Create build directory
     - name: Make Build Directory
-      run: mkdir -p ./build/${{ inputs.configuration }}
+      run: mkdir -p ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
+    # Restore dependencies
     - name: Restore Dependencies
       run: dotnet restore "${{ inputs.solution_file_path }}" --no-cache
       shell: bash
 
-    - name: Build Project
+    # Build DLL project
+    - name: Build DLL Project
       run: |
-        dotnet publish "${{ inputs.dll_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
-        -p:Version=${{ inputs.assembly_version }} \
-        -p:FileVersion=${{ inputs.file_version }} \
-        -p:InformationalVersion=${{ inputs.informational_version }} \
-        --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
+        dotnet publish "${{ inputs.dll_project_file_path }}" \
+          --configuration ${{ inputs.configuration }} \
+          --no-restore \
+          -p:Version=${{ inputs.assembly_version }} \
+          -p:FileVersion=${{ inputs.file_version }} \
+          -p:InformationalVersion=${{ inputs.informational_version }} \
+          --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
+    # Check if tester file is provided
     - name: Check Tester File
       run: |
-        if [[ -z "${{ inputs.tester_project_file_path }}" ]]; then
-          echo "No tester file provided. Skipping unit tests."
+        if [ -z "${{ inputs.tester_project_file_path }}" ]; then
+          echo "No tester project file provided. Skipping unit tests."
+          exit 0
         fi
       shell: bash
 
+    # Build and output test project
     - name: Build Test Project
       if: ${{ inputs.tester_project_file_path != '' }}
       run: |
-        dotnet publish "${{ inputs.tester_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
-        -p:OutputName=test \
-        --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }} --verbosity normal
+        dotnet publish "${{ inputs.tester_project_file_path }}" \
+          --configuration ${{ inputs.configuration }} \
+          --no-restore \
+          -p:OutputName=test \
+          --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
+    # Execute test
     - name: Run Test
-      if: ${{ inputs.tester_project_file != '' }}
-      run: ${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test.exe
-      shell: pwsh
+      if: ${{ inputs.tester_project_file_path != '' }}
+      run: |
+        test_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test"
+        if [ ! -f "$test_path" ]; then
+          echo "Test executable not found: $test_path"
+          exit 1
+        fi
+        echo "Executing test file..."
+        $test_path
+      shell: bash
