@@ -15,12 +15,12 @@ jobs:
     name: Info
     runs-on: ubuntu-latest
     steps:
-      
       - uses: actions/checkout@v4
+        name: Check Out
         with:
           fetch-depth: 0
-
       - uses: ./.github/actions/info
+        name: Info  
         with:
           # solution & project
           solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"

@@ -81,17 +81,22 @@ runs:
       run: ./.scripts/check/values.sh "$JSON_DATA" "git_value.result"
       env: 
         JSON_DATA: |
-          '{
+          {
             "Event": "${{ inputs.git_event_name }}",
             "Ref": "${{ inputs.git_ref }}",
             "Head Ref": "${{ inputs.head_ref }}",
             "Base Ref": "${{ inputs.base_ref }}"
-          }'
+          }
       shell: bash
 
-    - name: Output
+    - name: Remove Execute Permission for Scripts
       run: |
-        echo ls -R
+        chmod -x ./.scripts/check/*.sh
+      shell: bash
+
+    - name: Output Logs
+      run: |
+        echo ""
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
         echo ::Endgroup::
@@ -101,9 +106,4 @@ runs:
         echo ::Group:: Git
         cat git_value.result
         echo ::Endgroup::
-      shell: bash
-
-    - name: Remove Execute Permission for Scripts
-      run: |
-        chmod -x ./.scripts/check/*.sh
       shell: bash
