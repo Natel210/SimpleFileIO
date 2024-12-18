@@ -51,7 +51,7 @@ runs:
 
     - name: Build Dll Project
       run: |
-        dotnet publish "${{ inputs.dll_project_file }}" --configuration ${{ inputs.configuration }} --no-restore \
+        dotnet publish "${{ inputs.dll_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
         -p:Version=${{ inputs.assembly_version }} \
         -p:FileVersion=${{ inputs.file_version }} \
         -p:InformationalVersion=${{ inputs.informational_version }} \
@@ -60,20 +60,20 @@ runs:
 
     - name: Check Tester File
       run: |
-        if [[ -z "${{ inputs.tester_project_file }}" ]]; then
+        if [[ -z "${{ inputs.tester_project_file_path }}" ]]; then
           echo "No tester file provided. Skipping unit tests."
         fi
       shell: bash
 
     - name: Build Test Project
-      if: ${{ inputs.tester_project_file != '' }}
+      if: ${{ inputs.tester_project_file_path != '' }}
       run: |
-        dotnet publish "${{ inputs.tester_project_file }}" --configuration ${{ inputs.configuration }} --no-restore \
+        dotnet publish "${{ inputs.tester_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
         -p:OutputName=test \
         --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }} --verbosity normal
       shell: pwsh
 
     - name: Run Test
-      if: ${{ inputs.tester_project_file != '' }}
+      if: ${{ inputs.tester_project_file_path != '' }}
       run: ${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test.exe
       shell: pwsh
