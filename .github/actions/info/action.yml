@@ -83,11 +83,11 @@ runs:
       run: ./.scripts/check/values.sh "${{ env.list }}" "git_value.result"
       env: 
         list: |
-          {
-            "Event": "${{ inputs.git_event_name }}",
-            "Ref": "${{ inputs.git_ref }}",
-            "Head Ref": "${{ inputs.head_ref }}",
-            "Base Ref": "${{ inputs.base_ref }}"
+          { \
+            "Event": "${{ inputs.git_event_name }}", \
+            "Ref": "${{ inputs.git_ref }}", \
+            "Head Ref": "${{ inputs.head_ref }}", \
+            "Base Ref": "${{ inputs.base_ref }}" \
           }
       shell: bash
 
