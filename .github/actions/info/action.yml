@@ -55,7 +55,7 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh "${{ env.list }}" "solution_project_value.result"
+      run: ./.scripts/check/values.sh ${{ env.list }} solution_project_value.result
       env: 
         list: |
           {
