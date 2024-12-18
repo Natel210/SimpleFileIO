@@ -13,6 +13,8 @@ else
   CONFIG="$1"
 fi
 
+echo $CONFIG
+
 RESULT_FILE="${2:-values.result}"
 
 # Validate JSON
