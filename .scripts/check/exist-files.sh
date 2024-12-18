@@ -40,7 +40,7 @@ else
   summary="${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
 fi
 
-result="$summary$output"
+result="$summary\n$output"
 
 if [ -z "$RESULT_FILE" ]; then
   echo -e "$result"
