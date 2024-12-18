@@ -51,10 +51,10 @@ runs:
 
     - name: Build Dll Project
       run: |
-        dotnet publish "${{ inputs.dll_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
-        -p:Version=${{ inputs.assembly_version }} \
-        -p:FileVersion=${{ inputs.file_version }} \
-        -p:InformationalVersion=${{ inputs.informational_version }} \
+        dotnet publish "${{ inputs.dll_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore `
+        -p:Version=${{ inputs.assembly_version }} `
+        -p:FileVersion=${{ inputs.file_version }} `
+        -p:InformationalVersion=${{ inputs.informational_version }} `
         --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: pwsh
 
@@ -68,8 +68,8 @@ runs:
     - name: Build Test Project
       if: ${{ inputs.tester_project_file_path != '' }}
       run: |
-        dotnet publish "${{ inputs.tester_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore \
-        -p:OutputName=test \
+        dotnet publish "${{ inputs.tester_project_file_path }}" --configuration ${{ inputs.configuration }} --no-restore `
+        -p:OutputName=test `
         --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }} --verbosity normal
       shell: pwsh
 
