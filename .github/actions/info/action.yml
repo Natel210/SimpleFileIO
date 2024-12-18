@@ -91,6 +91,7 @@ runs:
 
     - name: Output
       run: |
+        echo ls -R
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
         echo ::Endgroup::
