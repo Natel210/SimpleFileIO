@@ -3,6 +3,12 @@
 
 ref="${1:-unknown_ref}"
 
+
+
+
+
+
+
 if [[ "$ref" == refs/heads/* ]]; then
   branch_name=${ref#refs/heads/}
   echo -e "::notice::\033[32mPush\033[0m - Branch : \033[34m$branch_name\033[0m"

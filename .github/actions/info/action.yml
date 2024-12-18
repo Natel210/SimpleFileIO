@@ -1,0 +1,111 @@
+name: Info
+description: ""
+inputs:
+  # solution & project
+  solution_file_path:
+    description: ""
+    required: true
+  dll_project_file_path:
+    description: ""
+    required: true
+  build_directory_path:
+    description: ""
+    required: false
+    default: "N/A"
+  tester_project_file_path:
+    description: ""
+    required: false
+    default: "N/A"
+  tester_executable_file_name:
+    description: ""
+    required: false
+    default: "N/A"
+
+  # deploy
+  result_zip_name:
+    description: ""
+    required: true
+  tag_prefix:
+    description: ""
+    required: true
+
+  # git
+  git_event_name:
+    description: ""
+    required: true
+  git_ref:
+    description: ""
+    required: false
+    default: "N/A"
+  head_ref:
+    description: ""
+    required: false
+    default: "N/A"
+  base_ref:
+    description: ""
+    required: false
+    default: "N/A"
+
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Add Execute Permission for Scripts
+      run: |
+        chmod +x ./.scripts/check/*.sh
+      shell: bash
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check Solution & Project Values
+        run: ./.scripts/check/values.sh "${{ env.list }}" "solution_project_value.result"
+        env: 
+          list: |
+            {
+              "Solution File Path": "${{ inputs.solution_file_path }}",
+              "Dll File Path": "${{ inputs.dll_project_file_path }}",
+              "Build Directory Path": "${{ inputs.build_directory_path }}",
+              "Tester File Path": "${{ inputs.tester_project_file_path }}",
+              "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
+            }
+
+    - name: Check Deploy Values
+      run: ./.scripts/check/values.sh "${{ env.list }}" "deploy_value.result"
+      env: 
+        list: |
+          {
+            "Result Zip Name": "${{ inputs.result_zip_name }}",
+            "Tag Prefix": "${{ inputs.tag_prefix }}",
+          }
+
+    - name: Check Git Values
+      run: ./.scripts/check/values.sh "${{ env.list }}" "git_value.result"
+      env: 
+        list: |
+          {
+            "Event": "${{ inputs.git_event_name }}",
+            "Ref": "${{ inputs.git_ref }}",
+            "Head Ref": "${{ inputs.head_ref }}",
+            "Base Ref": "${{ inputs.base_ref }}",
+          }
+
+    - name: Output
+      run: |
+        echo Values
+        echo ::group:: Solution & Project
+        echo solution_project_value.result
+        echo ::groupend::
+        echo ::group:: Deploy
+        echo deploy_value.result
+        echo ::groupend::
+        echo ::group::Git
+        echo git_value.result
+        echo ::groupend::
+
+    - name: Remove Execute Permission for Scripts
+      run: |
+        chmod -x ./.scripts/check/*.sh
+      shell: bash

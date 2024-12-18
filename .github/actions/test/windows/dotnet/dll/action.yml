@@ -1,0 +1,111 @@
+name: Build .NET DLL (Windows)
+description: Build .NET DLLs in a Windows environment, with optional unit tests or executables.
+inputs:
+  solution_file_path:
+    description: The solution file path
+    required: true
+  dll_project_file_path:
+    description: The DLL project file path
+    required: true
+  tester_project_file_path:
+    description: The tester project file path (optional)
+    required: false
+  tester_executable_file_name:
+    description: The expected output file name for the project (e.g., test.exe, custom executable name)
+    required: false
+    default: ""
+  build_directory_path:
+    description: Path to built files
+    required: false
+    default: "./build"
+  configuration:
+    description: Build configuration (e.g., Debug, Release)
+    required: true
+  dotnet_version:
+    description: .NET version to use
+    required: true
+  assembly_version:
+    description: Assembly version to apply
+    required: false
+    default: "0.0.1"
+  file_version:
+    description: File version to apply
+    required: false
+    default: "0.0.1"
+  informational_version:
+    description: Informational version (e.g., pre-release info)
+    required: false
+    default: "0.0.1"
+
+runs:
+  using: "composite"
+  steps:
+    # Setup .NET environment
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ inputs.dotnet_version }}
+
+    # Create build directory
+    - name: Make Build Directory
+      run: mkdir -Force -Path "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
+      shell: pwsh
+
+    # Restore dependencies
+    - name: Restore Dependencies
+      run: dotnet restore "${{ inputs.solution_file_path }}" --no-cache
+      shell: pwsh
+
+    # Build DLL project
+    - name: Build DLL Project
+      run: |
+        dotnet publish "${{ inputs.dll_project_file_path }}" `
+          --configuration ${{ inputs.configuration }} `
+          --no-restore `
+          -p:Version=${{ inputs.assembly_version }} `
+          -p:FileVersion=${{ inputs.file_version }} `
+          -p:InformationalVersion=${{ inputs.informational_version }} `
+          --output "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
+      shell: pwsh
+
+    # Check if tester file is provided
+    - name: Check Tester File
+      run: |
+        if (-not (Test-Path "${{ inputs.tester_project_file_path }}")) {
+          Write-Host "No tester project file provided. Skipping this step."
+          exit 0
+        }
+      shell: pwsh
+
+    # Build and output test project
+    - name: Build Executable Project
+      if: ${{ inputs.tester_project_file_path != '' }}
+      run: |
+        dotnet publish "${{ inputs.tester_project_file_path }}" `
+          --configuration ${{ inputs.configuration }} `
+          --no-restore `
+          --output "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
+      shell: pwsh
+
+    # Validate executable file name if provided
+    - name: Validate Executable File Name
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
+      run: |
+        $execPath = "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}\\${{ inputs.tester_executable_file_name }}"
+        if (-not (Test-Path $execPath)) {
+          Write-Error "Executable file not found: $execPath"
+          Write-Error "Ensure the tester_executable_file_name matches the project's actual output file name."
+          exit 1
+        }
+        Write-Host "Executable file validated: $execPath"
+      shell: pwsh
+
+    # Execute the built executable
+    - name: Run Executable
+      if: ${{ inputs.tester_project_file_path != '' && inputs.tester_executable_file_name != '' }}
+      run: |
+        $execPath = "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}\\${{ inputs.tester_executable_file_name }}"
+        Write-Host "Granting execute permission to the file (Windows)..."
+        Write-Host "Executing the file: $execPath"
+        & $execPath
+      shell: pwsh

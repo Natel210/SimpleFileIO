@@ -15,242 +15,276 @@ jobs:
     name: Info
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/actions/info
         with:
-          fetch-depth: 0
+          # solution & project
+          solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"
+          dll_project_file_path: "${{ vars.DLL_PROJECT_FILE_PATH }}"
+          build_directory_path: "${{ vars.BUILD_DIRECTORY_PATH }}"
+          tester_project_file_path: "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+          tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+          # deploy
+          result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
+          tag_prefix: "${{ vars.TAG_PREFIX }}"
+          # git
+          git_event_name: "${{ github.event_name }}"
+          git_ref: "${{ github.ref }}"
+          head_ref: "${{ github.head_ref }}"
+          base_ref: "${{ github.base_ref }}"
+
+
+
+
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
           
-      - name: Check ENV Value
-        uses: ./.github/actions/info/env-check
-        with:
-          config: |
-            {
-              "Event Name": "${{ github.event_name }}",
-              "Ref": "${{ github.ref }}",
-              "Head Ref": "${{ github.head_ref }}",
-              "Base Ref": "${{ github.base_ref }}",
-              "Solution File Path": "${{ vars.SOLUTION_FILE_PATH }}",
-              "Dll File": "${{ vars.DLL_PROJECT_FILE_PATH }}",
-              "Tester file": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
-            }
-      - name: Git Info
-        uses: ./.github/actions/info/git
-        with:
-          event_name: ${{ github.event_name }}
-          ref: ${{ github.ref }}
-          head_ref: ${{ github.head_ref }}
-          base_ref: ${{ github.base_ref }}
-      - name: Exist Files
-        uses: ./.github/actions/info/exist-files
-        with:
-          files: ${{ vars.SOLUTION_FILE_PATH }} ${{ vars.DLL_PROJECT_FILE_PATH }} ${{ vars.TESTER_PROJECT_FILE_PATH }}
+  #     - name: Check Path Values
+  #       uses: ./.github/actions/info/check-values
+  #       with:
+  #         config: |
+  #           {
+  #             "Solution File Path": "${{ vars.SOLUTION_FILE_PATH }}",
+  #             "Dll File Path": "${{ vars.DLL_PROJECT_FILE_PATH }}",
+  #             "Tester File Path": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+  #             "Tester Executable File Name": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+  #           }
+  #         result_file: path-values.result
+
+  #     - name: Check Git Values
+  #       uses: ./.github/actions/info/check-values
+  #       with:
+  #         config: |
+  #           {
+  #             "Event Name": "${{ github.event_name }}",
+  #             "Ref": "${{ github.ref }}",
+  #             "Head Ref": "${{ github.head_ref }}",
+  #             "Base Ref": "${{ github.base_ref }}",
+  #           }
+  #         result_file: git-values.result
+
+
+
+  #     - name: Git Info
+  #       uses: ./.github/actions/info/git-state
+  #       with:
+  #         event_name: ${{ github.event_name }}
+  #         ref: ${{ github.ref }}
+  #         head_ref: ${{ github.head_ref }}
+  #         base_ref: ${{ github.base_ref }}
+
+  #     - name: Exist Files
+  #       uses: ./.github/actions/info/exist-files
+  #       with:
+  #         files: ${{ vars.SOLUTION_FILE_PATH }} ${{ vars.DLL_PROJECT_FILE_PATH }} ${{ vars.TESTER_PROJECT_FILE_PATH }}
           
-  windows-debug-ci:
-    name: Windows Debug CI
-    runs-on: windows-latest
-    needs: info
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # windows-debug-ci:
+  #   name: Windows Debug CI
+  #   runs-on: windows-latest
+  #   needs: info
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-          tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Debug"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #     - name: Build and Test
+  #       uses: ./.github/actions/build/windows/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
+  #         tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Debug"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
 
-  windows-release-ci:
-    name: Windows Release CI
-    runs-on: windows-latest
-    needs: info
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # windows-release-ci:
+  #   name: Windows Release CI
+  #   runs-on: windows-latest
+  #   needs: info
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-          tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Release"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #     - name: Build and Test
+  #       uses: ./.github/actions/build/windows/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
+  #         tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Release"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
 
-  linux-debug-ci:
-    name: Linux Debug CI
-    runs-on: ubuntu-latest
-    needs: info
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # linux-debug-ci:
+  #   name: Linux Debug CI
+  #   runs-on: ubuntu-latest
+  #   needs: info
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
   
-      - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-          tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Debug"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #     - name: Build and Test
+  #       uses: ./.github/actions/build/linux/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
+  #         tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Debug"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
   
-  linux-release-ci:
-    name: Linux Release CI
-    runs-on: ubuntu-latest
-    needs: info
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # linux-release-ci:
+  #   name: Linux Release CI
+  #   runs-on: ubuntu-latest
+  #   needs: info
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
   
-      - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-          tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Release"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #     - name: Build and Test
+  #       uses: ./.github/actions/build/linux/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
+  #         tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Release"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
 
-  check-event:
-    name: Check Git Event
-    needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
-    # needs: [linux-debug-ci, linux-release-ci]
-    runs-on: ubuntu-latest
-    if: ${{github.event_name == 'push'}}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # check-event:
+  #   name: Check Git Event
+  #   needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
+  #   # needs: [linux-debug-ci, linux-release-ci]
+  #   runs-on: ubuntu-latest
+  #   if: ${{github.event_name == 'push'}}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Is Push Event
-        run: echo -e "\033[32mPush Ok...\033[0m Continue to Create Tag..."
+  #     - name: Is Push Event
+  #       run: echo -e "\033[32mPush Ok...\033[0m Continue to Create Tag..."
 
-  create-tag:
-    name: Create Tag
-    needs: check-event
-    runs-on: ubuntu-latest
-    concurrency:
-      group: tag-creation
-      cancel-in-progress: false
-    env:
-      NEW_VERSION: ""
-    outputs:
-      new_version: ${{ env.NEW_VERSION }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  # create-tag:
+  #   name: Create Tag
+  #   needs: check-event
+  #   runs-on: ubuntu-latest
+  #   concurrency:
+  #     group: tag-creation
+  #     cancel-in-progress: false
+  #   env:
+  #     NEW_VERSION: ""
+  #   outputs:
+  #     new_version: ${{ env.NEW_VERSION }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Before Check Tags
-        uses: ./.github/actions/tag/version/check
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #     - name: Before Check Tags
+  #       uses: ./.github/actions/tag/version/check
+  #       with:
+  #         prefix: ${{ vars.TAG_PREFIX }}
 
-      - name: Version Create Tag
-        uses: ./.github/actions/tag/version/create
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #     - name: Version Create Tag
+  #       uses: ./.github/actions/tag/version/create
+  #       with:
+  #         prefix: ${{ vars.TAG_PREFIX }}
 
-      - name: After Check Tags
-        uses: ./.github/actions/tag/version/check
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #     - name: After Check Tags
+  #       uses: ./.github/actions/tag/version/check
+  #       with:
+  #         prefix: ${{ vars.TAG_PREFIX }}
 
-  cd:
-    name: CD
-    needs: [create-tag]
-    runs-on: ubuntu-latest
-    env:
-      NEW_VERSION: ${{ needs.create-tag.outputs.new_version }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
+  # cd:
+  #   name: CD
+  #   needs: [create-tag]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     NEW_VERSION: ${{ needs.create-tag.outputs.new_version }}
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
 
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Show Current Tag
-        run: |
-          echo "Current VERSION: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}"
+  #     - name: Show Current Tag
+  #       run: |
+  #         echo "Current VERSION: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}"
 
-      - name: Build Debug
-        uses: ./.github/actions/build/linux/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Debug"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
-          assembly_version: ${{ vars.NEW_VERSION }}
-          file_version: ${{ vars.NEW_VERSION }}
-          informational_version: ${{ vars.NEW_VERSION }}
+  #     - name: Build Debug
+  #       uses: ./.github/actions/build/linux/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Debug"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #         assembly_version: ${{ vars.NEW_VERSION }}
+  #         file_version: ${{ vars.NEW_VERSION }}
+  #         informational_version: ${{ vars.NEW_VERSION }}
 
-      - name: Build Release
-        uses: ./.github/actions/build/linux/dotnet/dll
-        with:
-          solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-          dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          configuration: "Release"
-          dotnet_version: ${{ vars.DOTNET_VERSION }}
-          assembly_version: ${{ env.NEW_VERSION }}
-          file_version: ${{ env.NEW_VERSION }}
-          informational_version: ${{ env.NEW_VERSION }}
+  #     - name: Build Release
+  #       uses: ./.github/actions/build/linux/dotnet/dll
+  #       with:
+  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         configuration: "Release"
+  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
+  #         assembly_version: ${{ env.NEW_VERSION }}
+  #         file_version: ${{ env.NEW_VERSION }}
+  #         informational_version: ${{ env.NEW_VERSION }}
 
-      - name: Zip Build File
-        uses: ./.github/actions/deploy/build-result-as-zip
-        with:
-          build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-          result_zip_name: ${{ vars.RESULT_ZIP_NAME }}
+  #     - name: Zip Build File
+  #       uses: ./.github/actions/deploy/build-result-as-zip
+  #       with:
+  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  #         result_zip_name: ${{ vars.RESULT_ZIP_NAME }}
 
-      - name: Generate Changelog
-        id: generate_changelog
-        run: |
-          git fetch --all
+  #     - name: Generate Changelog
+  #       id: generate_changelog
+  #       run: |
+  #         git fetch --all
       
-          base_ref=${{ github.base_ref }}
-          head_sha=${{ github.sha }}
+  #         base_ref=${{ github.base_ref }}
+  #         head_sha=${{ github.sha }}
       
-          if [ -z "$base_ref" ]; then
-            # If base_ref is not provided, fallback to the previous commit
-            base_ref=$(git rev-parse HEAD^)
-          fi
+  #         if [ -z "$base_ref" ]; then
+  #           # If base_ref is not provided, fallback to the previous commit
+  #           base_ref=$(git rev-parse HEAD^)
+  #         fi
       
-          # Generate the changelog with commit title, hyperlinked hash, and body
-          changelog=$(git log $base_ref..$head_sha --pretty=format:"%s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n------------------------%n%b" --no-merges)
+  #         # Generate the changelog with commit title, hyperlinked hash, and body
+  #         changelog=$(git log $base_ref..$head_sha --pretty=format:"%s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n------------------------%n%b" --no-merges)
       
-          if [ -z "$changelog" ]; then
-            echo "No changes to log."
-            changelog="No changes available for this release."
-          fi
+  #         if [ -z "$changelog" ]; then
+  #           echo "No changes to log."
+  #           changelog="No changes available for this release."
+  #         fi
       
-          echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-          echo "$changelog" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+  #         echo "$changelog" >> $GITHUB_ENV
+  #         echo "EOF" >> $GITHUB_ENV
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
-          name: Release ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
-          body: ${{ env.CHANGELOG }}
-          files: ${{ vars.BUILD_DIRECTORY_PATH }}/${{ vars.RESULT_ZIP_NAME }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CHANGELOG: ${{ env.CHANGELOG }}
+  #     - name: Create GitHub Release
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         tag_name: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
+  #         name: Release ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
+  #         body: ${{ env.CHANGELOG }}
+  #         files: ${{ vars.BUILD_DIRECTORY_PATH }}/${{ vars.RESULT_ZIP_NAME }}.zip
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         CHANGELOG: ${{ env.CHANGELOG }}
