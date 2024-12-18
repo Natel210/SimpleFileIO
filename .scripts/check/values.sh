@@ -15,11 +15,13 @@ fi
 
 RESULT_FILE="${2:-values.result}"
 
+SINGLE_LINE_JSON=$(echo "$CONFIG" | jq -c .)
+
 # Validate JSON
-if ! echo "$CONFIG" | jq empty; then
+if ! echo "$SINGLE_LINE_JSON" | jq empty; then
   echo "Error: Invalid JSON format"
   exit 1
 fi
 
 # Process JSON and format output
-echo "$CONFIG" | jq -r '. | to_entries[] | "> [\(.key)] : \(.value)"' > $RESULT_FILE
+echo "$SINGLE_LINE_JSON" | jq -r '. | to_entries[] | "> [\(.key)] : \(.value)"' > $RESULT_FILE
