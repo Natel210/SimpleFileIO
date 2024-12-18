@@ -19,7 +19,7 @@ runs:
       shell: bash
 
     - name: Register Environment Variables
-      run: echo "new_version=$(cat ./new_version.txt)" >> "$GITHUB_ENV"
+      run: echo "NEW_VERSION=$(cat ./new_version.txt)" >> "$GITHUB_ENV"
       shell: bash
 
     - name: Remove Execute Permission for Scripts

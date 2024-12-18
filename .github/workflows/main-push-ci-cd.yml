@@ -10,12 +10,12 @@ permissions:
   statuses: write
 
 env:
-  tag_prefix: "v"
-  dotnet_version: "8.0.x"
-  solution_file_path: "SimpleFileIO.sln"
-  dll_project_file_path: "SimpleFileIO/SimpleFileIO.csproj"
-  tester_project_file_path: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
-  build_directory_path: "./build"
+  TAG_PREFIX: "v"
+  DOTNET_VERSION: "8.0.x"
+  SOLUTION_FILE_PATH: "SimpleFileIO.sln"
+  DLL_PROJECT_FILE_PATH: "SimpleFileIO/SimpleFileIO.csproj"
+  TESTER_PROJECT_FILE_PATH: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+  BUILD_DIRECTORY_PATH: "./build"
   RESULT_ZIP_NAME: "Produced Dll"
 
 jobs:
@@ -37,9 +37,9 @@ jobs:
               "Ref": "${{ github.ref }}",
               "Head Ref": "${{ github.head_ref }}",
               "Base Ref": "${{ github.base_ref }}",
-              "Solution File Path": "${{ env.solution_file_path }}",
-              "Dll File": "${{ env.dll_project_file_path }}",
-              "Tester file": "${{ env.tester_project_file_path }}"
+              "Solution File Path": "${{ env.SOLUTION_FILE_PATH }}",
+              "Dll File": "${{ env.DLL_PROJECT_FILE_PATH }}",
+              "Tester file": "${{ env.TESTER_PROJECT_FILE_PATH }}"
             }
       - name: Git Info
         uses: ./.github/actions/info/git
@@ -51,7 +51,7 @@ jobs:
       - name: Exist Files
         uses: ./.github/actions/info/exist-files
         with:
-          files: ${{ env.solution_file_path }} ${{ env.dll_project_file_path }} ${{ env.tester_project_file_path }}
+          files: ${{ env.SOLUTION_FILE_PATH }} ${{ env.DLL_PROJECT_FILE_PATH }} ${{ env.TESTER_PROJECT_FILE_PATH }}
           
   windows-debug-ci:
     name: Windows Debug CI
@@ -65,12 +65,12 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/windows/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          tester_project_file_path: ${{ env.tester_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Debug"
-          dotnet_version: ${{ env.dotnet_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
 
   windows-release-ci:
     name: Windows Release CI
@@ -84,12 +84,12 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/windows/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          tester_project_file_path: ${{ env.tester_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Release"
-          dotnet_version: ${{ env.dotnet_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
 
   linux-debug-ci:
     name: Linux Debug CI
@@ -103,12 +103,12 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/linux/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          tester_project_file_path: ${{ env.tester_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Debug"
-          dotnet_version: ${{ env.dotnet_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
   
   linux-release-ci:
     name: Linux Release CI
@@ -122,12 +122,12 @@ jobs:
       - name: Build and Test
         uses: ./.github/actions/build/linux/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          tester_project_file_path: ${{ env.tester_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          tester_project_file_path: ${{ env.TESTER_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Release"
-          dotnet_version: ${{ env.dotnet_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
 
   check-event:
     name: Check Git Event
@@ -151,9 +151,9 @@ jobs:
       group: tag-creation
       cancel-in-progress: false
     env:
-      new_version: ""
+      NEW_VERSION: ""
     outputs:
-      new_version: ${{ env.new_version }}
+      new_version: ${{ env.NEW_VERSION }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -162,24 +162,24 @@ jobs:
       - name: Before Check Tags
         uses: ./.github/actions/tag/version/check
         with:
-          prefix: ${{ env.tag_prefix }}
+          prefix: ${{ env.TAG_PREFIX }}
 
       - name: Version Create Tag
         uses: ./.github/actions/tag/version/create
         with:
-          prefix: ${{ env.tag_prefix }}
+          prefix: ${{ env.TAG_PREFIX }}
 
       - name: After Check Tags
         uses: ./.github/actions/tag/version/check
         with:
-          prefix: ${{ env.tag_prefix }}
+          prefix: ${{ env.TAG_PREFIX }}
 
   cd:
     name: CD
     needs: [create-tag]
     runs-on: ubuntu-latest
     env:
-      new_version: ${{ needs.create-tag.outputs.new_version }}
+      NEW_VERSION: ${{ needs.create-tag.outputs.new_version }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
 
@@ -190,36 +190,36 @@ jobs:
 
       - name: Show Current Tag
         run: |
-          echo "Current VERSION: ${{ env.tag_prefix }}${{ env.new_version }}"
+          echo "Current VERSION: ${{ env.TAG_PREFIX }}${{ env.NEW_VERSION }}"
 
       - name: Build Debug
         uses: ./.github/actions/build/linux/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Debug"
-          dotnet_version: ${{ env.dotnet_version }}
-          assembly_version: ${{ env.new_version }}
-          file_version: ${{ env.new_version }}
-          informational_version: ${{ env.new_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
+          assembly_version: ${{ env.NEW_VERSION }}
+          file_version: ${{ env.NEW_VERSION }}
+          informational_version: ${{ env.NEW_VERSION }}
 
       - name: Build Release
         uses: ./.github/actions/build/linux/dotnet/dll
         with:
-          solution_file_path: ${{ env.solution_file_path }}
-          dll_project_file_path: ${{ env.dll_project_file_path }}
-          build_directory_path: ${{ env.build_directory_path }}
+          solution_file_path: ${{ env.SOLUTION_FILE_PATH }}
+          dll_project_file_path: ${{ env.DLL_PROJECT_FILE_PATH }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           configuration: "Release"
-          dotnet_version: ${{ env.dotnet_version }}
-          assembly_version: ${{ env.new_version }}
-          file_version: ${{ env.new_version }}
-          informational_version: ${{ env.new_version }}
+          dotnet_version: ${{ env.DOTNET_VERSION }}
+          assembly_version: ${{ env.NEW_VERSION }}
+          file_version: ${{ env.NEW_VERSION }}
+          informational_version: ${{ env.NEW_VERSION }}
 
       - name: Zip Build File
         uses: ./.github/actions/deploy/build-result-as-zip
         with:
-          build_directory_path: ${{ env.build_directory_path }}
+          build_directory_path: ${{ env.BUILD_DIRECTORY_PATH }}
           result_zip_name: ${{ env.RESULT_ZIP_NAME }}
 
       - name: Generate Changelog
@@ -252,10 +252,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ env.tag_prefix }}${{ env.new_version }}
-          name: Release ${{ env.tag_prefix }}${{ env.new_version }}
+          tag_name: ${{ env.TAG_PREFIX }}${{ env.NEW_VERSION }}
+          name: Release ${{ env.TAG_PREFIX }}${{ env.NEW_VERSION }}
           body: ${{ env.CHANGELOG }}
-          files: ${{ env.build_directory_path }}/${{ env.RESULT_ZIP_NAME }}.zip
+          files: ${{ env.BUILD_DIRECTORY_PATH }}/${{ env.RESULT_ZIP_NAME }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CHANGELOG: ${{ env.CHANGELOG }}
