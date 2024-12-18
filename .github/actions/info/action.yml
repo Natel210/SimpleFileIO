@@ -59,20 +59,12 @@ runs:
       env: 
         list: |
           {
-            "Solution File Path": "SimpleFileIO.sln",
-            "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
-            "Build Directory Path": "./build",
-            "Tester File Path": "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj",
-            "Tester Executable File Name": "SimpleFileIO_Tester"
+            "Solution File Path": "${{ inputs.solution_file_path }}",
+            "Dll File Path": "${{ inputs.dll_project_file_path }}",
+            "Build Directory Path": "${{ inputs.build_directory_path }}",
+            "Tester File Path": "${{ inputs.tester_project_file_path }}",
+            "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }
-        # list: |
-        #   {
-        #     "Solution File Path": "${{ inputs.solution_file_path }}",
-        #     "Dll File Path": "${{ inputs.dll_project_file_path }}",
-        #     "Build Directory Path": "${{ inputs.build_directory_path }}",
-        #     "Tester File Path": "${{ inputs.tester_project_file_path }}",
-        #     "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
-        #   }
       shell: bash
 
     - name: Check Deploy Values
