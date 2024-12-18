@@ -84,6 +84,12 @@ runs:
           --output "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
       shell: pwsh
 
+    - name: List Build Directory
+      run: |
+        echo "Listing build directory contents:"
+        ls -al ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
+      shell: pwsh
+
     # Execute test executable
     - name: Run Test
       if: ${{ inputs.tester_project_file_path != '' }}
