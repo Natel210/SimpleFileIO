@@ -80,7 +80,6 @@ runs:
         dotnet publish "${{ inputs.tester_project_file_path }}" `
           --configuration ${{ inputs.configuration }} `
           --no-restore `
-          -p:OutputName=test `
           --output "${{ inputs.build_directory_path }}\\${{ inputs.configuration }}"
       shell: pwsh
 

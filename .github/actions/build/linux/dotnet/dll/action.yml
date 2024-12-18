@@ -80,7 +80,6 @@ runs:
         dotnet publish "${{ inputs.tester_project_file_path }}" \
           --configuration ${{ inputs.configuration }} \
           --no-restore \
-          -p:OutputName=test \
           --output ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
 
@@ -89,11 +88,12 @@ runs:
         echo "Listing build directory contents:"
         ls -al ${{ inputs.build_directory_path }}/${{ inputs.configuration }}
       shell: bash
+
     # Execute test
     - name: Run Test
       if: ${{ inputs.tester_project_file_path != '' }}
       run: |
-        test_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test."
+        test_path="${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test"
         if [ ! -f "$test_path" ]; then
           echo "Test executable not found: $test_path"
           exit 1
