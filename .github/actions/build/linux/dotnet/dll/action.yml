@@ -75,5 +75,5 @@ runs:
 
     - name: Run Test
       if: ${{ inputs.tester_project_file != '' }}
-      run: & ${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test.exe
+      run: ${{ inputs.build_directory_path }}/${{ inputs.configuration }}/test.exe
       shell: pwsh
