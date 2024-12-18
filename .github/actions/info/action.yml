@@ -91,15 +91,15 @@ runs:
 
     - name: Output
       run: |
-        echo ::group:: Solution & Project
+        echo ::Group:: Solution \& Project
         cat solution_project_value.result
-        echo ::endgroup::
-        echo ::group:: Deploy
+        echo ::Endgroup::
+        echo ::Group:: Deploy
         cat deploy_value.result
-        echo ::endgroup::
-        echo ::group:: Git
+        echo ::Endgroup::
+        echo ::Group:: Git
         cat git_value.result
-        echo ::endgroup::
+        echo ::Endgroup::
       shell: bash
 
     - name: Remove Execute Permission for Scripts
