@@ -57,7 +57,7 @@ runs:
 
     - name: Check Solution & Project Values
       run: |
-        echo Check Solution & Project Values
+        echo Check Solution \& Project Values
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
