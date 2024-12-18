@@ -97,6 +97,7 @@ runs:
     - name: Output Logs
       run: |
         echo ""
+        echo -e "\033[0;36mInfom\033[0m"
         echo ::Group:: Solution \& Project
         cat solution_project_value.result
         echo ::Endgroup::
