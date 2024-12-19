@@ -7,13 +7,20 @@ result_file="$3"
 source ./.scripts/colors.sh
 
 if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
-    echo -e "${background_dark_red}${text_red}No arguments.\n ${background_dark_red}${text_red}Usage: $0 <Project File Path> <Build Configuration>${reset}"
+    echo -e "${background_dark_red}${text_red}No arguments.\n ${background_dark_red}${text_red}Usage: $0 <Project File Path> <Build Configuration> <Result File>${reset}"
     exit 1
+fi
+
+# Ensure result file directory exists
+result_dir=$(dirname "$result_file")
+if [ ! -d "$result_dir" ]; then
+    mkdir -p "$result_dir"
 fi
 
 is_error=0
 output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration${reset}\n"
 
+# Execute dotnet build and capture output
 build_output=$(dotnet build "$project_file_path" -c "$build_configuration" 2>&1)
 build_exit_code=$?
 
@@ -31,7 +38,6 @@ else
     while IFS= read -r line; do
         output+="${text_light_gray} - $line${reset}\n"
     done <<< "$build_output"
-    # "\n${text_light_gray}$build_output${reset}"
 fi
 
 result="$output$summary"
