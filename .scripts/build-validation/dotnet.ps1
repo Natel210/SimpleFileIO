@@ -40,7 +40,7 @@ if ($buildExitCode -ne 0) {
 }
 
 # Combine summary and output
-$result = "$summary`n$output"
+$result = "$output$summary"
 
 # Print or save result
 if ([string]::IsNullOrEmpty($ResultFile)) {

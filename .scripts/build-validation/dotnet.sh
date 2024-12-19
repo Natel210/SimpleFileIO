@@ -23,7 +23,7 @@ if [ $build_exit_code -ne 0 ]; then
     while IFS= read -r line; do
         output+="${text_light_gray} - $line${reset}\n"
     done <<< "$build_output"
-    
+
     summary="${background_dark_red}${text_red}Build failed.${reset}"
     is_error=1
 else
@@ -34,7 +34,7 @@ else
     # "\n${text_light_gray}$build_output${reset}"
 fi
 
-result="$summary\n$output"
+result="$output$summary"
 
 if [ -z "$result_file" ]; then
   echo -e "$result"
