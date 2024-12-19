@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        configuration: [Debug, Release]
+        configuration: [debug, release]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -51,16 +51,34 @@ jobs:
           project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
           build_configuration: "${{matrix.configuration}}"
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
-      - name: Set Output
-        id: set-output
-        run: |
-          echo "${{ runner.os }}_${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+            name: ${{ runner.os }}_${{ matrix.configuration }}
+            path: ./${{ runner.os }}/${{ matrix.configuration }}.result"
+
+      # - name: Set Output
+      #   id: set-output
+      #   run: |
+      #     echo "${{ runner.os }}-${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
 
   aggregate:
       name: Aggregate Results
       needs: build-validation
       runs-on: ubuntu-latest
       steps:
+        - uses: actions/download-artifact@v3
+          with:
+            name: ubuntu-latest-debug
+        - uses: actions/download-artifact@v3
+          with:
+            name: ubuntu-latest-release
+        - uses: actions/download-artifact@v3
+          with:
+            name: windows-latest-debug
+        - uses: actions/download-artifact@v3
+          with:
+            name: windows-latest-release
+            
         - name: Aggregate Results
           run: cat $GITHUB_ENV
   # check-event:
