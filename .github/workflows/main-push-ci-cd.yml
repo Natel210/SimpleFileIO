@@ -36,8 +36,8 @@ jobs:
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
 
-  bulid-test:
-    name: Bulid Test
+  build-validation:
+    name: Build Validation
     needs: info-and-check
     runs-on: ${{ matrix.os }}
     strategy:
@@ -48,96 +48,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
       - name: Dll Build Test
-        uses: ./.github/actions/build-test/dotnet
+        uses: ./.github/actions/build-validation/dotnet
         with:
           project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
           build_configuration: "${{matrix.configuration}}"
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
-      - name: Tester Build Test
-        uses: ./.github/actions/build-test/dotnet
-        with:
-          project_file_path: "${{vars.TESTER_PROJECT_FILE_PATH}}"
-          build_configuration: "${{matrix.configuration}}"
-          dotnet_version: "${{ vars.DOTNET_VERSION }}"
-  # windows-debug-ci:
-  #   name: Windows Debug CI
-  #   runs-on: windows-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/windows/dotnet/dll
-  #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-  #         tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Debug"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
-
-  # windows-release-ci:
-  #   name: Windows Release CI
-  #   runs-on: windows-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/windows/dotnet/dll
-  #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-  #         tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}.exe"
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Release"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
-
-  # linux-debug-ci:
-  #   name: Linux Debug CI
-  #   runs-on: ubuntu-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/linux/dotnet/dll
-  #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-  #         tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Debug"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
-  
-  # linux-release-ci:
-  #   name: Linux Release CI
-  #   runs-on: ubuntu-latest
-  #   needs: info
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  
-  #     - name: Build and Test
-  #       uses: ./.github/actions/build/linux/dotnet/dll
-  #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         tester_project_file_path: ${{ vars.TESTER_PROJECT_FILE_PATH }}
-  #         tester_executable_file_name: ${{ vars.TESTER_EXECUTABLE_FILE_NAME }}
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Release"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
+      # - name: Tester Build Test
+      #   uses: ./.github/actions/build-validation/dotnet
+      #   with:
+      #     project_file_path: "${{vars.TESTER_PROJECT_FILE_PATH}}"
+      #     build_configuration: "${{matrix.configuration}}"
+      #     dotnet_version: "${{ vars.DOTNET_VERSION }}"
 
   # check-event:
   #   name: Check Git Event

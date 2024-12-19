@@ -13,8 +13,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    # Setup .NET environment
-    - name: Setup .NET
+    - name: Setup .NET environment
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
@@ -23,11 +22,11 @@ runs:
       if: runner.os == 'Linux'
       run: |
         chmod +x ./.scripts/build-test/dotnet.sh
-        ./.scripts/build-test/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
+        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
         chmod -x ./.scripts/build-test/dotnet.sh
       shell: bash
 
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: ./.scripts/build-test/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
+      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
       shell: pwsh
