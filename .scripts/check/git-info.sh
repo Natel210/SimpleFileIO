@@ -18,6 +18,7 @@ BLUE="\033[34m"
 RED="\033[31m"
 DARK="\033[30m"
 BG_WHITE="\033[47m"
+BG_RED="\033[41m"
 RESET="\033[0m"
 
 is_error=0
@@ -30,14 +31,14 @@ case "$event_name" in
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
       output+="\n  - Branch: \033[34m$branch_name\033[0m"
-      summary="${BG_WHITE}${GREEN}Push${DARK} Branch : ${BLUE}$branch_name${RESET}\n"
+      summary="${BG_WHITE}${DARK}Push Branch : $branch_name${RESET}\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
       output+="\n  - Branch: \033[34m$tag_name\033[0m"
-      summary="\033[32mPush\033[0m Tag : \033[34m$tag_name\033[0m\n"
+      summary="${BG_WHITE}${DARK}Push Tag : $tag_name${RESET}\n"
     else
       output+="\n  - \033[31mUnknown\033[0m"
-      summary="\033[32mPush\033[0m \033[31mUnknown\033[0m\n"
+      summary="${BG_RED}${DARK}Push Unknown${RESET}\n"
       is_error=1
     fi
     ;;
