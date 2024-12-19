@@ -11,7 +11,7 @@ event_name="${1}"
 ref="${2:-unknown_ref}"
 head_ref="${3:-unknown_head_ref}"
 base_ref="${4:-unknown_base_ref}"
-result_file="$4"
+result_file="$5"
 
 is_error=0
 # Handle different events
