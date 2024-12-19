@@ -7,7 +7,7 @@ $TextDarkRed = "`e[38;5;124m"
 $TextDarkBlue = "`e[38;5;20m"
 $TextDarkGreen = "`e[38;5;28m"
 
-$BackgroundLightGray = "`e[48;5;245m"
+$BackgroundLightGray = "`e[48;5;243m"
 $BackgroundDarkRed = "`e[48;5;52m"
 $BackgroundDarkBlue = "`e[48;5;18m"
 $BackgroundDarkGreen = "`e[48;5;22m"

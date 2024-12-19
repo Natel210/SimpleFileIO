@@ -7,7 +7,7 @@ text_dark_red="\033[38;5;124m"
 text_dark_blue="\033[38;5;20m"
 text_dark_green="\033[38;5;28m"
 
-background_light_gray="\033[48;5;245m"
+background_light_gray="\033[48;5;243m"
 background_dark_red="\033[48;5;52m"
 background_dark_blue="\033[48;5;18m"
 background_dark_green="\033[48;5;22m"
