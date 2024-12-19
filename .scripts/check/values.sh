@@ -17,5 +17,4 @@ if [ -z "$result_file" ]; then
 else
   touch $result_file
   echo -e "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"' > "$result_file"
-  cat "$result_file"
 fi

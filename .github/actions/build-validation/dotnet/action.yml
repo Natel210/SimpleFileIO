@@ -36,6 +36,5 @@ runs:
       run: |
         ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
         Get-Content ./${{ runner.os }}/${{ inputs.build_configuration }}.result
-        Get-ChildItem -Recurse | ForEach-Object { $_.FullName }
       shell: pwsh
 

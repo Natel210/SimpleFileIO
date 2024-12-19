@@ -51,16 +51,13 @@ runs:
   steps:
     - name: Add Execute Permission for Scripts
       run: |
-        echo Add Execute Permission for Scripts
         chmod +x ./.scripts/check/values.sh
         chmod +x ./.scripts/check/exist-files.sh
         chmod +x ./.scripts/check/git-info.sh
       shell: bash
 
     - name: Check Solution & Project Values
-      run: |
-        echo Check Solution \& Project Values
-        ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
+      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -73,9 +70,7 @@ runs:
       shell: bash
 
     - name: Check Deploy Values
-      run: |
-        echo Check Deploy Values
-        ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
+      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
       env: 
         DEPLOY_JSON_DATA: |
           {
@@ -85,9 +80,7 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: |
-        echo Check Git Values
-        ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
+      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
       env: 
         GIT_JSON_DATA: |
           {
@@ -99,9 +92,7 @@ runs:
       shell: bash
 
     - name: Check Exist Files
-      run: |
-        echo Check Exist Files
-        ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
+      run: ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
       env: 
         EXIST_FILES_JSON_DATA: |
           {
@@ -114,9 +105,7 @@ runs:
       shell: bash
 
     - name: Check Git Info
-      run: |
-        echo Check Git Info
-        ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
+      run: ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"
@@ -126,31 +115,7 @@ runs:
 
     - name: Remove Execute Permission for Scripts
       run: |
-        echo Remove Execute Permission for Scripts
         chmod -x ./.scripts/check/values.sh
         chmod -x ./.scripts/check/exist-files.sh
         chmod -x ./.scripts/check/git-info.sh
-      shell: bash
-
-    - name: Output  Logs
-      run: |
-        echo " "
-        echo " "
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-               \n\033[38;5;245m│  Git Info                                                │\033[0m\
-               \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-        cat git_info.result
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-               \n\033[38;5;245m│  File Exist                                              │\033[0m\
-               \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-        cat exist_files.result
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-               \n\033[38;5;245m│  Values                                                  │\033[0m\
-               \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "\033[38;5;245m● Solution & Project\033[0m"
-        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' solution_project_value.result
-        echo -e "\033[38;5;245m● Deploy\033[0m"
-        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' deploy_value.result
-        echo -e "\033[38;5;245m● Git\033[0m"
-        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' git_value.result
       shell: bash

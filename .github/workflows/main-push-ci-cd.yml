@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/info
-        name: Info And Check
+      - name: Info And Check
+        uses: ./.github/actions/info
         with:
           # solution & project
           solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"
@@ -34,6 +34,37 @@ jobs:
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Info
+          path: |
+            ./git_info.result
+            ./exist_files.result
+            ./solution_project_value.result
+            ./deploy_value.result
+            ./git_value.result
+
+      - run: |
+          echo " "
+          echo " "
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Git Info                                                │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          cat git_info.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  File Exist                                              │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat exist_files.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Values                                                  │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "\033[38;5;245m● Solution & Project\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' solution_project_value.result
+          echo -e "\033[38;5;245m● Deploy\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' deploy_value.result
+          echo -e "\033[38;5;245m● Git\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' git_value.result
+
   build-validation:
     name: Build Validation
     needs: info-and-check
@@ -43,8 +74,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
         configuration: [Debug, Release]
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Dll Build Test
         uses: ./.github/actions/build-validation/dotnet
         with:
@@ -52,35 +82,10 @@ jobs:
           build_configuration: "${{matrix.configuration}}"
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
 
-      - name: TEST-Windows
-        if: runner.os == 'Windows'
-        run: Get-ChildItem -Recurse | ForEach-Object { $_.FullName }
-
-
-      - name: TEST OUT Linux
-        if: runner.os == 'Linux'
-        run: cat ./${{ runner.os }}/${{ matrix.configuration }}.result
-        
-
-      - name: Verify File Existence Linux
-        if: runner.os == 'Linux'
-        run: |
-          if [ -f "./${{ runner.os }}/${{ matrix.configuration }}.result" ]; then
-            echo "File exists: ./${{ runner.os }}/${{ matrix.configuration }}.result"
-          else
-            echo "File not found: ./${{ runner.os }}/${{ matrix.configuration }}.result"
-            find . -name "*.result"
-          fi
-
       - uses: actions/upload-artifact@v4
         with:
-            name: ${{ runner.os }}_${{ matrix.configuration }}
+            name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}.result
-
-      # - name: Set Output
-      #   id: set-output
-      #   run: |
-      #     echo "${{ runner.os }}_${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
 
   aggregate:
       name: Aggregate Results
