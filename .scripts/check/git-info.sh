@@ -34,18 +34,18 @@ is_error=0
 case "$event_name" in
   push)
     output="${TEXT_LIGHT_GRAY}● Detail${RESET}"
-    output+="${TEXT_LIGHT_GRAY}\n  - Event : ${TEXT_DARK_GREEN}Push${RESET}"
-    output+="${TEXT_LIGHT_GRAY}\n  - Ref: $ref${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}  - Event : ${TEXT_DARK_GREEN}Push${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}  - Ref: $ref${RESET}"
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
-      output+="${TEXT_LIGHT_GRAY}\n  - Branch: ${TEXT_DARK_BLUE}$branch_name${RESET}"
-      summary="${BACKGROUND_DARK_GRAY}${TEXT_GREEN}Push Branch : $branch_name${RESET}\n"
+      output+="\n${TEXT_LIGHT_GRAY}  - Branch: ${TEXT_DARK_BLUE}$branch_name${RESET}"
+      summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}Push${TEXT_WHITE} Branch : ${TEXT_BLUE}$branch_name${RESET}\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
-      output+="${TEXT_LIGHT_GRAY}\n  - Branch: ${TEXT_DARK_BLUE}$tag_name${RESET}"
-      summary="${BACKGROUND_DARK_GRAY}${TEXT_GREEN}Push Tag : $tag_name${RESET}\n"
+      output+="\n${TEXT_LIGHT_GRAY}  - Branch: ${TEXT_DARK_BLUE}$tag_name${RESET}"
+      summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}Push Tag : $tag_name${RESET}\n"
     else
-      output+="${TEXT_LIGHT_GRAY}\n  - ${TEXT_DARK_RED}Unknown${RESET}"
+      output+="\n${TEXT_LIGHT_GRAY}  - ${TEXT_DARK_RED}Unknown${RESET}"
       summary="${BACKGROUND_DARK_RED}${TEXT_RED}Push Unknown${RESET}\n"
       is_error=1
     fi
