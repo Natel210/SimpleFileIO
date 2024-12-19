@@ -22,11 +22,11 @@ runs:
       if: runner.os == 'Linux'
       run: |
         chmod +x ./.scripts/build-validation/dotnet.sh
-        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
+        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ build_configuration }}.result"
         chmod -x ./.scripts/build-validation/dotnet.sh
       shell: bash
 
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
+      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ build_configuration }}.result"
       shell: pwsh
