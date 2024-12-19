@@ -139,10 +139,10 @@ runs:
         echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  File Exist                                    │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
         cat exist_files.result
         echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  Values                                        │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
-        echo -e "${TEXT_DEFAULT_COLOR}● Solution \& Project${RESET}"
-        echo -e 'cat solution_project_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"'
+        echo -e "${TEXT_DEFAULT_COLOR}● Solution & Project${RESET}"
+        cat solution_project_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
         echo -e "${TEXT_DEFAULT_COLOR}● Deploy${RESET}"
-        echo -e 'cat deploy_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"'
+        cat deploy_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
         echo -e "${TEXT_DEFAULT_COLOR}● Git${RESET}"
-        echo -e 'cat git_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"'
+        cat git_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
       shell: bash
