@@ -32,4 +32,4 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "${background_dark_green}${text_green}Build Test Completed Successfully.${reset}"
+echo -e "${background_dark_green}${text_green}Build Test Completed Successfully.${reset}"
