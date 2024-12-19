@@ -130,17 +130,19 @@ runs:
 
     - name: Output  Logs
       run: |
+        TEXT_DEFAULT_COLOR="\033[38;5;245m"
+        RESET="\033[0m"
         echo " "
         echo " "
-        echo -e "\033[38;5;245m┌────────────────────────────────────────────────┐\n\033[38;5;245m│  Git Info                                      │\n\033[38;5;245m└────────────────────────────────────────────────┘\n"
+        echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  Git Info                                      │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
         cat git_info.result
-        echo -e "\033[38;5;245m┌────────────────────────────────────────────────┐\n\033[38;5;245m│  File Exist                                    │\n\033[38;5;245m└────────────────────────────────────────────────┘\n"
+        echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  File Exist                                    │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
         cat exist_files.result
-        echo -e "\033[38;5;245m┌────────────────────────────────────────────────┐\n\033[38;5;245m│  Values                                        │\n\033[38;5;245m└────────────────────────────────────────────────┘\n"
-        echo ● Solution \& Project
-        cat solution_project_value.result | sed 's/^/ - /'
-        echo ● Deploy
-        cat deploy_value.result | sed 's/^/ - /'
-        echo ● Git
-        cat git_value.result | sed 's/^/ - /'
+        echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  Values                                        │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
+        echo -e "${TEXT_DEFAULT_COLOR}● Solution \& Project${RESET}"
+        cat solution_project_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
+        echo -e "${TEXT_DEFAULT_COLOR}● Deploy${RESET}"
+        cat deploy_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
+        echo -e "${TEXT_DEFAULT_COLOR}● Git${RESET}"
+        cat git_value.result | sed "s/^/${TEXT_DEFAULT_COLOR} - /" | sed "s/$/${RESET}/"
       shell: bash
