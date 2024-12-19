@@ -49,17 +49,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Check jp Command
-      run: |
-        if ! command -v jp &> /dev/null; then
-          echo -e "\033[31m[Error] 'jp' command is not installed or not in PATH.\033[0m"
-          echo -e "\033[33m[Hint] Please install 'jp' before running this workflow.\033[0m"
-          exit 1
-        else
-          echo -e "\033[32m[Success] 'jp' command is available.\033[0m"
-        fi
-      shell: bash
-
     - name: Add Execute Permission for Scripts
       run: |
         echo Add Execute Permission for Scripts
