@@ -27,10 +27,10 @@ output=""
 while IFS=$'\t' read -r key path; do
   total_count=$((total_count + 1))
   if [ -f "$path" ] || [ -d "$path" ]; then
-    output+="● $key\n  - $path : ${BLUE}Exist${RESET}\n"
+    output+="\n● $key\n  - $path : ${BLUE}Exist${RESET}"
   else
     missing_count=$((missing_count + 1))
-    output+="● $key\n  - $path : ${RED}Not Exist${RESET}\n"
+    output+="\n● $key\n  - $path : ${RED}Not Exist${RESET}"
   fi
 done <<< "$FILES"
 
