@@ -10,7 +10,7 @@ if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
     exit 1
 fi
 
-echo -e "Building project: $project_file_path with configuration: $build_configuration"
+echo -e "${background_dark_blue}${text_blue}Building project: $project_file_path with configuration: $build_configuration${reset}"
 dotnet build "$project_file_path" -c "$build_configuration"
 
 if [ $? -ne 0 ]; then
