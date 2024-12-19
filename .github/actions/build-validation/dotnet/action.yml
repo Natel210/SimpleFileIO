@@ -24,7 +24,7 @@ runs:
         chmod +x ./.scripts/build-validation/dotnet.sh
         ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
         chmod -x ./.scripts/build-validation/dotnet.sh
-        ls -a -l -r
+        find . -exec ls -ld {} \;
       shell: bash
 
     - name: Build Test on Windows

@@ -53,7 +53,7 @@ jobs:
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
       - name: TEST-Linux
         if: runner.os == 'Linux'
-        run: ls -a -l -r
+        run: find . -exec ls -ld {} \;
 
       - name: TEST-Windows
         if: runner.os == 'Windows'
