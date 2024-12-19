@@ -54,7 +54,7 @@ jobs:
 
       - name: TEST-Windows
         if: runner.os == 'Windows'
-        run: get-chilitem -Recurse | %{$_.FullName}
+        run: Get-ChildItem -Recurse | ForEach-Object { $_.FullName }
 
 
       - name: TEST OUT Linux
