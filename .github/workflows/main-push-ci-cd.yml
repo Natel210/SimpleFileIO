@@ -60,7 +60,8 @@ jobs:
       - name: Set Output
         id: set-output
         run: |
-          echo "${{ runner.os }}_${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result >> $GITHUB_ENV
+          echo "${{ runner.os }}_${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
+
 
   build-validation2:
     name: Build Validation2
