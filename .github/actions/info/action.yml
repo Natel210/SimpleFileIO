@@ -114,7 +114,7 @@ runs:
     - name: Check Git Info
       run: |
         echo Check Git Info
-        ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_value.result"
+        ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"
@@ -132,7 +132,8 @@ runs:
       run: |
         echo " "
         echo " "
-        echo -e "\033[0;36m----  Git Event  ----\033[0m"
+        echo -e "\033[0;36m----  Git Info  ----\033[0m"
+        cat git_info.result
         echo -e "\033[0;36m----  File Exist  ----\033[0m"
         cat exist_files.result
         echo -e "\033[0;36m----  Values  ----\033[0m"
