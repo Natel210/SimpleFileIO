@@ -140,9 +140,9 @@ runs:
         cat exist_files.result
         echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  Values                                        │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
         echo -e "${TEXT_DEFAULT_COLOR}● Solution & Project${RESET}"
-        awk '{printf "${TEXT_DEFAULT_COLOR} - %s${RESET}\n", $0}' solution_project_value.result
+        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' solution_project_value.result
         echo -e "${TEXT_DEFAULT_COLOR}● Deploy${RESET}"
-        awk '{printf "${TEXT_DEFAULT_COLOR} - %s${RESET}\n", $0}' deploy_value.result
+        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' deploy_value.result
         echo -e "${TEXT_DEFAULT_COLOR}● Git${RESET}"
-        awk '{printf "${TEXT_DEFAULT_COLOR} - %s${RESET}\n", $0}' git_value.result
+        awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' git_value.result
       shell: bash
