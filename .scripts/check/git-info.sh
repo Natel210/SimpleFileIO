@@ -15,11 +15,11 @@ result_file="$5"
 
 TEXT_WHITE="\033[38;5;15m"
 TEXT_RED="\033[38;5;196m"
-TEXT_BLUE="\033[38;5;30m"
+TEXT_BLUE="\033[38;5;27m"
 TEXT_GREEN="\033[38;5;46m"
 TEXT_LIGHT_GRAY="\033[38;5;245m"
 TEXT_DARK_RED="\033[38;5;124m"
-TEXT_DARK_BLUE="\033[38;5;20m"
+TEXT_DARK_BLUE="\033[38;5;18m"
 TEXT_DARK_GREEN="\033[38;5;28m"
 
 BACKGROUND_LIGHT_GRAY="\033[48;5;245m"
@@ -39,7 +39,7 @@ case "$event_name" in
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
       output+="\n${TEXT_LIGHT_GRAY}  - Branch: ${TEXT_DARK_BLUE}$branch_name${RESET}"
-      summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}Push${TEXT_WHITE} Branch : ${TEXT_BLUE}$branch_name${RESET}\n"
+      summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}Push Branch : $branch_name${RESET}\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
       output+="\n${TEXT_LIGHT_GRAY}  - Branch: ${TEXT_DARK_BLUE}$tag_name${RESET}"
@@ -75,7 +75,7 @@ case "$event_name" in
       output+="${TEXT_LIGHT_GRAY}\n  - Head Branch : $head_branch_name${RESET}"
       output+="${TEXT_LIGHT_GRAY}\n  - Base Branch : $base_branch_name${RESET}"
       output+="${TEXT_LIGHT_GRAY}\n  $head_branch_name -> $base_branch_name${RESET}"
-      summary="${BACKGROUND_DARK_GRAY}${summary}${TEXT_WHITE} : $head_branch_name -> $base_branch_name${RESET}"
+      summary="${BACKGROUND_DARK_GREEN}${summary}${TEXT_GREEN} : $head_branch_name -> $base_branch_name${RESET}"
     else
       summary="${BACKGROUND_DARK_RED}${summary}${RESET}"
     fi

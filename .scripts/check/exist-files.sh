@@ -5,11 +5,11 @@ result_file="$2"
 
 TEXT_WHITE="\033[38;5;15m"
 TEXT_RED="\033[38;5;196m"
-TEXT_BLUE="\033[38;5;30m"
+TEXT_BLUE="\033[38;5;27m"
 TEXT_GREEN="\033[38;5;46m"
 TEXT_LIGHT_GRAY="\033[38;5;245m"
 TEXT_DARK_RED="\033[38;5;124m"
-TEXT_DARK_BLUE="\033[38;5;20m"
+TEXT_DARK_BLUE="\033[38;5;18m"
 TEXT_DARK_GREEN="\033[38;5;28m"
 
 BACKGROUND_LIGHT_GRAY="\033[48;5;245m"
@@ -38,10 +38,10 @@ output=""
 while IFS=$'\t' read -r key path; do
   total_count=$((total_count + 1))
   if [ -f "$path" ] || [ -d "$path" ]; then
-    output+="\n● $key\n  - $path : ${TEXT_DARK_BLUE}Exist${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}● $key\n  - $path : ${TEXT_DARK_BLUE}Exist${RESET}"
   else
     missing_count=$((missing_count + 1))
-    output+="\n● $key\n  - $path : ${TEXT_DARK_RED}Not Exist${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}● $key\n  - $path : ${TEXT_DARK_RED}Not Exist${RESET}"
   fi
 done <<< "$FILES"
 
