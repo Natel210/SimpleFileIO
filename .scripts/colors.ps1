@@ -1,0 +1,15 @@
+$TextWhite = "`e[38;5;15m"
+$TextRed = "`e[38;5;196m"
+$TextBlue = "`e[38;5;27m"
+$TextGreen = "`e[38;5;46m"
+$TextLightGray = "`e[38;5;245m"
+$TextDarkRed = "`e[38;5;124m"
+$TextDarkBlue = "`e[38;5;20m"
+$TextDarkGreen = "`e[38;5;28m"
+
+$BackgroundLightGray = "`e[48;5;245m"
+$BackgroundDarkRed = "`e[48;5;52m"
+$BackgroundDarkBlue = "`e[48;5;17m"
+$BackgroundDarkGreen = "`e[48;5;22m"
+
+$Reset = "`e[0m"

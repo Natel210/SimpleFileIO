@@ -16,8 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        name: Check Out
-
       - uses: ./.github/actions/info
         name: Info And Check
         with:
@@ -59,6 +57,12 @@ jobs:
       #     project_file_path: "${{vars.TESTER_PROJECT_FILE_PATH}}"
       #     build_configuration: "${{matrix.configuration}}"
       #     dotnet_version: "${{ vars.DOTNET_VERSION }}"
+  build-validation2:
+    name: Build Validation2
+    needs: build-validation
+    if: ${{github.event_name == 'push'}}
+    steps:
+      - uses: actions/checkout@v4
 
   # check-event:
   #   name: Check Git Event
