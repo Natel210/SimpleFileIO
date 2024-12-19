@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        configuration: [debug, release]
+        configuration: [Rebug, Release]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -59,7 +59,7 @@ jobs:
       # - name: Set Output
       #   id: set-output
       #   run: |
-      #     echo "${{ runner.os }}-${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
+      #     echo "${{ runner.os }}_${{ matrix.configuration }}=./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
 
   aggregate:
       name: Aggregate Results
@@ -68,16 +68,16 @@ jobs:
       steps:
         - uses: actions/download-artifact@v4
           with:
-            name: ubuntu-latest-debug
+            name: Linux_Debug
         - uses: actions/download-artifact@v4
           with:
-            name: ubuntu-latest-release
+            name: Linux_Release
         - uses: actions/download-artifact@v4
           with:
-            name: windows-latest-debug
+            name: Windows_Debug
         - uses: actions/download-artifact@v4
           with:
-            name: windows-latest-release
+            name: Windows_Release
             
         - name: Aggregate Results
           run: cat $GITHUB_ENV
