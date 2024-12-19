@@ -87,6 +87,6 @@ else
   echo -e "$result" > "$result_file"
 fi
 
-if [ $is_error != 0]
+if [ $is_error != 0]; then
   exit 1
 fi
