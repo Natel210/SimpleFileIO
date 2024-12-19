@@ -42,8 +42,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         configuration: [Debug, Release]
-    outputs:
-      result-${{ matrix.os }}-${{ matrix.configuration }}: "./${{ runner.os }}/${{ matrix.configuration }}.result"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -59,6 +57,10 @@ jobs:
       #     project_file_path: "${{vars.TESTER_PROJECT_FILE_PATH}}"
       #     build_configuration: "${{matrix.configuration}}"
       #     dotnet_version: "${{ vars.DOTNET_VERSION }}"
+      - name: Set Output
+        id: set-output
+        run: |
+          echo "${{ runner.os }}_${{ matrix.configuration }}=$"./${{ runner.os }}/${{ matrix.configuration }}.result" >> $GITHUB_ENV
 
   build-validation2:
     name: Build Validation2
@@ -67,7 +69,26 @@ jobs:
     if: ${{github.event_name == 'push'}}
     steps:
       - uses: actions/checkout@v4
-
+  aggregate:
+      name: Aggregate Results
+      needs: build-validation
+      runs-on: ubuntu-latest
+      steps:
+        - name: Aggregate Results
+          run: |
+            echo "Aggregating results..."
+            for config in Debug Release; do
+              for os in ubuntu-latest windows-latest; do
+                result_file="./$os/$config.result"
+                if [ -f "$result_file" ]; then
+                  echo "Result for $os - $config:"
+                  cat "$result_file"
+                  echo ""
+                else
+                  echo "Result file not found for $os - $config."
+                fi
+              done
+            done
   # check-event:
   #   name: Check Git Event
   #   needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
