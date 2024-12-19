@@ -4,26 +4,37 @@ param (
     [string]$ResultFile = $null
 )
 
+# Import colors if necessary
 . ./.scripts/colors.ps1
 
 if (-not $ProjectFilePath -or -not $BuildConfiguration) {
     Write-Host "${BackgroundDarkRed}${TextRed}No arguments.${Reset}"
-    Write-Host "${BackgroundDarkRed}${TextRed}Usage: .\dotnet-build.ps1 -ProjectFilePath <ProjectFilePath> -BuildConfiguration <BuildConfiguration>${Reset}"
+    Write-Host "${BackgroundDarkRed}${TextRed}Usage: .\dotnet-build.ps1 -ProjectFilePath <ProjectFilePath> -BuildConfiguration <BuildConfiguration> -ResultFile <ResultFile>${Reset}"
     exit 1
 }
 
+# Initialize variables
 $isError = $false
 $output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration${Reset}`n"
 
-# Capture dotnet build output
+# Ensure directory for result file exists
+if (-not [string]::IsNullOrEmpty($ResultFile)) {
+    $resultDirectory = Split-Path -Path $ResultFile
+    if (-not (Test-Path -Path $resultDirectory)) {
+        New-Item -ItemType Directory -Path $resultDirectory -Force | Out-Null
+    }
+}
+
+# Execute build command and capture output
 $buildOutput = & dotnet build $ProjectFilePath -c $BuildConfiguration 2>&1
 $buildExitCode = $LASTEXITCODE
 
 if ($buildExitCode -ne 0) {
+    # Handle build failure
     $output += "${BackgroundDarkRed}${TextRed}Build failed.${Reset}`n"
     $output += "${TextRed}Error Output:${Reset}`n"
 
-    # Process each line in the build output
+    # Process each line in build output
     foreach ($line in $buildOutput -split "`n") {
         $output += "${TextLightGray} - $line${Reset}`n"
     }
@@ -31,20 +42,21 @@ if ($buildExitCode -ne 0) {
     $summary = "${BackgroundDarkRed}${TextRed}Build failed.${Reset}"
     $isError = $true
 } else {
-    $summary = "${BackgroundDarkGreen}${TextGreen}Build Test Completed Successfully.${Reset}"
+    # Handle build success
+    $summary = "${BackgroundDarkGreen}${TextGreen}Build Test Completed Successfully.${Reset}`n"
 
-    # Process each line in the build output
+    # Process each line in build output
     foreach ($line in $buildOutput -split "`n") {
         $output += "${TextLightGray} - $line${Reset}`n"
     }
 }
 
 # Combine summary and output
-$result = "$output$summary"
+$result = "$output`n$summary"
 
-# Print or save result
+# Output or save result
 if ([string]::IsNullOrEmpty($ResultFile)) {
-    Write-Host -NoNewline $result
+    Write-Host $result
 } else {
     $result | Set-Content -Path $ResultFile -Encoding UTF8
 }
