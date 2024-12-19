@@ -6,6 +6,8 @@ result_file="$2"
 GREEN="\033[32m"
 BLUE="\033[34m"
 RED="\033[31m"
+DARK="\033[30m"
+BG_WHITE="\033[47m"
 RESET="\033[0m"
 
 if [ -z "$json_data" ]; then
@@ -35,9 +37,9 @@ while IFS=$'\t' read -r key path; do
 done <<< "$FILES"
 
 if [ "$missing_count" -eq 0 ]; then
-  summary="${GREEN}All OK.. ($total_count/$total_count)${RESET}\n"
+  summary="${BG_WHITE}${GREEN}All OK.. ($total_count/$total_count)${RESET}\n"
 else
-  summary="${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
+  summary="${BG_WHITE}${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
 fi
 
 result="$summary$output"

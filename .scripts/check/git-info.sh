@@ -13,6 +13,13 @@ head_ref="${3:-unknown_head_ref}"
 base_ref="${4:-unknown_base_ref}"
 result_file="$5"
 
+GREEN="\033[32m"
+BLUE="\033[34m"
+RED="\033[31m"
+DARK="\033[30m"
+BG_WHITE="\033[47m"
+RESET="\033[0m"
+
 is_error=0
 # Handle different events
 case "$event_name" in
@@ -23,7 +30,7 @@ case "$event_name" in
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
       output+="\n  - Branch: \033[34m$branch_name\033[0m"
-      summary="\033[32mPush\033[0m Branch : \033[34m$branch_name\033[0m\n"
+      summary="${BG_WHITE}${GREEN}Push${DARK} Branch : ${BLUE}$branch_name${RESET}\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
       output+="\n  - Branch: \033[34m$tag_name\033[0m"
