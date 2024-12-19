@@ -85,12 +85,15 @@ runs:
     - name: Check Git Values
       run: |
         echo Check Git Values
-        ./.scripts/check/values.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_value.result"
+        ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
       env: 
-        EVENT_NAME: "${{ inputs.git_event_name }}"
-        REF: "${{ inputs.git_ref }}"
-        HEAD_REF: "${{ inputs.head_ref }}"
-        BASE_REF: "${{ inputs.base_ref }}"
+        GIT_JSON_DATA: |
+          {
+            "Event": "${{ inputs.git_event_name }}",
+            "Ref": "${{ inputs.git_ref }}",
+            "Head Ref": "${{ inputs.head_ref }}",
+            "Base Ref": "${{ inputs.base_ref }}"
+          }
       shell: bash
 
     - name: Check Exist Files
@@ -108,9 +111,16 @@ runs:
           }
       shell: bash
 
-
-
-
+    - name: Check Git Info
+          run: |
+            echo Check Git Info
+            ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_value.result"
+          env: 
+            EVENT_NAME: "${{ inputs.git_event_name }}"
+            REF: "${{ inputs.git_ref }}"
+            HEAD_REF: "${{ inputs.head_ref }}"
+            BASE_REF: "${{ inputs.base_ref }}"
+          shell: bash
 
     - name: Remove Execute Permission for Scripts
       run: |
