@@ -21,9 +21,9 @@ runs:
     - name: Build Test on Linux
       if: runner.os == 'Linux'
       run: |
-        chmod +x ./.scripts/build-test/dotnet.sh
+        chmod +x ./.scripts/build-validation/dotnet.sh
         ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}"
-        chmod -x ./.scripts/build-test/dotnet.sh
+        chmod -x ./.scripts/build-validation/dotnet.sh
       shell: bash
 
     - name: Build Test on Windows
