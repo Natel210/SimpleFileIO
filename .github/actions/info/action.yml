@@ -132,11 +132,11 @@ runs:
       run: |
         echo " "
         echo " "
-        echo -e "\033[0;36m----  Git Info  ----\033[0m"
+        echo -e "\033[38;5;245m┌──────────────────┐\n\033[38;5;245m│  Git Info        │\033[38;5;245m└──────────────────┘\n"
         cat git_info.result
-        echo -e "\033[0;36m----  File Exist  ----\033[0m"
+        echo -e "\033[38;5;245m┌──────────────────┐\n\033[38;5;245m│  File Exist      │\033[38;5;245m└──────────────────┘\n"
         cat exist_files.result
-        echo -e "\033[0;36m----  Values  ----\033[0m"
+        echo -e "\033[38;5;245m┌──────────────────┐\n\033[38;5;245m│  Values          │\033[38;5;245m└──────────────────┘\n"
         echo ● Solution \& Project
         cat solution_project_value.result | sed 's/^/ - /'
         echo ● Deploy
