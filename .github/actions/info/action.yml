@@ -140,9 +140,9 @@ runs:
         cat exist_files.result
         echo -e "${TEXT_DEFAULT_COLOR}┌────────────────────────────────────────────────┐\n${TEXT_DEFAULT_COLOR}│  Values                                        │\n${TEXT_DEFAULT_COLOR}└────────────────────────────────────────────────┘"
         echo -e "${TEXT_DEFAULT_COLOR}● Solution & Project${RESET}"
-        cat solution_project_value.result | sed "s/^/\033[38;5;245m - /" | sed "s/$/\033[0m/"
+        cat solution_project_value.result | sed -e "s/^/\033[38;5;245m - /" | sed "s/$/\033[0m/"
         echo -e "${TEXT_DEFAULT_COLOR}● Deploy${RESET}"
-        cat deploy_value.result | sed "s/^/\033[38;5;245m - /" | sed "s/$/\033[0m/"
+        cat deploy_value.result | sed -e "s/^/\033[38;5;245m - /" | sed -e "s/$/\033[0m/"
         echo -e "${TEXT_DEFAULT_COLOR}● Git${RESET}"
-        cat git_value.result | sed "s/^/\033[38;5;245m - /" | sed "s/$/\033[0m/"
+        cat git_value.result | sed -e "s/^/\033[38;5;245m - /" | sed -e "s/$/\033[0m/"
       shell: bash
