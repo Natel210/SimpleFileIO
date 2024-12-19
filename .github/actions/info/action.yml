@@ -57,7 +57,7 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
+      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution-project-value.result"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -70,7 +70,7 @@ runs:
       shell: bash
 
     - name: Check Deploy Values
-      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
+      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy-value.result"
       env: 
         DEPLOY_JSON_DATA: |
           {
@@ -80,7 +80,7 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
+      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git-value.result"
       env: 
         GIT_JSON_DATA: |
           {
@@ -92,7 +92,7 @@ runs:
       shell: bash
 
     - name: Check Exist Files
-      run: ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
+      run: ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist-files.result"
       env: 
         EXIST_FILES_JSON_DATA: |
           {
@@ -105,7 +105,7 @@ runs:
       shell: bash
 
     - name: Check Git Info
-      run: ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
+      run: ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git-info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"

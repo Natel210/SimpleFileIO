@@ -38,32 +38,11 @@ jobs:
         with:
           name: Info
           path: |
-            ./git_info.result
-            ./exist_files.result
-            ./solution_project_value.result
-            ./deploy_value.result
-            ./git_value.result
-
-      - run: |
-          echo " "
-          echo " "
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Git Info                                                │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          cat git_info.result
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  File Exist                                              │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat exist_files.result
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Values                                                  │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "\033[38;5;245m● Solution & Project\033[0m"
-          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' solution_project_value.result
-          echo -e "\033[38;5;245m● Deploy\033[0m"
-          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' deploy_value.result
-          echo -e "\033[38;5;245m● Git\033[0m"
-          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' git_value.result
+            ./git-info.result
+            ./exist-files.result
+            ./solution-project_value.result
+            ./deploy-value.result
+            ./git-value.result
 
   build-validation:
     name: Build Validation
@@ -72,7 +51,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        configuration: [Debug, Release]
+        configuration: [debug, release]
     steps:
       - uses: actions/checkout@v4
       - name: Dll Build Test
@@ -85,28 +64,62 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
-            path: ./${{ runner.os }}/${{ matrix.configuration }}.result
+            path: ./${{ runner.os }}-${{ matrix.configuration }}.result
+  results:
+    name: Results
+    needs: build-validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Info
+            path: ./results/info
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Build_Validation_Linux_Debug
+            path: ./results/build-validation/
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Build_Validation_Linux_Release
+            path: ./results/build-validation/
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Build_Validation_Windows_Debug
+            path: ./results/build-validation/
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Build_Validation_Windows_Release
+            path: ./results/build-validation/
 
-  aggregate:
-      name: Aggregate Results
-      needs: build-validation
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/download-artifact@v4
-          with:
-            name: Linux_Debug
-        - uses: actions/download-artifact@v4
-          with:
-            name: Linux_Release
-        - uses: actions/download-artifact@v4
-          with:
-            name: Windows_Debug
-        - uses: actions/download-artifact@v4
-          with:
-            name: Windows_Release
-            
-        - name: Aggregate Results
-          run: cat $GITHUB_ENV
+
+
+      - name: Info
+        run: |
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Git Info                                                │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          cat ./results/info/git-info.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  File Exist                                              │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat ./results/info/exist-files.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Values                                                  │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "\033[38;5;245m● Solution & Project\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result
+          echo -e "\033[38;5;245m● Deploy\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result
+          echo -e "\033[38;5;245m● Git\033[0m"
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result
+      - name: Build Validation
+        run: |
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Build Validation Linux Debug                            │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat ./results/build-validation//Linux-debug.result
+
+
   # check-event:
   #   name: Check Git Event
   #   needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]

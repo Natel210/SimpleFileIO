@@ -23,10 +23,12 @@ runs:
     - name: Build Test on Linux
       if: runner.os == 'Linux'
       run: |
+        lower_os=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
+        lower_config=$(echo "${{ inputs.build_configuration }}" | tr '[:upper:]' '[:lower:]')
         chmod +x ./.scripts/build-validation/dotnet.sh
-        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
-        cat ./${{ runner.os }}/${{ inputs.build_configuration }}.result
-        chmod -x ./.scripts/build-validation/dotnet.sh
+        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ lower_config }}" "./${{ lower_os }}-${{ lower_config }}.result"
+        cat ./${{ lower_os }}/${{ lower_config }}.result
+        # chmod -x ./.scripts/build-validation/dotnet.sh
       shell: bash
 
     # Output Result Log 
@@ -34,7 +36,9 @@ runs:
     - name: Build Test on Windows
       if: runner.os == 'Windows'
       run: |
-        ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
-        Get-Content ./${{ runner.os }}/${{ inputs.build_configuration }}.result
+        $lower_os = "${{ runner.os }}".ToLower()
+        $lower_config = "${{ inputs.build_configuration }}".ToLower()
+        ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ lower_config }}" "./${{ lower_os }}-${{ lower_config }}.result"
+        # Get-Content ./${{ lower_os }}/${{ lower_config }}.result
       shell: pwsh
 
