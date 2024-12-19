@@ -86,3 +86,7 @@ if [ -z "$result_file" ]; then
 else
   echo -e "$result" > "$result_file"
 fi
+
+if [ $is_error != 0]
+  exit 1
+fi
