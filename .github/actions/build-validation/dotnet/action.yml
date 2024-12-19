@@ -24,12 +24,12 @@ runs:
         chmod +x ./.scripts/build-validation/dotnet.sh
         ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
         chmod -x ./.scripts/build-validation/dotnet.sh
+        ls -a -l -r
       shell: bash
 
-    - name: TEST
-      run: ls -a
-      
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
+      run: |
+        ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}.result"
+        get-chilitem -Recurse | %{$_.FullName}
       shell: pwsh

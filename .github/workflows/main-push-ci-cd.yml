@@ -51,8 +51,13 @@ jobs:
           project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
           build_configuration: "${{matrix.configuration}}"
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
-      - name: TEST
-        run: ls -a
+      - name: TEST-Linux
+        if: runner.os == 'Linux'
+        run: ls -a -l -r
+
+      - name: TEST-Windows
+        if: runner.os == 'Windows'
+        run: get-chilitem -Recurse | %{$_.FullName}
 
       - uses: actions/upload-artifact@v4
         with:
