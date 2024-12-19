@@ -9,7 +9,7 @@ TEXT_BLUE="\033[38;5;27m"
 TEXT_GREEN="\033[38;5;46m"
 TEXT_LIGHT_GRAY="\033[38;5;245m"
 TEXT_DARK_RED="\033[38;5;124m"
-TEXT_DARK_BLUE="\033[38;5;18m"
+TEXT_DARK_BLUE="\033[38;5;19m"
 TEXT_DARK_GREEN="\033[38;5;28m"
 
 BACKGROUND_LIGHT_GRAY="\033[48;5;245m"
@@ -38,17 +38,17 @@ output=""
 while IFS=$'\t' read -r key path; do
   total_count=$((total_count + 1))
   if [ -f "$path" ] || [ -d "$path" ]; then
-    output+="\n${TEXT_LIGHT_GRAY}● $key\n  - $path : ${TEXT_DARK_BLUE}Exist${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}● $key\n${TEXT_LIGHT_GRAY}  - $path : ${TEXT_DARK_BLUE}Exist${RESET}"
   else
     missing_count=$((missing_count + 1))
-    output+="\n${TEXT_LIGHT_GRAY}● $key\n  - $path : ${TEXT_DARK_RED}Not Exist${RESET}"
+    output+="\n${TEXT_LIGHT_GRAY}● $key\n${TEXT_LIGHT_GRAY}  - $path : ${TEXT_DARK_RED}Not Exist${RESET}"
   fi
 done <<< "$FILES"
 
 if [ "$missing_count" -eq 0 ]; then
-  summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}All OK.. ($total_count/$total_count)${RESET}\n"
+  summary="${BACKGROUND_DARK_GREEN}${TEXT_GREEN}All OK.. ($total_count/$total_count)${RESET}"
 else
-  summary="${BACKGROUND_DARK_RED}${TEXT_RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
+  summary="${BACKGROUND_DARK_RED}${TEXT_RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}"
 fi
 
 result="$summary$output"
