@@ -55,9 +55,12 @@ jobs:
       - name: TEST-Windows
         if: runner.os == 'Windows'
         run: get-chilitem -Recurse | %{$_.FullName}
+
+
       - name: TEST OUT Linux
         if: runner.os == 'Linux'
         run: cat ./${{ runner.os }}/${{ matrix.configuration }}.result
+        
 
       - name: Verify File Existence Linux
         if: runner.os == 'Linux'
@@ -72,7 +75,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
             name: ${{ runner.os }}_${{ matrix.configuration }}
-            path: ${{ runner.os }}/${{ matrix.configuration }}.result"
+            path: ./${{ runner.os }}/${{ matrix.configuration }}.result
 
       # - name: Set Output
       #   id: set-output
