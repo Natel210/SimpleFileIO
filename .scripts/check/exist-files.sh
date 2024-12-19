@@ -3,11 +3,13 @@
 json_data="$1"
 result_file="$2"
 
-GREEN="\033[32m"
-BLUE="\033[34m"
-RED="\033[31m"
-DARK="\033[30m"
-BG_WHITE="\033[47m"
+TEXT_BLACK="\033[38;5;0m"
+TEXT_RED="\033[38;5;196m"
+TEXT_GREEN="\033[38;5;46m"
+TEXT_BLUE="\033[38;5;51m"
+BACKGROUND_DARK_GRAY="\033[48;5;235m"
+BACKGROUND_DARK_GREEN="\033[48;5;22m"
+BACKGROUND_DARK_RED="\033[48;5;52m"
 RESET="\033[0m"
 
 if [ -z "$json_data" ]; then
@@ -29,17 +31,17 @@ output=""
 while IFS=$'\t' read -r key path; do
   total_count=$((total_count + 1))
   if [ -f "$path" ] || [ -d "$path" ]; then
-    output+="\n● $key\n  - $path : ${BLUE}Exist${RESET}"
+    output+="\n● $key\n  - $path : ${TEXT_BLUE}Exist${RESET}"
   else
     missing_count=$((missing_count + 1))
-    output+="\n● $key\n  - $path : ${RED}Not Exist${RESET}"
+    output+="\n● $key\n  - $path : ${TEXT_RED}Not Exist${RESET}"
   fi
 done <<< "$FILES"
 
 if [ "$missing_count" -eq 0 ]; then
-  summary="${BG_WHITE}${GREEN}All OK.. ($total_count/$total_count)${RESET}\n"
+  summary="${BACKGROUND_DARK_GREEN}${TEXT_BLACK}All OK.. ($total_count/$total_count)${RESET}\n"
 else
-  summary="${BG_WHITE}${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
+  summary="${BACKGROUND_DARK_RED}${TEXT_BLACK}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
 fi
 
 result="$summary$output"

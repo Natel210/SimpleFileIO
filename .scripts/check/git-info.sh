@@ -13,12 +13,12 @@ head_ref="${3:-unknown_head_ref}"
 base_ref="${4:-unknown_base_ref}"
 result_file="$5"
 
-GREEN="\033[32m"
-BLUE="\033[34m"
-RED="\033[31m"
-DARK="\033[30m"
-BG_WHITE="\033[47m"
-BG_RED="\033[41m"
+TEXT_BLACK="\033[38;5;0m"
+TEXT_RED="\033[38;5;196m"
+TEXT_GREEN="\033[38;5;46m"
+TEXT_BLUE="\033[38;5;51m"
+BACKGROUND_DARK_GRAY="\033[48;5;235m"
+BACKGROUND_DARK_RED="\033[48;5;52m"
 RESET="\033[0m"
 
 is_error=0
@@ -26,36 +26,36 @@ is_error=0
 case "$event_name" in
   push)
     output="● Detail"
-    output+="\n  - Event : \033[32mPush\033[0m"
+    output+="\n  - Event : ${TEXT_GREEN}Push${RESET}"
     output+="\n  - Ref: $ref"
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
-      output+="\n  - Branch: \033[34m$branch_name\033[0m"
-      summary="${BG_WHITE}${DARK}Push Branch : $branch_name${RESET}\n"
+      output+="\n  - Branch: ${TEXT_BLUE}$branch_name${RESET}"
+      summary="${BACKGROUND_DARK_GRAY}${TEXT_BLACK}Push Branch : $branch_name${RESET}\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
-      output+="\n  - Branch: \033[34m$tag_name\033[0m"
-      summary="${BG_WHITE}${DARK}Push Tag : $tag_name${RESET}\n"
+      output+="\n  - Branch: ${TEXT_BLUE}$tag_name${RESET}"
+      summary="${BACKGROUND_DARK_GRAY}${TEXT_BLACK}Push Tag : $tag_name${RESET}\n"
     else
-      output+="\n  - \033[31mUnknown\033[0m"
-      summary="${BG_RED}${DARK}Push Unknown${RESET}\n"
+      output+="\n  - ${TEXT_RED}Unknown${RESET}"
+      summary="${BACKGROUND_DARK_RED}${TEXT_BLACK}Push Unknown${RESET}\n"
       is_error=1
     fi
     ;;
   pull_request)
-    summary="\033[32mPull Request\033[0m"
+    summary="${TEXT_GREEN}Pull Request${RESET}"
     output="● Detail"
-    output+="\n  - Event : \033[32mmPull Request\033[0m\n"
+    output+="\n  - Event : ${TEXT_GREEN}Pull Request${RESET}\n"
     if [[ "$head_ref" == refs/heads/* ]]; then
-      output+="\n  - Head Ref : \033[31m$head_ref\033[0m"
-      summary+="\n  \033[31mInvalid Head Ref ($head_ref) \033[0m"
+      output+="\n  - Head Ref : ${TEXT_RED}$head_ref${RESET}"
+      summary+="\n  ${BACKGROUND_DARK_RED}${TEXT_BLACK}Invalid Head Ref ($head_ref) ${RESET}"
       is_error=1
     else
       output+="\n  - Head Ref : $head_ref"
     fi
     if [[ "$base_ref" == refs/heads/* ]]; then
-      output+="\n  - Base Ref : \033[31m$base_ref\033[0m"
-      summary+="\n  \033[31mInvalid Base Ref ($base_ref) \033[0m"
+      output+="\n  - Base Ref : ${TEXT_RED}$base_ref${RESET}"
+      summary+="\n  ${BACKGROUND_DARK_RED}${TEXT_BLACK}Invalid Base Ref ($base_ref) ${RESET}"
       is_error=1
     else
       output+="\n  - Base Ref : $base_ref"
@@ -72,8 +72,9 @@ case "$event_name" in
     summary+="\n"
     ;;
   *)
-    output="Event : \033[31m$event_name\033[0m\n"
-    output+="\033[31mUnknown event type\033[0m"
+    output="Event : ${TEXT_RED}$event_name${RESET}\n"
+    output+="${TEXT_RED}Unknown Event Type${RESET}"
+    summary="${BACKGROUND_DARK_RED}${TEXT_BLACK}Unknown Event Type ($base_ref) ${RESET}"
     is_error=1
     ;;
 esac
