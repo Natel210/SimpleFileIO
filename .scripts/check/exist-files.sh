@@ -1,19 +1,19 @@
 #!/bin/bash
 
-JSON_DATA="$1"
-RESULT_FILE="$2"
+json_data="$1"
+result_file="$2"
 
 GREEN="\033[32m"
 BLUE="\033[34m"
 RED="\033[31m"
 RESET="\033[0m"
 
-if [ -z "$JSON_DATA" ]; then
+if [ -z "$json_data" ]; then
   echo "::error::No JSON data provided. Usage: $0 '<JSON String>' [result_file]"
   exit 1
 fi
 
-FILES=$(echo "$JSON_DATA" | jq -r 'to_entries[] | "\(.key)\t\(.value)"')
+FILES=$(echo "$json_data" | jq -r 'to_entries[] | "\(.key)\t\(.value)"')
 
 if [ -z "$FILES" ]; then
   echo "::error::Invalid JSON structure."
@@ -40,10 +40,10 @@ else
   summary="${RED}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${RESET}\n"
 fi
 
-result="$summary\n$output"
+result="$summary$output"
 
-if [ -z "$RESULT_FILE" ]; then
+if [ -z "$result_file" ]; then
   echo -e "$result"
 else
-  echo -e "$result" > "$RESULT_FILE"
+  echo -e "$result" > "$result_file"
 fi

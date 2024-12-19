@@ -5,15 +5,15 @@ if [ "$#" -lt 1 ]; then
   exit 1
 fi
 
-JSON_DATA="$1"
-RESULT_FILE="$2"
+json_data="$1"
+result_file="$2"
 
 
 
-if [ -z "$RESULT_FILE" ]; then
-  echo "$JSON_DATA" | jq -r 'to_entries[] | "\(.key) : \(.value)"'
+if [ -z "$result_file" ]; then
+  echo "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"'
 else
-  touch $RESULT_FILE
-  echo "$JSON_DATA" | jq -r 'to_entries[] | "\(.key) : \(.value)"' > "$RESULT_FILE"
-  cat "$RESULT_FILE"
+  touch $result_file
+  echo "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"' > "$result_file"
+  cat "$result_file"
 fi
