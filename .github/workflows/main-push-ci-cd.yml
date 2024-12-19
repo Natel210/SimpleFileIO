@@ -57,8 +57,10 @@ jobs:
       #     project_file_path: "${{vars.TESTER_PROJECT_FILE_PATH}}"
       #     build_configuration: "${{matrix.configuration}}"
       #     dotnet_version: "${{ vars.DOTNET_VERSION }}"
+
   build-validation2:
     name: Build Validation2
+    runs-on: ubuntu-latest
     needs: build-validation
     if: ${{github.event_name == 'push'}}
     steps:
