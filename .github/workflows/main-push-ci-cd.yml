@@ -59,6 +59,16 @@ jobs:
         if: runner.os == 'Windows'
         run: get-chilitem -Recurse | %{$_.FullName}
 
+      - name: Verify File Existence Linux
+        if: runner.os == 'Linux'
+        run: |
+          if [ -f "./${{ runner.os }}/${{ matrix.configuration }}.result" ]; then
+            echo "File exists: ./${{ runner.os }}/${{ matrix.configuration }}.result"
+          else
+            echo "File not found: ./${{ runner.os }}/${{ matrix.configuration }}.result"
+            find . -name "*.result"
+          fi
+
       - uses: actions/upload-artifact@v4
         with:
             name: ${{ runner.os }}_${{ matrix.configuration }}
