@@ -1,5 +1,12 @@
 name: Info And Check
-description: ""
+description: >
+  Outputs are saved.
+  List:
+  - solution-project-value.result
+  - deploy-value.result
+  - git-value.result
+  - exist-files.result
+  - git-info.result
 inputs:
   # solution & project
   solution_file_path:

@@ -1,7 +1,7 @@
 name: Build Test .NET
 description: >
   Build Test .NET
-  Outputs are saved in lowercase format.
+  Outputs are saved.
   For example:
   - Linux Debug -> ./Linux/Debug/build-validation.result
   - Windows Release -> ./Windows/Release/build-validation.result

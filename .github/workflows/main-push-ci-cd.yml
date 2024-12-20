@@ -40,7 +40,7 @@ jobs:
           path: |
             ./git-info.result
             ./exist-files.result
-            ./solution-project_value.result
+            ./solution-project-value.result
             ./deploy-value.result
             ./git-value.result
 
