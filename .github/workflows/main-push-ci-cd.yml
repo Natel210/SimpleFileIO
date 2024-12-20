@@ -97,18 +97,14 @@ jobs:
       - name: Info
         run: |
           find . -exec ls -ld {} \;
-          source ./.scripts/colors.sh
-          echo -e "${text_light_gray}┌──────────────────────────────────────────────────────────┐${reset}\
-                 \n${text_light_gray}│  Git Info                                                │${reset}\
-                 \n${text_light_gray}└──────────────────────────────────────────────────────────┘${reset}"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Git Info                                                │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
           if [ -f ./results/info/git-info.result ]; than
             cat ./results/info/git-info.result
           else
-            echo -e "${background_dark_red}${text_red}File not found: ./results/info/git-info.result${reset}"
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-info.result\033[0m"
           fi
-
-
-          
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  File Exist                                              │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
