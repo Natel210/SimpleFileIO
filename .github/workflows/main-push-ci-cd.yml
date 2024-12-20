@@ -73,6 +73,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
             name: Info
@@ -131,40 +132,14 @@ jobs:
             ]'
 
       - name: Build Validation
-        
-        run: |
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Build Validation Linux Debug                            │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/build-validation/linux/debug/build-validation.result ]; then
-            cat ./results/build-validation/linux/debug/build-validation.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/linux/debug/build-validation.result\033[0m"
-          fi
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Build Validation Linux Release                          │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/build-validation/linux/release/build-validation.result ]; then
-            cat ./results/build-validation/linux/release/build-validation.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/linux/release/build-validation.result\033[0m"
-          fi
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Build Validation Widnows Debug                          │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/build-validation/windows/debug/build-validation.result ]; then
-            cat ./results/build-validation/windows/debug/build-validation.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/windows/debug/build-validation.result\033[0m"
-          fi
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Build Validation Widnows Release                        │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/build-validation/wibdows/release/build-validation.result ]; then
-            cat ./results/build-validation/wibdows/release/build-validation.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/wibdows/release/build-validation.result\033[0m"
-          fi
+        uses: ./.github/actions/results
+        env:
+          headers_and_files: '[\
+            {"header": "Build Validation Linux Debug", "path": "./results/build-validation/linux/debug/build-validation.result"},\
+            {"header": "Build Validation Linux Release", "path": "./results/build-validation/linux/release/build-validation.result"},\
+            {"header": "Build Validation Widnows Debug", "path": "./results/build-validation/windows/debug/build-validation.result"}\
+            {"header": "Build Validation Widnows Release", "path": "./results/build-validation/wibdows/release/build-validation.result"}\
+            ]'
 
 
   # check-event:
