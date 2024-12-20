@@ -43,6 +43,7 @@ jobs:
             ./solution-project-value.result
             ./deploy-value.result
             ./git-value.result
+          if-no-files-found: warn
 
   build-validation:
     name: Build Validation
@@ -65,6 +66,7 @@ jobs:
         with:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}/build-validation.result
+            if-no-files-found: warn
   results:
     name: Results
     needs: build-validation
@@ -75,22 +77,27 @@ jobs:
         with:
             name: Info
             path: ./results/info
+        continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Debug
             path: ./results/build-validation/linux/debug
+        continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Release
             path: ./results/build-validation/linux/release
+        continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Debug
             path: ./results/build-validation/windows/debug
+        continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Release
             path: ./results/build-validation/windows/release
+        continue-on-error: true
 
 
 
