@@ -172,7 +172,7 @@ jobs:
       - name: Detail
         run: |
           cat ./results/info-marge.result
-          car ./results/build-validation-marge.result
+          cat ./results/build-validation-marge.result
 
   # check-event:
   #   name: Check Git Event
