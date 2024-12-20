@@ -51,7 +51,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        configuration: [debug, release]
+        configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
       - name: Dll Build Test
