@@ -1,0 +1,34 @@
+name: Result Processor
+description: >
+  Processes headers and file paths for validation.
+inputs:
+  headers_and_files:
+    description: >
+      A JSON string containing header and file path pairs.
+      Example: '[{"header": "Git Info", "path": "./results/info/git-info.result"}, {"header": "File Exist", "path": "./results/info/exist-files.result"}]'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Add Execute Permission for Scripts
+      run: |
+        chmod +x .scripts/tools/result-output.sh
+      shell: bash
+
+    - run: |
+        # Extract headers and file paths from JSON
+        headers_and_files='${{ inputs.headers_and_files }}'
+        echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
+          key=$(echo "$pair" | jq -r '.header')
+          value=$(echo "$pair" | jq -r '.path')
+          
+          # Call the script with each key and value
+          .scripts/tools/result-output.sh "$key" "$value"
+        done
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      run: |
+        chmod -x .scripts/tools/result-output.sh
+      shell: bash

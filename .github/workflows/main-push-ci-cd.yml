@@ -51,7 +51,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
         configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
@@ -99,37 +99,37 @@ jobs:
             path: ./results/build-validation/windows/release
         continue-on-error: true
 
+      - run: |
+          merge_result=./results/info/value.result
+          if [ -f ./results/info/solution-project-value.result ]; then
+            echo -e "\033[38;5;245m● Solution & Project\033[0m" > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result > $merge_result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution-project-value.result\033[0m" > $merge_result
+          fi
+          if [ -f ./results/info/deploy-value.result ]; then
+            echo -e "\033[38;5;245m● Deploy\033[0m" > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result > $merge_result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy-value.result\033[0m" > $merge_result
+          fi
+          if [ -f ./results/info/git-value.result ]; then
+            echo -e "\033[38;5;245m● Git\033[0m" > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result > $merge_result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-value.result\033[0m" > $merge_result
+          fi
 
 
       - name: Info
-        run: |
-          find ../../ -exec ls -ld {} \;
-          chmod +x .scripts/tools/result-output.sh
-          .scripts/tools/result-output.sh "Git Info" "./results/info/git-info.result"
-          .scripts/tools/result-output.sh "File Exist" "./results/info/exist-files.result"
+        uses: ./.github/actions/result
+        env:
+          headers_and_files: '[\
+            {"header": "Git Info", "path": "./results/info/git-info.result"},\
+            {"header": "File Exist", "path": "./results/info/exist-files.result"},\
+            {"header": "Values", "path": "./results/info/value.result"}\
+            ]'
 
-
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
-                 \n\033[38;5;245m│  Values                                                  │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/info/solution-project-value.result ]; then
-            echo -e "\033[38;5;245m● Solution & Project\033[0m"
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution-project-value.result\033[0m"
-          fi
-          if [ -f ./results/info/deploy-value.result ]; then
-            echo -e "\033[38;5;245m● Deploy\033[0m"
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy-value.result\033[0m"
-          fi
-          if [ -f ./results/info/git-value.result ]; then
-            echo -e "\033[38;5;245m● Git\033[0m"
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-value.result\033[0m"
-          fi
       - name: Build Validation
         run: |
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
