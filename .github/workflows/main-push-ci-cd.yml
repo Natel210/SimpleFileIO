@@ -103,7 +103,7 @@ jobs:
 
       - name: Info
         run: |
-          find . -name "result-output.sh"
+          find ../../ -exec ls -ld {} \;
           chmod +x .scripts/tools/result-output.sh
           .scripts/tools/result-output.sh "Git Info" "./results/info/git-info.result"
           .scripts/tools/result-output.sh "File Exist" "./results/info/exist-files.result"
