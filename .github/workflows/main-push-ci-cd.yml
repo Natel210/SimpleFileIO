@@ -64,7 +64,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
-            path: ./${{ runner.os }}-${{ matrix.configuration }}.result
+            path: ./${{ runner.os }}/${{ matrix.configuration }}/build-validation.result
   results:
     name: Results
     needs: build-validation
@@ -77,19 +77,19 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_Linux_Debug
-            path: ./results/build-validation/
+            path: ./results/build-validation/linux/debug
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_Linux_Release
-            path: ./results/build-validation/
+            path: ./results/build-validation/linux/release
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_Windows_Debug
-            path: ./results/build-validation/
+            path: ./results/build-validation/widnows/debug
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_Windows_Release
-            path: ./results/build-validation/
+            path: ./results/build-validation/widnows/release
 
 
 
@@ -117,7 +117,19 @@ jobs:
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Linux Debug                            │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/build-validation//Linux-debug.result
+          cat ./results/build-validation/linux/debug/build-validation.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Build Validation Linux Release                          │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat ./results/build-validation/linux/release/build-validation.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Build Validation Widnows Debug                          │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat ./results/build-validation/widnows/debug/build-validation.result
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
+                 \n\033[38;5;245m│  Build Validation Widnows Release                        │\033[0m\
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
+          cat ./results/build-validation/widnows/release/build-validation.result
 
 
   # check-event:

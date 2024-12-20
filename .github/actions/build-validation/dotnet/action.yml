@@ -3,8 +3,9 @@ description: >
   Build Test .NET
   Outputs are saved in lowercase format.
   For example:
-  - Linux Debug -> ./linux-debug.result
-  - Windows Release -> ./windows-release.result
+  - Linux Debug -> ./Linux/Debug/build-validation.result
+  - Windows Release -> ./Windows/Release/build-validation.result
+  - Windows MainOhters -> ./Windows/MainOhters/build-validation.result
 inputs:
   project_file_path:
     description: Build Test Project File Path
