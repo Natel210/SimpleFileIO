@@ -17,6 +17,7 @@ runs:
       shell: bash
 
     - run: |
+        echo  '${{ inputs.headers_and_files }}'
         # Extract headers and file paths from JSON
         headers_and_files='${{ inputs.headers_and_files }}'
         echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
