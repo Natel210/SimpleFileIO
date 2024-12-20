@@ -5,7 +5,7 @@ inputs:
   headers_and_files:
     description: >
       A JSON string containing header and file path pairs.
-      Example:
+      Example: >
         [
           {
             "header": "Git Info",
@@ -21,7 +21,11 @@ inputs:
           }
         ]
     required: true
-
+  result_to_console:
+    required: true
+    default: true
+  result_file:
+    required: false
 runs:
   using: "composite"
   steps:
@@ -33,12 +37,28 @@ runs:
     - run: |
         # Extract headers and file paths from JSON
         headers_and_files='${{ inputs.headers_and_files }}'
+        result_to_console=${{ inputs.result_to_console }}
+        result_file=${{ inputs.result_file }}
+        
+        combined_output=""
+
         echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           value=$(echo "$pair" | jq -r '.path')
-          echo "Key: $key, Value: $value"
-          .scripts/tools/result-output.sh "$key" "$value"
+          
+          # Append the output of the script to the combined output
+          script_output=$( .scripts/tools/result-output.sh "$key" "$value" )
+          combined_output+="${script_output}\n"
         done
+
+        # Final processing based on console and file options
+        if [ "$result_to_console" = "true" ]; then
+          echo -e "$combined_output"
+        fi
+
+        if [ -n "$result_file" ]; then
+          echo -e "$combined_output" > "$result_file"
+        fi
       shell: bash
 
     - name: Remove Execute Permission for Scripts

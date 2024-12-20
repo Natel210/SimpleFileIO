@@ -144,6 +144,7 @@ jobs:
                 "path": "./results/info/value.result"
               }
             ]
+          result_file: ./results/info-marge.result
 
       - name: Build Validation
         uses: ./.github/actions/results
@@ -167,6 +168,11 @@ jobs:
                 "path": "./results/build-validation/wibdows/release/build-validation.result"
               }
             ]
+          result_file: ./results/build-validation-marge.result
+      - name: Detail
+        run: |
+          cat ./results/info-marge.result
+          car ./results/build-validation-marge.result
 
   # check-event:
   #   name: Check Git Event
