@@ -25,7 +25,7 @@ runs:
 
     - name: Add Execute Permission for Scripts
       if: runner.os == 'Linux'
-      run: chmod +x ./.scripts/check/values.sh
+      run: chmod +x ./.scripts/build-validation/dotnet.sh
       shell: bash
 
     - name: Build Test on Linux
@@ -35,7 +35,7 @@ runs:
 
     - name: Remove Execute Permission for Scripts
       if: runner.os == 'Linux'
-      run: chmod -x ./.scripts/check/values.sh
+      run: chmod -x ./.scripts/build-validation/dotnet.sh
       shell: bash
 
     - name: Build Test on Windows
