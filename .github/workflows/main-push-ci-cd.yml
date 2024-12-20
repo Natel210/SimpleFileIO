@@ -96,9 +96,9 @@ jobs:
 
       - name: Info
         run: |
-          chmod +x ./.scripts/tools/result-output.sh
-          ./.scripts/tools/result-output.sh "Git Info" "./results/info/git-info.result"
-          ./.scripts/tools/result-output.sh "File Exist" "./results/info/exist-files.result"
+          chmod +x .scripts/tools/result-output.sh
+          .scripts/tools/result-output.sh "Git Info" "./results/info/git-info.result"
+          .scripts/tools/result-output.sh "File Exist" "./results/info/exist-files.result"
 
 
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
