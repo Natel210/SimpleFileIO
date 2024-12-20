@@ -122,7 +122,7 @@ jobs:
 
 
       - name: Info
-        uses: ./.github/actions/result
+        uses: ./.github/actions/results
         env:
           headers_and_files: '[\
             {"header": "Git Info", "path": "./results/info/git-info.result"},\
@@ -131,6 +131,7 @@ jobs:
             ]'
 
       - name: Build Validation
+        
         run: |
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Linux Debug                            │\033[0m\

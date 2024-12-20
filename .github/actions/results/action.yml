@@ -1,4 +1,4 @@
-name: Result Processor
+name: Results Processor
 description: >
   Processes headers and file paths for validation.
 inputs:
