@@ -128,7 +128,7 @@ jobs:
 
       - name: Info
         uses: ./.github/actions/results
-        env:
+        with:
           headers_and_files: '[\
             {"header": "Git Info", "path": "./results/info/git-info.result"},\
             {"header": "File Exist", "path": "./results/info/exist-files.result"},\
@@ -137,7 +137,7 @@ jobs:
 
       - name: Build Validation
         uses: ./.github/actions/results
-        env:
+        with:
           headers_and_files: '[\
             {"header": "Build Validation Linux Debug", "path": "./results/build-validation/linux/debug/build-validation.result"},\
             {"header": "Build Validation Linux Release", "path": "./results/build-validation/linux/release/build-validation.result"},\
