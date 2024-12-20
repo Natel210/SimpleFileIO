@@ -20,8 +20,10 @@ runs:
         # Extract headers and file paths from JSON
         headers_and_files='${{ inputs.headers_and_files }}'
         echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
+          echo "Pair: $pair"  # 디버깅용
           key=$(echo "$pair" | jq -r '.header')
           value=$(echo "$pair" | jq -r '.path')
+          echo "Key: $key, Value: $value"  # 디버깅용
           
           # Call the script with each key and value
           .scripts/tools/result-output.sh "$key" "$value"

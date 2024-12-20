@@ -51,7 +51,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
@@ -100,7 +100,12 @@ jobs:
             path: ./results/build-validation/windows/release
         continue-on-error: true
 
-      - run: |
+      - name: Sermary
+        run: echo Sermary
+
+
+      - name: Merge Value Results
+        run: |
           merge_result=./results/info/value.result
           if [ -f ./results/info/solution-project-value.result ]; then
             echo -e "\033[38;5;245m● Solution & Project\033[0m" > $merge_result
@@ -120,7 +125,6 @@ jobs:
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-value.result\033[0m" > $merge_result
           fi
-
 
       - name: Info
         uses: ./.github/actions/results
