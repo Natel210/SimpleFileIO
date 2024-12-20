@@ -4,7 +4,7 @@ project_file_path=$1
 build_configuration=$2
 result_file="$3"
 
-source ./.scripts/colors.sh
+source ./.scripts/tools/colors.sh
 
 if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
     echo -e "${background_dark_red}${text_red}No arguments.\n ${background_dark_red}${text_red}Usage: $0 <Project File Path> <Build Configuration> <Result File>${reset}"
@@ -12,7 +12,7 @@ if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
 fi
 
 is_error=0
-output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration${reset}\n"
+output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration${reset} os:Linux\n"
 
 # Execute dotnet build and capture output
 build_output=$(dotnet build "$project_file_path" -c "$build_configuration" 2>&1)

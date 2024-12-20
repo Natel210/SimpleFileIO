@@ -5,7 +5,7 @@ param (
 )
 
 # Import colors if necessary
-. ./.scripts/colors.ps1
+. ./.scripts/tools/colors.ps1
 
 if (-not $ProjectFilePath -or -not $BuildConfiguration)
 {
@@ -16,7 +16,7 @@ if (-not $ProjectFilePath -or -not $BuildConfiguration)
 
 # Initialize variables
 $isError = $false
-$output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration${Reset}`n"
+$output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration${Reset} os:Windows`n"
 
 
 
@@ -42,7 +42,7 @@ if ($buildExitCode -ne 0)
 else
 {
     # Handle build success
-    $summary = "${BackgroundDarkGreen}${TextGreen}Build Test Completed Successfully.${Reset}`n"
+    $summary = "${BackgroundDarkGreen}${TextGreen}Build Test Completed Successfully.${Reset}"
 
     # Process each line in build output
     foreach ($line in $buildOutput -split "`n")

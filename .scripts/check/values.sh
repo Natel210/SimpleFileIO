@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./.scripts/colors.sh
+source ./.scripts/tools/colors.sh
 
 if [ "$#" -lt 1 ]; then
   echo "${background_dark_red}${text_red}No arguments. \n${background_dark_red}${text_red} Usage: $0 '<JSON String>'${reset}"

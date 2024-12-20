@@ -3,7 +3,7 @@
 json_data="$1"
 result_file="$2"
 
-source ./.scripts/colors.sh
+source ./.scripts/tools/colors.sh
 
 if [ -z "$json_data" ]; then
   echo "${background_dark_red}${text_red}No JSON data provided.\n${background_dark_red}${text_red} Usage: $0 '<JSON String>' [result_file]${reset}"
