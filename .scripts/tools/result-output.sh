@@ -7,14 +7,14 @@ source ./.scripts/tools/colors.sh
 
 # Ensure header is provided
 if [ -z "$header_name" ]; then
-  echo -e "\033[38;5;196mError: Header name is required.\033[0m"
+  echo -e "${background_dark_red}${text_red}Error: Header name is required.${reset}"
   exit 1
 fi
 
 # Print the header
-echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m"
-printf "\033[38;5;245m│  %-56s│\033[0m\n" "$header_name"
-echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+echo -e "{$text_light_gray}┌──────────────────────────────────────────────────────────┐${reset}}"
+printf "{$text_light_gray}  %-56s{$text_light_gray}│${reset}" "${text_white}${header_name}"
+echo -e "{$text_light_gray}└──────────────────────────────────────────────────────────┘${reset}"
 
 # Check if file exists and display its content
 if [ -f "$result_file" ]; then

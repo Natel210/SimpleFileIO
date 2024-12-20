@@ -16,7 +16,7 @@ if (-not $ProjectFilePath -or -not $BuildConfiguration)
 
 # Initialize variables
 $isError = $false
-$output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration${Reset} os:Windows`n"
+$output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration os:Windows ${Reset} `n"
 
 
 

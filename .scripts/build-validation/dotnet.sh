@@ -12,7 +12,7 @@ if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
 fi
 
 is_error=0
-output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration${reset} os:Linux\n"
+output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration os:Linux ${reset} \n"
 
 # Execute dotnet build and capture output
 build_output=$(dotnet build "$project_file_path" -c "$build_configuration" 2>&1)
