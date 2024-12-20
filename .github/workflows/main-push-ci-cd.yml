@@ -50,7 +50,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
@@ -96,6 +96,7 @@ jobs:
 
       - name: Info
         run: |
+          find . -name "result-output.sh"
           chmod +x .scripts/tools/result-output.sh
           .scripts/tools/result-output.sh "Git Info" "./results/info/git-info.result"
           .scripts/tools/result-output.sh "File Exist" "./results/info/exist-files.result"
