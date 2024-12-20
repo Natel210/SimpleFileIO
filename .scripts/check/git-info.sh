@@ -82,11 +82,13 @@ esac
 result="$summary$output"
 
 if [ -z "$result_file" ]; then
+  echo -e "${background_light_gray}${text_white}Result to Console${reset}"
   echo -e "$result"
 else
+  echo -e "${background_light_gray}${text_white}Result to File ${result_file}${reset}"
   echo -e "$result" > "$result_file"
 fi
 
-if [ $is_error != 0]; then
+if [ $is_error != 0 ]; then
   exit 1
 fi

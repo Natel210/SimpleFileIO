@@ -30,7 +30,7 @@ runs:
 
     - name: Build Test on Linux
       if: runner.os == 'Linux'
-      run: ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}-${{ inputs.build_configuration }}.result"
+      run: ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/build-validation.result"
       shell: bash
 
     - name: Remove Execute Permission for Scripts
@@ -40,6 +40,6 @@ runs:
 
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}-${{ inputs.build_configuration }}.result"
+      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/build-validation.result"
       shell: pwsh
 

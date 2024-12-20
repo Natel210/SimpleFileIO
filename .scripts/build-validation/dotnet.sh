@@ -2,7 +2,6 @@
 
 project_file_path=$1
 build_configuration=$2
-# The final output will be converted to lowercase and saved
 result_file="$3"
 
 source ./.scripts/colors.sh
@@ -38,15 +37,12 @@ fi
 result="$output$summary"
 
 if [ -n "$result_file" ]; then
-    # Convert result_file to lowercase
-    result_file=$(echo "$result_file" | tr '[:upper:]' '[:lower:]')
-
     # Ensure result file directory exists
     result_dir=$(dirname "$result_file")
     if [ ! -d "$result_dir" ]; then
         mkdir -p "$result_dir"
     fi
-
+    touch $result_file
     echo -e "${background_light_gray}${text_white}Result to File ${result_file}${reset}"
     echo -e "$result" > "$result_file"
 else
