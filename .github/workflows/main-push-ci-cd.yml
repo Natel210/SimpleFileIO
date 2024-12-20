@@ -107,17 +107,33 @@ jobs:
           fi
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  File Exist                                              │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/info/exist-files.result
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          if [ -f ./results/info/exist-files.result ]; than
+            cat ./results/info/exist-files.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/exist-files.result\033[0m"
+          fi
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Values                                                  │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "\033[38;5;245m● Solution & Project\033[0m"
-          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result
-          echo -e "\033[38;5;245m● Deploy\033[0m"
-          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result
-          echo -e "\033[38;5;245m● Git\033[0m"
+          if [ -f ./results/info/solution-project-value.result ]; than
+            echo -e "\033[38;5;245m● Solution & Project\033[0m"
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution-project-value.result\033[0m"
+          fi
+          if [ -f ./results/info/deploy-value.result ]; than
+            echo -e "\033[38;5;245m● Deploy\033[0m"
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy-value.result\033[0m"
+          fi
+          if [ -f ./results/info/git-value.result ]; than
+            echo -e "\033[38;5;245m● Git\033[0m"
           awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-value.result\033[0m"
+          fi
       - name: Build Validation
         run: |
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
