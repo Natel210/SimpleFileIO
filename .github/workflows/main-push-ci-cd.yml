@@ -129,22 +129,44 @@ jobs:
       - name: Info
         uses: ./.github/actions/results
         with:
-          headers_and_files: '[\
-            {"header": "Git Info", "path": "./results/info/git-info.result"},\
-            {"header": "File Exist", "path": "./results/info/exist-files.result"},\
-            {"header": "Values", "path": "./results/info/value.result"}\
-            ]'
+          headers_and_files: >
+            [
+              {
+                "header": "Git Info",
+                "path": "./results/info/git-info.result"
+              },
+              {
+                "header": "File Exist",
+                "path": "./results/info/exist-files.result"
+              },
+              {
+                "header": "Values",
+                "path": "./results/info/value.result"
+              }
+            ]
 
       - name: Build Validation
         uses: ./.github/actions/results
         with:
-          headers_and_files: '[\
-            {"header": "Build Validation Linux Debug", "path": "./results/build-validation/linux/debug/build-validation.result"},\
-            {"header": "Build Validation Linux Release", "path": "./results/build-validation/linux/release/build-validation.result"},\
-            {"header": "Build Validation Widnows Debug", "path": "./results/build-validation/windows/debug/build-validation.result"}\
-            {"header": "Build Validation Widnows Release", "path": "./results/build-validation/wibdows/release/build-validation.result"}\
-            ]'
-
+          headers_and_files: >
+            [
+              {
+                "header": "Build Validation Linux Debug",
+                "path": "./results/build-validation/linux/debug/build-validation.result"
+              },
+              {
+                "header": "Build Validation Linux Release",
+                "path": "./results/build-validation/linux/release/build-validation.result"
+              },
+              {
+                "header": "Build Validation Widnows Debug",
+                "path": "./results/build-validation/windows/debug/build-validation.result"
+              },
+              {
+                "header": "Build Validation Widnows Release",
+                "path": "./results/build-validation/wibdows/release/build-validation.result"
+              }
+            ]
 
   # check-event:
   #   name: Check Git Event
