@@ -100,7 +100,7 @@ jobs:
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Git Info                                                │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/info/git-info.result ]; than
+          if [ -f ./results/info/git-info.result ]; then
             cat ./results/info/git-info.result
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-info.result\033[0m"
@@ -108,7 +108,7 @@ jobs:
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  File Exist                                              │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/info/exist-files.result ]; than
+          if [ -f ./results/info/exist-files.result ]; then
             cat ./results/info/exist-files.result
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/exist-files.result\033[0m"
@@ -116,19 +116,19 @@ jobs:
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Values                                                  │\033[0m\
                  \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
-          if [ -f ./results/info/solution-project-value.result ]; than
+          if [ -f ./results/info/solution-project-value.result ]; then
             echo -e "\033[38;5;245m● Solution & Project\033[0m"
             awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution-project-value.result\033[0m"
           fi
-          if [ -f ./results/info/deploy-value.result ]; than
+          if [ -f ./results/info/deploy-value.result ]; then
             echo -e "\033[38;5;245m● Deploy\033[0m"
             awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy-value.result\033[0m"
           fi
-          if [ -f ./results/info/git-value.result ]; than
+          if [ -f ./results/info/git-value.result ]; then
             echo -e "\033[38;5;245m● Git\033[0m"
           awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result
           else
@@ -138,20 +138,36 @@ jobs:
         run: |
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Linux Debug                            │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/build-validation/linux/debug/build-validation.result
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          if [ -f ./results/build-validation/linux/debug/build-validation.result ]; then
+            cat ./results/build-validation/linux/debug/build-validation.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/linux/debug/build-validation.result\033[0m"
+          fi
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Linux Release                          │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/build-validation/linux/release/build-validation.result
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          if [ -f ./results/build-validation/linux/release/build-validation.result ]; then
+            cat ./results/build-validation/linux/release/build-validation.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/linux/release/build-validation.result\033[0m"
+          fi
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Widnows Debug                          │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/build-validation/widnows/debug/build-validation.result
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          if [ -f ./results/build-validation/windows/debug/build-validation.result ]; then
+            cat ./results/build-validation/windows/debug/build-validation.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/windows/debug/build-validation.result\033[0m"
+          fi
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────┐\033[0m\
                  \n\033[38;5;245m│  Build Validation Widnows Release                        │\033[0m\
-                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"        
-          cat ./results/build-validation/widnows/release/build-validation.result
+                 \n\033[38;5;245m└──────────────────────────────────────────────────────────┘\033[0m"
+          if [ -f ./results/build-validation/wibdows/release/build-validation.result ]; then
+            cat ./results/build-validation/wibdows/release/build-validation.result
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/build-validation/wibdows/release/build-validation.result\033[0m"
+          fi
 
 
   # check-event:
