@@ -70,26 +70,26 @@ jobs:
     needs: build-validation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
             name: Info
             path: ./results/info
-      - uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Debug
             path: ./results/build-validation/linux/debug
-      - uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Release
             path: ./results/build-validation/linux/release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Debug
-            path: ./results/build-validation/widnows/debug
-      - uses: actions/upload-artifact@v4
+            path: ./results/build-validation/windows/debug
+      - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Release
-            path: ./results/build-validation/widnows/release
+            path: ./results/build-validation/windows/release
 
 
 
