@@ -1,5 +1,10 @@
 name: Build Test .NET
-description: Build Test .NET
+description: >
+  Build Test .NET
+  Outputs are saved in lowercase format.
+  For example:
+  - Linux Debug -> ./linux-debug.result
+  - Windows Release -> ./windows-release.result
 inputs:
   project_file_path:
     description: Build Test Project File Path
@@ -18,27 +23,23 @@ runs:
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
 
-    # Output Result Log 
-    # ./${{ runner.os }}/${{ inputs.build_configuration }}.result
-    - name: Build Test on Linux
+    - name: Add Execute Permission for Scripts
       if: runner.os == 'Linux'
-      run: |
-        lower_os=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
-        lower_config=$(echo "${{ inputs.build_configuration }}" | tr '[:upper:]' '[:lower:]')
-        chmod +x ./.scripts/build-validation/dotnet.sh
-        ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ lower_config }}" "./${{ lower_os }}-${{ lower_config }}.result"
-        cat ./${{ lower_os }}/${{ lower_config }}.result
-        # chmod -x ./.scripts/build-validation/dotnet.sh
+      run: chmod +x ./.scripts/check/values.sh
       shell: bash
 
-    # Output Result Log 
-    # ./${{ runner.os }}/${{ inputs.build_configuration }}.result
+    - name: Build Test on Linux
+      if: runner.os == 'Linux'
+      run: ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}-${{ inputs.build_configuration }}.result"
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      if: runner.os == 'Linux'
+      run: chmod -x ./.scripts/check/values.sh
+      shell: bash
+
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: |
-        $lower_os = "${{ runner.os }}".ToLower()
-        $lower_config = "${{ inputs.build_configuration }}".ToLower()
-        ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ lower_config }}" "./${{ lower_os }}-${{ lower_config }}.result"
-        # Get-Content ./${{ lower_os }}/${{ lower_config }}.result
+      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}-${{ inputs.build_configuration }}.result"
       shell: pwsh
 
