@@ -67,36 +67,36 @@ jobs:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}/build-validation.result
             if-no-files-found: warn
-  create-tag:
-    name: Create Tag
-    needs: check-event
-    runs-on: ubuntu-latest
-    concurrency:
-      group: tag-creation
-      cancel-in-progress: false
-    env:
-      NEW_VERSION: ""
-    outputs:
-      new_version: ${{ env.NEW_VERSION }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+  #create-tag:
+  #  name: Create Tag
+  #  needs: check-event
+  #  runs-on: ubuntu-latest
+  #  concurrency:
+  #    group: tag-creation
+  #    cancel-in-progress: false
+  #  env:
+  #    NEW_VERSION: ""
+  #  outputs:
+  #    new_version: ${{ env.NEW_VERSION }}
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #      with:
+  #        fetch-depth: 0
 
-      - name: Before Check Tags
-        uses: ./.github/actions/tag/version/check
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #    - name: Before Check Tags
+  #      uses: ./.github/actions/tag/version/check
+  #      with:
+  #        prefix: ${{ vars.TAG_PREFIX }}
 
-      - name: Version Create Tag
-        uses: ./.github/actions/tag/version/create
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #    - name: Version Create Tag
+  #      uses: ./.github/actions/tag/version/create
+  #      with:
+  #        prefix: ${{ vars.TAG_PREFIX }}
 
-      - name: After Check Tags
-        uses: ./.github/actions/tag/version/check
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
+  #    - name: After Check Tags
+  #      uses: ./.github/actions/tag/version/check
+  #      with:
+  #        prefix: ${{ vars.TAG_PREFIX }}
 
   results:
     name: Results
