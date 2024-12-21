@@ -202,8 +202,8 @@ jobs:
           result_file: ./results/build-validation-marge.result
       - name: Detail
         run: |
-          cat ./results/info-marge.result
-          cat ./results/build-validation-marge.result
+          cat ./results/info_marge.result
+          cat ./results/build-validation_marge.result
 
   # check-event:
   #   name: Check Git Event
