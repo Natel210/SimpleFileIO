@@ -31,7 +31,7 @@ runs:
   steps:
     - name: Add Execute Permission for Scripts
       run: |
-        chmod +x .scripts/tools/result-output.sh
+        chmod +x .scripts/tools/result_output.sh
       shell: bash
 
     - run: |
@@ -47,7 +47,7 @@ runs:
           value=$(echo "$pair" | jq -r '.path')
           echo "Key: $key, Value: $value"  # 디버깅용 출력
           # Append the output of the script to the combined output
-          script_output=$( .scripts/tools/result-output.sh "$key" "$value" )
+          script_output=$( .scripts/tools/result_output.sh "$key" "$value" )
           echo "Script output: $script_output"  # 디버깅용 출력
           combined_output+="${script_output}\n"
         done
@@ -64,5 +64,5 @@ runs:
 
     - name: Remove Execute Permission for Scripts
       run: |
-        chmod -x .scripts/tools/result-output.sh
+        chmod -x .scripts/tools/result_output.sh
       shell: bash

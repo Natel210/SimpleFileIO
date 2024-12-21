@@ -2,11 +2,11 @@ name: Info And Check
 description: >
   Outputs are saved.
   List:
-  - solution-project-value.result
-  - deploy-value.result
-  - git-value.result
-  - exist-files.result
-  - git-info.result
+  - solution_project_value.result
+  - deploy_value.result
+  - git_value.result
+  - exist_files.result
+  - git_info.result
 inputs:
   # solution & project
   solution_file_path:
@@ -59,25 +59,25 @@ runs:
     - name: Add Execute Permission for Scripts
       run: |
         chmod +x ./.scripts/check/values.sh
-        chmod +x ./.scripts/check/exist-files.sh
-        chmod +x ./.scripts/check/git-info.sh
+        chmod +x ./.scripts/check/exist_files.sh
+        chmod +x ./.scripts/check/git_info.sh
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution-project-value.result"
+      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
-            "Solution File Path": "SimpleFileIO.sln",
-            "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
-            "Build Directory Path": "./build",
-            "Tester File Path": "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj",
-            "Tester Executable File Name": "SimpleFileIO_Tester"
+            "Solution File Path": "{{ inputs.solution_file_path }}",
+            "Dll File Path": "{{ inputs.dll_project_file_path }}",
+            "Build Directory Path": "{{ inputs.build_directory_path }}",
+            "Tester File Path": "{{ inputs.tester_project_file_path }}",
+            "Tester Executable File Name": "{{ inputs.tester_executable_file_name }}"
           }
       shell: bash
 
     - name: Check Deploy Values
-      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy-value.result"
+      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
       env: 
         DEPLOY_JSON_DATA: |
           {
@@ -87,7 +87,7 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git-value.result"
+      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
       env: 
         GIT_JSON_DATA: |
           {
@@ -99,20 +99,20 @@ runs:
       shell: bash
 
     - name: Check Exist Files
-      run: ./.scripts/check/exist-files.sh "$EXIST_FILES_JSON_DATA" "exist-files.result"
+      run: ./.scripts/check/exist_files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
       env: 
         EXIST_FILES_JSON_DATA: |
           {
-            "Solution File Path": "SimpleFileIO.sln",
-            "Dll File Path": "SimpleFileIO/SimpleFileIO.csproj",
-            "Build Directory Path": "./build",
-            "Tester Executable File Name": "SimpleFileIO_Tester",
-            "Tester File Path": "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
+            "Solution File Path": "{{ inputs.solution_file_path }}",
+            "Dll File Path": "{{ inputs.dll_project_file_path }}",
+            "Build Directory Path": "{{ inputs.build_directory_path }}",
+            "Tester Executable File Name": "{{ inputs.tester_project_file_path }}",
+            "Tester File Path": "{{ inputs.tester_executable_file_name }}"
           }
       shell: bash
 
     - name: Check Git Info
-      run: ./.scripts/check/git-info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git-info.result"
+      run: ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"
@@ -123,6 +123,6 @@ runs:
     - name: Remove Execute Permission for Scripts
       run: |
         chmod -x ./.scripts/check/values.sh
-        chmod -x ./.scripts/check/exist-files.sh
-        chmod -x ./.scripts/check/git-info.sh
+        chmod -x ./.scripts/check/exist_files.sh
+        chmod -x ./.scripts/check/git_info.sh
       shell: bash

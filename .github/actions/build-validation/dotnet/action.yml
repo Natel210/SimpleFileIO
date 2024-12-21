@@ -3,9 +3,9 @@ description: >
   Build Test .NET
   Outputs are saved.
   For example:
-  - Linux Debug -> ./Linux/Debug/build-validation.result
-  - Windows Release -> ./Windows/Release/build-validation.result
-  - Windows MainOhters -> ./Windows/MainOhters/build-validation.result
+  - Linux Debug -> ./Linux/Debug/build_validation.result
+  - Windows Release -> ./Windows/Release/build_validation.result
+  - Windows MainOhters -> ./Windows/MainOhters/build_validation.result
 inputs:
   project_file_path:
     description: Build Test Project File Path
@@ -16,6 +16,17 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
+  result_file:
+    description: >
+      Result File Name
+      For example:
+      inputs param
+        - Windows, Debug, build_validation.result
+      return
+        - Widnows/Debug/build_validation.result
+    required: false
+    default: build_validation.result
+
 runs:
   using: "composite"
   steps:
@@ -24,23 +35,19 @@ runs:
       with:
         dotnet-version: ${{ inputs.dotnet_version }}
 
-    - name: Add Execute Permission for Scripts
-      if: runner.os == 'Linux'
-      run: chmod +x ./.scripts/build-validation/dotnet.sh
-      shell: bash
-
     - name: Build Test on Linux
       if: runner.os == 'Linux'
-      run: ./.scripts/build-validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/build-validation.result"
-      shell: bash
-
-    - name: Remove Execute Permission for Scripts
-      if: runner.os == 'Linux'
-      run: chmod -x ./.scripts/build-validation/dotnet.sh
+      run: |
+        # Build Test on Linux
+        chmod +x ./.scripts/build_validation/dotnet.sh
+        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/${{ inputs.result_file }}"
+        chmod -x ./.scripts/build_validation/dotnet.sh
       shell: bash
 
     - name: Build Test on Windows
       if: runner.os == 'Windows'
-      run: ./.scripts/build-validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/build-validation.result"
+      run: |
+        # Build Test on Windows
+        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/${{ inputs.result_file }}"
       shell: pwsh
 

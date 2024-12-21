@@ -38,11 +38,11 @@ jobs:
         with:
           name: Info
           path: |
-            ./git-info.result
-            # ./exist-files.result
-            ./solution-project-value.result
-            ./deploy-value.result
-            ./git-value.result
+            ./git_info.result
+            # ./exist_files.result
+            ./solution-project_value.result
+            ./deploy_value.result
+            ./git_value.result
           if-no-files-found: warn
 
   build-validation:
@@ -67,6 +67,37 @@ jobs:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}/build-validation.result
             if-no-files-found: warn
+  create-tag:
+    name: Create Tag
+    needs: check-event
+    runs-on: ubuntu-latest
+    concurrency:
+      group: tag-creation
+      cancel-in-progress: false
+    env:
+      NEW_VERSION: ""
+    outputs:
+      new_version: ${{ env.NEW_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Before Check Tags
+        uses: ./.github/actions/tag/version/check
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
+
+      - name: Version Create Tag
+        uses: ./.github/actions/tag/version/create
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
+
+      - name: After Check Tags
+        uses: ./.github/actions/tag/version/check
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
+
   results:
     name: Results
     needs: build-validation
@@ -82,22 +113,22 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Debug
-            path: ./results/build-validation/linux/debug
+            path: ./results/build_validation/linux/debug
         continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Linux_Release
-            path: ./results/build-validation/linux/release
+            path: ./results/build_validation/linux/release
         continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Debug
-            path: ./results/build-validation/windows/debug
+            path: ./results/build_validation/windows/debug
         continue-on-error: true
       - uses: actions/download-artifact@v4
         with:
             name: Build_Validation_Windows_Release
-            path: ./results/build-validation/windows/release
+            path: ./results/build_validation/windows/release
         continue-on-error: true
 
       - name: Sermary
@@ -107,23 +138,23 @@ jobs:
       - name: Merge Value Results
         run: |
           merge_result=./results/info/value.result
-          if [ -f ./results/info/solution-project-value.result ]; then
+          if [ -f ./results/info/solution_project_value.result ]; then
             echo -e "\033[38;5;245m● Solution & Project\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution-project-value.result > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution_project_value.result > $merge_result
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution-project-value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m" > $merge_result
           fi
-          if [ -f ./results/info/deploy-value.result ]; then
+          if [ -f ./results/info/deploy_value.result ]; then
             echo -e "\033[38;5;245m● Deploy\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy-value.result > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy_value.result > $merge_result
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy-value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m" > $merge_result
           fi
-          if [ -f ./results/info/git-value.result ]; then
+          if [ -f ./results/info/git_value.result ]; then
             echo -e "\033[38;5;245m● Git\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git-value.result > $merge_result
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git_value.result > $merge_result
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git-value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" > $merge_result
           fi
 
       - name: Info
@@ -133,18 +164,18 @@ jobs:
             [
               {
                 "header": "Git Info",
-                "path": "./results/info/git-info.result"
+                "path": "./results/info/git_info.result"
               },
               {
                 "header": "File Exist",
-                "path": "./results/info/exist-files.result"
+                "path": "./results/info/exist_files.result"
               },
               {
                 "header": "Values",
                 "path": "./results/info/value.result"
               }
             ]
-          result_file: ./results/info-marge.result
+          result_file: ./results/info_marge.result
 
       - name: Build Validation
         uses: ./.github/actions/results
