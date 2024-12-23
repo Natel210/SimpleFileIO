@@ -131,10 +131,6 @@ jobs:
             path: ./results/build_validation/windows/release
         continue-on-error: true
 
-      - name: Sermary
-        run: echo Sermary
-
-
       - name: Merge Value Results
         run: |
           # Merge Value Results
@@ -165,6 +161,10 @@ jobs:
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" > $merge_result
           fi
+        continue-on-error: true
+
+      - name: Sermary
+        run: echo Sermary
 
       - name: Info
         uses: ./.github/actions/results
