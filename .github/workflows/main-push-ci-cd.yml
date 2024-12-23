@@ -208,11 +208,11 @@ jobs:
                 "path": "./results/build-validation/wibdows/release/build-validation.result"
               }
             ]
-          result_file: ./results/build-validation-marge.result
+          result_file: ./results/build_validation_marge.result
       - name: Detail
         run: |
           cat ./results/info_marge.result
-          cat ./results/build-validation_marge.result
+          cat ./results/build_validation_marge.result
 
   # check-event:
   #   name: Check Git Event

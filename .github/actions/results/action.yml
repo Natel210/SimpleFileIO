@@ -29,13 +29,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Add Execute Permission for Scripts
-      run: |
-        chmod +x .scripts/tools/result_output.sh
-      shell: bash
-
     - run: |
-        # Extract headers and file paths from JSON
+        # Result Make
+
+        # Change script run mode
+        chmod +x .scripts/tools/result_output.sh
+
+        # Arguments and Param
         headers_and_files='${{ inputs.headers_and_files }}'
         result_to_console=${{ inputs.result_to_console }}
         result_file=${{ inputs.result_file }}
@@ -45,12 +45,17 @@ runs:
         echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           value=$(echo "$pair" | jq -r '.path')
-          echo "Key: $key, Value: $value"  # 디버깅용 출력
+
+          echo -e "Key: $key, Value: $value"
+
           # Append the output of the script to the combined output
           script_output=$( .scripts/tools/result_output.sh "$key" "$value" )
-          echo "Script output: $script_output"  # 디버깅용 출력
+
+          echo -e "Script output: \n$script_output"
+
           combined_output+="${script_output}\n"
         done
+
         echo -e "$combined_output"
         # Final processing based on console and file options
         if [ "$result_to_console" = "true" ]; then
@@ -60,9 +65,7 @@ runs:
         if [ -n "$result_file" ]; then
           echo -e "$combined_output" > "$result_file"
         fi
-      shell: bash
 
-    - name: Remove Execute Permission for Scripts
-      run: |
+        # Restore script execution mode
         chmod -x .scripts/tools/result_output.sh
       shell: bash
