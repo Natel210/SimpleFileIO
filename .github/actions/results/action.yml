@@ -42,16 +42,19 @@ runs:
         
         combined_output=""
 
+        # Load Json File
+        echo Load Json File
         echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
-          value=$(echo "$pair" | jq -r '.path')
+          path=$(echo "$pair" | jq -r '.path')
 
-          echo -e "Key: $key, Value: $value"
+          # Debug Log
+          echo -e "Key: $key, Value: $path"
+          echo -e "Datas :"
+          cat $path
 
           # Append the output of the script to the combined output
-          script_output=$( .scripts/tools/result_output.sh "$key" "$value" )
-
-          echo -e "Script output: \n$script_output"
+          script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
 
           combined_output+="${script_output}\n"
         done
