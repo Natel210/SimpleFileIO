@@ -54,7 +54,8 @@ runs:
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
-          $( .scripts/tools/result_output.sh "$key" "$path" ) >> "$temp_file"
+          script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
+          echo "$script_output" >> "$temp_file"
         done
 
         ################################################################################
@@ -62,15 +63,20 @@ runs:
         ################################################################################
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo callingsssssssssssss
-          cat $temp_file
+          cat "${temp_file}"
         fi
 
         ################################################################################
         # Output file
         ################################################################################
         if [ -n "${{ inputs.result_file }}" ]; then
-          cat $temp_file > "${{ inputs.result_file }}"
+          cp  "${temp_file}" "${{ inputs.result_file }}"
         fi
+
+        ################################################################################
+        # Delete file
+        ################################################################################
+        rm -f "$temp_file"
 
         ################################################################################
         # Restore file mode
