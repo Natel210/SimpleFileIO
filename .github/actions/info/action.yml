@@ -58,6 +58,7 @@ runs:
   steps:
     - name: Add Execute Permission for Scripts
       run: |
+        # Add Execute Permission for Scripts
         chmod +x ./.scripts/check/values.sh
         chmod +x ./.scripts/check/exist_files.sh
         chmod +x ./.scripts/check/git_info.sh
@@ -70,11 +71,11 @@ runs:
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
-            "Solution File Path": "{{ inputs.solution_file_path }}",
-            "Dll File Path": "{{ inputs.dll_project_file_path }}",
-            "Build Directory Path": "{{ inputs.build_directory_path }}",
-            "Tester File Path": "{{ inputs.tester_project_file_path }}",
-            "Tester Executable File Name": "{{ inputs.tester_executable_file_name }}"
+            "Solution File Path": "${{ inputs.solution_file_path }}",
+            "Dll File Path": "${{ inputs.dll_project_file_path }}",
+            "Build Directory Path": "${{ inputs.build_directory_path }}",
+            "Tester File Path": "${{ inputs.tester_project_file_path }}",
+            "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }
       shell: bash
 
@@ -134,26 +135,68 @@ runs:
       run: |
         # Result Debug
         echo -e "\033[48;5;241m\033[38;5;245mResult Debug\033[0m"
+
+        ################################################################################
+        # Solution Project Value
+        ################################################################################
         echo "::group::● Solution Project Value"
-        cat solution_project_value.result
+        if [ -f "solution_project_value.result" ]; then
+          cat "solution_project_value.result"
+        else
+          echo "::Warning::⚠️ File not found: solution_project_value.result"
+        fi
         echo "::groupend::"
+
+        ################################################################################
+        # Deploy Value
+        ################################################################################
         echo "::group::● Deploy Value"
-        cat deploy_value.result
+        if [ -f "deploy_value.result" ]; then
+          cat "deploy_value.result"
+        else
+          echo "::Warning::⚠️ File not found: deploy_value.result"
+        fi
         echo "::groupend::"
+
+        ################################################################################
+        # Git Value
+        ################################################################################
         echo "::group::● Git Value"
-        cat git_value.result
+        if [ -f "git-value.result" ]; then
+          cat "git_value.result"
+        else
+          echo "::Warning::⚠️ File not found: git_value.result"
+        fi
         echo "::groupend::"
+
+        ################################################################################
+        # Exist Files
+        ################################################################################
         echo "::group::● Exist Files"
+        if [ -f "exist_files.result" ]; then
+          cat "exist_files.result"
+        else
+          echo "::Warning::⚠️ File not found: exist_files.result"
+        fi
         cat exist_files.result
         echo "::groupend::"
+
+        ################################################################################
+        # Git Info
+        ################################################################################
         echo "::group::● Git Info"
-        cat git_info.result
+        if [ -f "git_info.result" ]; then
+          cat "git_info.result"
+        else
+          echo "::Warning::⚠️ File not found: git_info.result"
+        fi
         echo "::groupend::"
       shell: bash
       continue-on-error: true
 
     - name: Remove Execute Permission for Scripts
       run: |
+        # Remove Execute Permission for Scripts
         chmod -x ./.scripts/check/values.sh
         chmod -x ./.scripts/check/exist_files.sh
         chmod -x ./.scripts/check/git_info.sh
