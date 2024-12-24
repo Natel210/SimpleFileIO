@@ -32,12 +32,13 @@ runs:
     - run: |
         # Result Make
 
-        # Change script run mode
+        ################################################################################
         chmod +x .scripts/tools/result_output.sh
+
         ################################################################################
         # params
         headers_and_files='${{ inputs.headers_and_files }}'
-        declare -g combined_output="
+        declare -g combined_output="""
 
         ################################################################################
         # Loop marge sub shell
@@ -50,15 +51,20 @@ runs:
         done
 
         ################################################################################
-
+        # Output console
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo callingsssssssssssss
           echo -e $combined_output
         fi
 
+        ################################################################################
+        # Output file
         if [ -n "${{ inputs.result_file }}" ]; then
           echo -e $combined_output >> "${{ inputs.result_file }}"
         fi
 
+        ################################################################################
         chmod -x .scripts/tools/result_output.sh
+
+        ################################################################################
       shell: bash
