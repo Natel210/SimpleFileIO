@@ -40,7 +40,7 @@ jobs:
           path: |
             ./git_info.result
             # ./exist_files.result
-            ./solution-project_value.result
+            ./solution_project_value.result
             ./deploy_value.result
             ./git_value.result
           if-no-files-found: warn
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
-            path: ./${{ runner.os }}/${{ matrix.configuration }}/build-validation.result
+            path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
             if-no-files-found: warn
   #create-tag:
   #  name: Create Tag
