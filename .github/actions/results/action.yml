@@ -35,44 +35,23 @@ runs:
         # Change script run mode
         chmod +x .scripts/tools/result_output.sh
 
-        # Arguments and Param
-        headers_and_files='${{ inputs.headers_and_files }}'
-        result_to_console=${{ inputs.result_to_console }}
-        result_file=${{ inputs.result_file }}
-        
         combined_output=""
-
-        # Load Json File
-        echo ""
-        echo "Load Json File"
-        echo "$headers_and_files" | jq -c '.[]' | while read -r pair; do
+        echo "${{ inputs.headers_and_files }}" | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
-
-          # Debug Log
-          echo -e "Key: $key"
-          echo -e "Value: $path"
-          echo -e "Datas :"
-          if [ -f $path ]; then
-            cat $path
-          else
-            echo no datas
-          fi
-
-          # Append the output of the script to the combined output
+          echo "[${key}] ${path}"
           script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
-
           combined_output+="${script_output}\n"
         done
 
         echo -e "$combined_output"
         # Final processing based on console and file options
-        if [ "$result_to_console" = "true" ]; then
+        if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo -e "$combined_output"
         fi
 
-        if [ -n "$result_file" ]; then
-          echo -e "$combined_output" > "$result_file"
+        if [ -n "${{ inputs.result_file }}" ]; then
+          echo -e "$combined_output" > "${{ inputs.result_file }}"
         fi
 
         # Restore script execution mode
