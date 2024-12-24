@@ -35,8 +35,11 @@ runs:
         # Change script run mode
         chmod +x .scripts/tools/result_output.sh
 
+        headers_and_files='${{ inputs.headers_and_files }}'
+        result_to_console=${{ inputs.result_to_console }}
+        result_file=${{ inputs.result_file }}
         combined_output=""
-        echo "${{ inputs.headers_and_files }}" | jq -c '.[]' | while read -r pair; do
+        echo "'${{ inputs.headers_and_files }}'" | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
