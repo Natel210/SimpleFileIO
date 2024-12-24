@@ -50,6 +50,7 @@ runs:
         ################################################################################
         # Loop marge sub shell
         ################################################################################
+        echo -e "\033[48;5;241m\033[38;5;15mData"
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
@@ -62,7 +63,7 @@ runs:
         # Output console
         ################################################################################
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
-          echo callingsssssssssssss
+          echo -e "\033[48;5;241m\033[38;5;15mOutput"
           cat "${temp_file}"
         fi
 
@@ -70,7 +71,8 @@ runs:
         # Output file
         ################################################################################
         if [ -n "${{ inputs.result_file }}" ]; then
-          cp  "${temp_file}" "${{ inputs.result_file }}"
+          echo -e "${background_light_gray}${text_white}Save File ${{ inputs.result_file }}${reset}"
+          cp "${temp_file}" "${{ inputs.result_file }}"
         fi
 
         ################################################################################
