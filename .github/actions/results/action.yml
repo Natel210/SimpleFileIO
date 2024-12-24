@@ -46,7 +46,7 @@ runs:
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
           script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
-          combined_output+="$script_output"\n
+          combined_output+="$script_output\n"
         done
 
         ################################################################################
