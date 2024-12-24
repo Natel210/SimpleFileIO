@@ -12,13 +12,13 @@ if [ -z "$header_name" ]; then
 fi
 
 # Print the header
-echo -e "${text_light_gray}┌──────────────────────────────────────────────────────────┐${reset}"
-printf "${text_light_gray}|  %-56s${text_light_gray}│${reset}\n" "${text_white}${header_name}"
-echo -e "${text_light_gray}└──────────────────────────────────────────────────────────┘${reset}"
+echo -e "${text_light_gray}┌──────────────────────────────────────────────────────────────────────────────┐${reset}"
+printf "${text_light_gray}|  %-74s${text_light_gray}│${reset}\n" "${text_white}${header_name}"
+echo -e "${text_light_gray}└──────────────────────────────────────────────────────────────────────────────┘${reset}"
 
 # Check if file exists and display its content
 if [ -f "$result_file" ]; then
   cat "$result_file"
 else
-  echo -e "\033[48;5;52m\033[38;5;196mFile not found: $result_file\033[0m"
+  echo -e "${background_dark_red}${text_red}File not found: $result_file${reset}"
 fi
