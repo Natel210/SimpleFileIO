@@ -50,11 +50,11 @@ runs:
         ################################################################################
         # Loop marge sub shell
         ################################################################################
-        echo -e "\033[48;5;241m\033[38;5;15mData"
+        echo -e "\033[48;5;241m\033[38;5;15mData\033[0m"
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
-          echo "[${key}] ${path}"
+          echo -e "\033[38;5;245m[${key}] ${path}\033[0m"
           script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
           echo "$script_output" >> "$temp_file"
         done
