@@ -33,38 +33,48 @@ runs:
         # Result Make
 
         ################################################################################
+        # Change file mode
+        ################################################################################
         chmod +x .scripts/tools/result_output.sh
 
         ################################################################################
-        # params
+        # Params
+        ################################################################################
         headers_and_files='${{ inputs.headers_and_files }}'  # Json 
-        declare -g combined_output=""  # Output text
+
+        ################################################################################
+        # Temp file
+        ################################################################################
+        temp_file=$(mktemp)
 
         ################################################################################
         # Loop marge sub shell
+        ################################################################################
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
-          script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
-          combined_output+="$script_output\n"
+          $( .scripts/tools/result_output.sh "$key" "$path" ) >> "$temp_file"
         done
 
         ################################################################################
         # Output console
+        ################################################################################
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo callingsssssssssssss
-          echo -e $combined_output
+          cat $temp_file
         fi
 
         ################################################################################
         # Output file
+        ################################################################################
         if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e $combined_output >> "${{ inputs.result_file }}"
+          cat $temp_file > "${{ inputs.result_file }}"
         fi
 
         ################################################################################
+        # Restore file mode
+        ################################################################################
         chmod -x .scripts/tools/result_output.sh
 
-        ################################################################################
       shell: bash
