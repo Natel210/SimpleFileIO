@@ -13,7 +13,7 @@ fi
 
 # Print the header
 echo -e "${text_light_gray}┌──────────────────────────────────────────────────────────┐${reset}"
-printf "${text_light_gray}  %-56s{$text_light_gray}│${reset}" "${text_white}${header_name}"
+printf "${text_light_gray}|  %-56s${text_light_gray}│${reset}\n" "${text_white}${header_name}"
 echo -e "${text_light_gray}└──────────────────────────────────────────────────────────┘${reset}"
 
 # Check if file exists and display its content

@@ -37,7 +37,7 @@ runs:
         ################################################################################
         # params
         headers_and_files='${{ inputs.headers_and_files }}'
-        combined_output=()
+        declare -g combined_output="
 
         ################################################################################
         # Loop marge sub shell
@@ -46,25 +46,18 @@ runs:
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
           script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
-          combined_output+=("$script_output")
-          for output in "${combined_output[@]}"; do
-            echo -e "$output"
-          done
+          combined_output+="$script_output"\n
         done
 
         ################################################################################
 
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo callingsssssssssssss
-          for output in "${combined_output[@]}"; do
-            echo -e "$output"
-          done
+          echo -e $combined_output
         fi
 
         if [ -n "${{ inputs.result_file }}" ]; then
-          for output in "${combined_output[@]}"; do
-            echo -e "$output" >> "${{ inputs.result_file }}"
-          done
+          echo -e $combined_output >> "${{ inputs.result_file }}"
         fi
 
         chmod -x .scripts/tools/result_output.sh
