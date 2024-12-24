@@ -37,8 +37,8 @@ runs:
 
         ################################################################################
         # params
-        headers_and_files='${{ inputs.headers_and_files }}'
-        declare -g combined_output="""
+        headers_and_files='${{ inputs.headers_and_files }}'  # Json 
+        declare -g combined_output=""  # Output text
 
         ################################################################################
         # Loop marge sub shell
