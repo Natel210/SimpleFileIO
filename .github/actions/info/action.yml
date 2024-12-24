@@ -133,16 +133,22 @@ runs:
     - name: Result Debug
       run: |
         # Result Debug
-        echo "● Solution Project Value"
+        echo -e "\033[48;5;241m\033[38;5;245mResult Debug\033[0m"
+        echo "::group::● Solution Project Value"
         cat solution_project_value.result
-        echo "● Deploy Value"
+        echo "::groupend::"
+        echo "::group::● Deploy Value"
         cat deploy_value.result
-        echo "● Git Value"
+        echo "::groupend::"
+        echo "::group::● Git Value"
         cat git_value.result
-        echo "● Exist Files"
+        echo "::groupend::"
+        echo "::group::● Exist Files"
         cat exist_files.result
-        echo "● Git Info"
+        echo "::groupend::"
+        echo "::group::● Git Info"
         cat git_info.result
+        echo "::groupend::"
       shell: bash
       continue-on-error: true
 
