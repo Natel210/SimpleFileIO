@@ -135,23 +135,21 @@ jobs:
         run: |
           # Merge Value Results
 
-          merge_result=./results/info/value.result
+          
+
           ################################################################################
-          # Ensure result file directory exists
+          # Create Temp file
           ################################################################################
-          result_dir=$(dirname "$merge_result")
-          if [ ! -d "$result_dir" ]; then
-              mkdir -p "$result_dir"
-          fi
+          temp_file=$(mktemp)
 
           ################################################################################
           # Apply Solution Project Value
           ################################################################################
           if [ -f ./results/info/solution_project_value.result ]; then
-            echo -e "\033[38;5;245m● Solution & Project\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution_project_value.result > $merge_result
+            echo -e "\033[38;5;245m● Solution & Project\033[0m" >> $temp_file
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/solution_project_value.result >> $temp_file
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m" >> $temp_file
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m"
           fi
 
@@ -159,10 +157,10 @@ jobs:
           # Apply Deploy Value
           ################################################################################
           if [ -f ./results/info/deploy_value.result ]; then
-            echo -e "\033[38;5;245m● Deploy\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy_value.result > $merge_result
+            echo -e "\033[38;5;245m● Deploy\033[0m" > $temp_file
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy_value.result >> $temp_file
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m" >> $temp_file
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m"
           fi
 
@@ -170,12 +168,30 @@ jobs:
           # Apply Git Value
           ################################################################################
           if [ -f ./results/info/git_value.result ]; then
-            echo -e "\033[38;5;245m● Git\033[0m" > $merge_result
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git_value.result > $merge_result
+            echo -e "\033[38;5;245m● Git\033[0m" >> $temp_file
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git_value.result >> $temp_file
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" > $merge_result
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" >> $temp_file
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m"
           fi
+
+          
+          ################################################################################
+          # Ensure result file directory exists
+          ################################################################################
+          merge_result=./results/info/value.result
+          result_dir=$(dirname "$merge_result")
+          if [ ! -d "$result_dir" ]; then
+              mkdir -p "$result_dir"
+          fi
+          cp "${temp_file}" "${merge_result}"
+
+
+          ################################################################################
+          # Delete temp file
+          ################################################################################
+          rm -f "$temp_file"
+
 
           ################################################################################
           # Debug
