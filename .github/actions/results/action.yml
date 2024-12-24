@@ -38,24 +38,29 @@ runs:
         headers_and_files='${{ inputs.headers_and_files }}'
         # result_to_console=${{ inputs.result_to_console }}
         # result_file=${{ inputs.result_file }}
-        combined_output=""
+        combined_output=()
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo "[${key}] ${path}"
           script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
-          echo -e "-------\nTEST : $script_output"
-          combined_output+="${script_output}\n"
-          echo -e "-------\nTEST2 : $combined_output"
+          combined_output+="(${script_output})"
+          for output in "${combined_output[@]}"; do
+            echo -e "$output"
+          done
         done
 
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
           echo callingsssssssssssss
-          echo -e "${combined_output}"
+          for output in "${combined_output[@]}"; do
+            echo -e "$output"
+          done
         fi
 
         if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e "${combined_output}" > "${{ inputs.result_file }}"
+          for output in "${combined_output[@]}"; do
+            echo -e "$output" >> "${{ inputs.result_file }}"
+          done
         fi
 
         chmod -x .scripts/tools/result_output.sh
