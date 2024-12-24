@@ -64,7 +64,9 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
-      run: ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
+      run: |
+        # Check Solution & Project Values
+        ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -77,7 +79,9 @@ runs:
       shell: bash
 
     - name: Check Deploy Values
-      run: ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
+      run: |
+        # Check Deploy Values
+        ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
       env: 
         DEPLOY_JSON_DATA: |
           {
@@ -87,7 +91,9 @@ runs:
       shell: bash
 
     - name: Check Git Values
-      run: ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
+      run: |
+        # Check Git Values
+        ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
       env: 
         GIT_JSON_DATA: |
           {
@@ -99,7 +105,9 @@ runs:
       shell: bash
 
     - name: Check Exist Files
-      run: ./.scripts/check/exist_files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
+      run: |
+        # Check Exist Files
+        ./.scripts/check/exist_files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
       env: 
         EXIST_FILES_JSON_DATA: |
           {
@@ -112,13 +120,32 @@ runs:
       shell: bash
 
     - name: Check Git Info
-      run: ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
+      run: |
+        # Check Git Info
+        ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"
         HEAD_REF: "${{ inputs.head_ref }}"
         BASE_REF: "${{ inputs.base_ref }}"
       shell: bash
+
+    - name: Result Debug
+      run: |
+        # Result Debug
+        echo "● Solution Project Value"
+        cat solution_project_value.result
+        echo "● Deploy Value"
+        cat deploy_value.result
+        echo "● Git Value"
+        cat git_value.result
+        echo "● Exist Files"
+        cat exist_files.result
+        echo "● Git Info"
+        cat git_info.result
+        ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
+      shell: bash
+      continue-on-error: true
 
     - name: Remove Execute Permission for Scripts
       run: |
