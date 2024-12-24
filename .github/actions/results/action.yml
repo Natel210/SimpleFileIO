@@ -53,7 +53,7 @@ runs:
           echo -e "Key: $key"
           echo -e "Value: $path"
           echo -e "Datas :"
-          if [ -n $path ]; than
+          if [ -f $path ]; then
             cat $path
           else
             echo no datas
