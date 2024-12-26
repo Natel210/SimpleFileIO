@@ -60,18 +60,18 @@ runs:
         done
 
         ################################################################################
-        # Output console
+        # Result output console
         ################################################################################
         if [ "${{ inputs.result_to_console }}" = "true" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mOutput"
+          echo -e "\033[48;5;241m\033[38;5;15mResult Output Console\033[0m"
           cat "${temp_file}"
         fi
 
         ################################################################################
-        # Output file
+        # Result output file
         ################################################################################
         if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e "${background_light_gray}${text_white}Save File ${{ inputs.result_file }}${reset}"
+          echo -e "\033[48;5;241m\033[38;5;15mSave File ${{ inputs.result_file }}\033[0m"
           cp "${temp_file}" "${{ inputs.result_file }}"
         fi
 
