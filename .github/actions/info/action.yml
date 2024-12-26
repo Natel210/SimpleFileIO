@@ -139,16 +139,16 @@ runs:
         ################################################################################
         # Solution Project Value
         ################################################################################
-        echo "::group::● Solution Project Value"
+        echo ::group::● Solution Project Value
         cat "solution_project_value.result" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value.result"
-        echo "::groupend::"
+        echo ::groupend::
 
         ################################################################################
         # Deploy Value
         ################################################################################
-        echo "::group::● Deploy Value"
+        echo ::group::● Deploy Value
         cat "deploy_value.result" || echo "::Warning::⚠️ File not found or cannot read: deploy_value.result"
-        echo "::groupend::"
+        echo ::groupend::
 
         ################################################################################
         # Git Value
