@@ -153,23 +153,23 @@ runs:
         ################################################################################
         # Git Value
         ################################################################################
-        echo "::group::● Git Value"
-        cat "git-value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
-        echo "::groupend::"
+        echo ::group::● Git Value
+        cat "git_value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
+        echo ::groupend::
 
         ################################################################################
         # Exist Files
         ################################################################################
-        echo "::group::● Exist Files"
+        echo ::group::● Exist Files
         cat "exist_files.result" || echo "::Warning::⚠️ File not found or cannot read: exist_files.result"
-        echo "::groupend::"
+        echo ::groupend::
 
         ################################################################################
         # Git Info
         ################################################################################
-        echo "::group::● Git Info"
+        echo ::group::● Git Info
         cat "git_info.result" || echo "::Warning::⚠️ File not found or cannot read: git_info.result"
-        echo "::groupend::"
+        echo ::groupend::
       shell: bash
       continue-on-error: true
 
