@@ -155,7 +155,7 @@ jobs:
           # Apply Deploy Value
           ################################################################################
           if [ -f ./results/info/deploy_value.result ]; then
-            echo -e "\033[38;5;245m● Deploy\033[0m" > $temp_file
+            echo -e "\033[38;5;245m● Deploy\033[0m" >> $temp_file
             awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy_value.result >> $temp_file
           else
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m" >> $temp_file

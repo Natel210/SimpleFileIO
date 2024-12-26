@@ -143,7 +143,6 @@ runs:
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "solution_project_value.result" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value.result"
-        echo ::groupend::
 
         ################################################################################
         # Deploy Value
