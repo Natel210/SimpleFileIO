@@ -194,8 +194,13 @@ jobs:
           ################################################################################
           # Debug
           ################################################################################
+          if [ "${{ env.result_to_console }}" = "true" ]; then
           echo -e "\033[48;5;241m\033[38;5;15mDebug : ${merge_result}\033[0m"
           cat $merge_result
+          fi
+          
+        env:
+          result_to_console: false
         continue-on-error: true
 
       - name: Sermary
@@ -220,6 +225,8 @@ jobs:
               }
             ]
           result_file: ./results/info_marge.result
+          result_to_console: false
+          continue-on-error: true
 
       - name: Build Validation
         uses: ./.github/actions/results
@@ -244,7 +251,9 @@ jobs:
               }
             ]
           result_file: ./results/build_validation_marge.result
-      - name: Detail
+          result_to_console: false
+          continue-on-error: true
+      - name: Result
         run: |
           cat ./results/info_marge.result
           cat ./results/build_validation_marge.result
