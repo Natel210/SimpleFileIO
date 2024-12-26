@@ -39,7 +39,7 @@ jobs:
           name: Info
           path: |
             ./git_info.result
-            # ./exist_files.result
+            ./exist_files.result
             ./solution_project_value.result
             ./deploy_value.result
             ./git_value.result
@@ -240,7 +240,7 @@ jobs:
               },
               {
                 "header": "Build Validation Widnows Release",
-                "path": "./results/build_validation/wibdows/release/build_validation.result"
+                "path": "./results/build_validation/windows/release/build_validation.result"
               }
             ]
           result_file: ./results/build_validation_marge.result
