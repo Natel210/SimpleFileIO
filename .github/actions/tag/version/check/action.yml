@@ -12,7 +12,14 @@ runs:
   steps:
 
     - name: Add Execute Permission for Scripts
-      run: chmod +x ${{ github.action_path }}/scripts/*.sh
+      run: |
+        # Add Execute Permission for Scripts
+        chmod +x ./.scripts/check/all_tag_version.sh
+        chmod +x ./.scripts/check/latest_tag_version.sh
+      shell: bash
+
+    - name: List All Tags
+      run: ${{github.action_path}}/scripts/all-list.sh ${{ inputs.prefix }}
       shell: bash
 
     - name: Highest Git Version
@@ -24,5 +31,8 @@ runs:
       shell: bash
 
     - name: Remove Execute Permission for Scripts
-      run: chmod -x ${{ github.action_path }}/scripts/*.sh
+      run: |
+        # Remove Execute Permission for Scripts
+        chmod -x ./.scripts/check/all_tag_version.sh
+        chmod -x ./.scripts/check/latest_tag_version.sh
       shell: bash
