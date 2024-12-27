@@ -37,6 +37,7 @@ jobs:
       
       - name: Test
         run: |
+          cat $GITHUB_OUTPUT
           echo ${{ steps.info.outputs.solution_project_value_result }}
           echo ${{ steps.info.outputs.git_value_result }}
           echo ${{ steps.info.outputs.else_value_result }}
