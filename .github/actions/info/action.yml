@@ -92,23 +92,13 @@ runs:
       id: check-solution-project-value
       run: |
         temp_file=$(mktemp)
-        
-        # Run the shell script and capture its output into the temp file
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "${temp_file}"
-        
-        # Read the contents of the temporary file into the multi_line_output variable
         multi_line_output=$(cat ${temp_file})
-        
-        # Write the multi-line output as a JSON-formatted string
-        echo "solution_project_value_result<<EOF" >> $GITHUB_OUTPUT
-        echo "$multi_line_output" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        
-        # Debugging: Display the content of the output
-        echo "solution_project_value_result from GITHUB_OUTPUT:"
+
+        echo -e $multi_line_output
+
+        echo -e "solution_project_value_result=$(echo -e $multi_line_output | jq -R .)" >> $GITHUB_OUTPUT
         cat $GITHUB_OUTPUT
-        
-        # Clean up the temporary file
         rm -f "$temp_file"
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
