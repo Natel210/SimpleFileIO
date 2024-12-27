@@ -252,6 +252,8 @@ jobs:
         continue-on-error: true
       - name: Result
         run: |
+          echo ${{ needs.info-and-check.result }}
+          echo ${{ needs.build-validation.result }}
           cat ./results/info_marge.result
           cat ./results/build_validation_marge.result
         continue-on-error: true
