@@ -35,8 +35,9 @@ jobs:
           result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
           tag_prefix: "${{ vars.TAG_PREFIX }}"
       
-      - name: Test
+      - name: Check Output
         run: |
+          # Check Output
           echo -e "\033[48;5;241m\033[38;5;15mResult Debug\033[0m"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
@@ -58,7 +59,7 @@ jobs:
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
           echo "${{ steps.info.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
-          
+
       - uses: actions/upload-artifact@v4
         with:
           name: Info
