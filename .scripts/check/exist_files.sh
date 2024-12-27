@@ -33,7 +33,7 @@ output=""
 
 
 # Get Json Data
-echo $json_data | jq -c '.[]' | while read -r pair; do
+while read -r pair; do
   total_count=$((total_count + 1))
 
   key=$(echo "$pair" | jq -r '.key')
@@ -44,7 +44,7 @@ echo $json_data | jq -c '.[]' | while read -r pair; do
     missing_count=$((missing_count + 1))
     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_red}Not Exist${reset}"
   fi
-done
+done <<< $(echo $json_data | jq -c '.[]')
 
 
 
