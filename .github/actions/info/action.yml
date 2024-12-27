@@ -103,7 +103,7 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh "${{ path_value }}" "$temp_file"
+        ./.scripts/check/values.sh "${{ inputs.path_value }}" "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
