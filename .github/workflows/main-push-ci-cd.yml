@@ -84,12 +84,17 @@ jobs:
           dotnet_version: "${{ vars.DOTNET_VERSION }}"
       - name: Check Output
         run: |
+          # Check Output
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Build Validation"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
           echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result"
         shell: bash
 
+      - name: To File Output
+        run: |
+          # To File Output
+          echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result" > ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
 
       - uses: actions/upload-artifact@v4
         with:
