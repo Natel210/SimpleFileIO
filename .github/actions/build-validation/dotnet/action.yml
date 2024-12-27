@@ -30,7 +30,7 @@ runs:
       run: |
         # Build Test on Linux
         chmod +x ./.scripts/build_validation/dotnet.sh
-        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$TEMP_RESULT_PATH"
+        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "${{ TEMP_RESULT_PATH }}"
         chmod -x ./.scripts/build_validation/dotnet.sh
       shell: bash
 
@@ -38,7 +38,7 @@ runs:
       if: runner.os == 'Windows'
       run: |
         # Build Test on Windows
-        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$TEMP_RESULT_PATH"
+        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "${{ TEMP_RESULT_PATH }}"
       shell: pwsh
 
     - name: Output
@@ -47,7 +47,7 @@ runs:
         # Output
 
         # Multi Line
-        multi_line_output=$(cat $TEMP_RESULT_PATH)
+        multi_line_output=$(cat ${{ TEMP_RESULT_PATH }})
         echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT

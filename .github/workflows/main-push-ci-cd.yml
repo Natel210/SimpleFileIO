@@ -88,6 +88,7 @@ jobs:
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Build Validation"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
           echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result"
+        shell: bash
 
 
       - uses: actions/upload-artifact@v4
