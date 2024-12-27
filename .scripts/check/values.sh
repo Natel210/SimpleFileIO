@@ -1,9 +1,7 @@
 #!/bin/bash
 
-source ./.scripts/tools/colors.sh
-
 if [ "$#" -lt 1 ]; then
-  echo "${background_dark_red}${text_red}No arguments. \n${background_dark_red}${text_red} Usage: $0 '<JSON String>'${reset}"
+  echo "\033[38;5;196mNo arguments. \n\033[38;5;196mUsage: $0 '<JSON String>'\033[0m"
   exit 1
 fi
 

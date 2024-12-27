@@ -3,59 +3,32 @@
 json_data="$1"
 result_file="$2"
 
-source ./.scripts/tools/colors.sh
-
 if [ -z "$json_data" ]; then
-  echo "${background_dark_red}${text_red}No JSON data provided.\n${background_dark_red}${text_red} Usage: $0 '<JSON String>' [result_file]${reset}"
+  echo "\033[38;5;196mNo JSON data provided.\n\033[38;5;196mUsage: $0 '<JSON String>' [result_file]\033[0m"
   exit 1
 fi
-
-# FILES=$(echo "$json_data" | jq -r 'to_entries[] | "\(.key)\t\(.value)"')
-
-# if [ -z "$FILES" ]; then
-#   echo "${background_dark_red}${text_red}Invalid JSON structure.${reset}"
-#   exit 1
-# fi
 
 total_count=0
 missing_count=0
 output=""
 
-# while IFS=$'\t' read -r key path; do
-#   total_count=$((total_count + 1))
-#   if [ -f "$path" ] || [ -d "$path" ]; then
-#     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_blue}Exist${reset}"
-#   else
-#     missing_count=$((missing_count + 1))
-#     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_red}Not Exist${reset}"
-#   fi
-# done <<< "$FILES"
-
-
 # Get Json Data
 while read -r pair; do
   total_count=$((total_count + 1))
-
   key=$(echo "$pair" | jq -r '.key')
   value=$(echo "$pair" | jq -r '.value')
   if [ -f "$value" ] || [ -d "$value" ]; then
-    output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_blue}Exist${reset}"
+    output+="\n\033[38;5;245m● $key\n\033[38;5;245m  - $value : Exist\033[0m"
   else
     missing_count=$((missing_count + 1))
-    output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_red}Not Exist${reset}"
+    output+="\n\033[0m● $key\n\033[0m  - $value : \033[38;5;196mNot Exist\033[0m"
   fi
 done <<< $(echo $json_data | jq -c '.[]')
 
-
-
-
-
-
-
 if [ "$missing_count" -eq 0 ]; then
-  summary="${background_dark_green}${text_green}All OK.. ($total_count/$total_count)${reset}"
+  summary="\033[38;5;46mAll OK.. ($total_count/$total_count)\033[0m"
 else
-  summary="${background_dark_red}${text_red}Not Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)${reset}"
+  summary="\033[38;5;196mNot Exist File Count $missing_count.. ($((total_count - missing_count))/$total_count)\033[0m"
 fi
 
 result="$summary$output"

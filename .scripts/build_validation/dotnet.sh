@@ -7,12 +7,12 @@ result_file="$3"
 source ./.scripts/tools/colors.sh
 
 if [ -z "$project_file_path" ] || [ -z "$build_configuration" ]; then
-    echo -e "${background_dark_red}${text_red}No arguments.\n ${background_dark_red}${text_red}Usage: $0 <Project File Path> <Build Configuration> <Result File>${reset}"
+    echo -e "\033[38;5;196mNo arguments.\n \033[38;5;196mUsage: $0 <Project File Path> <Build Configuration> <Result File>\033[0m"
     exit 1
 fi
 
 is_error=0
-output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration os:Linux ${reset} \n"
+output="${background_light_gray}${text_white}Building project: $project_file_path with configuration: $build_configuration os:Linux \033[0m \n"
 
 # Execute dotnet build and capture output
 build_output=$(dotnet build "$project_file_path" -c "$build_configuration" 2>&1)
