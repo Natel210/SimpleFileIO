@@ -55,20 +55,23 @@ inputs:
     required: true
 
 
+# outputs:
+#   solution_project_value_result:
+#     description: solution & project value result
+#   git_value_result:
+#     description: git value result
+#   else_value_result:
+#     description: other value result
 outputs:
   solution_project_value_result:
     description: solution & project value result
+    value: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
   git_value_result:
     description: git value result
+    value: ${{ steps.check-git-value.outputs.git_value_result }}
   else_value_result:
     description: other value result
-# outputs:
-#   solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
-#     description: solution & project value result
-#   git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
-#     description: git value result
-#   else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
-#     description: other value result
+    value: ${{ steps.check-else-value.outputs.else_value_result }}
 
 # outputs:
 #   solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
@@ -127,6 +130,7 @@ runs:
         value=$(cat else_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
         echo "else_value_result=$value" >> $GITHUB_OUTPUT
         cat $GITHUB_OUTPUT
+      
       env: 
         ELSE_JSON_DATA: |
           {
