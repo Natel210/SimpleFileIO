@@ -189,25 +189,16 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/exist_files.sh "$VALUES" "$temp_file"
+        ./.scripts/check/exist_files.sh "${{ inputs.path_values }}" "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
         # Remove Temp
         rm -f "$temp_file"
-      env: 
-        VALUES: |
-          {
-            "Solution File Path": "${{ inputs.solution_file_path }}",
-            "Dll File Path": "${{ inputs.dll_project_file_path }}",
-            "Tester Executable File Name": "${{ inputs.tester_project_file_path }}",
-            "Tester File Path": "${{ inputs.tester_executable_file_name }}"
-          }
-        RESULT_NAME: result
       shell: bash
       continue-on-error: true
 
@@ -224,7 +215,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -235,7 +226,6 @@ runs:
         REF: "${{ inputs.git_ref }}"
         HEAD_REF: "${{ inputs.head_ref }}"
         BASE_REF: "${{ inputs.base_ref }}"
-        RESULT_NAME: result
       shell: bash
       continue-on-error: true
 
