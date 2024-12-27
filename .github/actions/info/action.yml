@@ -95,7 +95,7 @@ runs:
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "${temp_file}"
         multi_line_output=$(cat ${temp_file})
 
-        echo -e $multi_line_output
+        echo -e $multi_line_output | jq -R .
 
         echo -e "solution_project_value_result=$(echo -e $multi_line_output | jq -R .)" >> $GITHUB_OUTPUT
         cat $GITHUB_OUTPUT
