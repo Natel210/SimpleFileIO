@@ -62,13 +62,11 @@ outputs:
   else_value_result:
     description: other value result
 
-
 runs:
   using: "composite"
   steps:
     - name: Add Execute Permission for Scripts
       run: |
-        # Add Execute Permission for Scripts
         chmod +x ./.scripts/check/values.sh
         chmod +x ./.scripts/check/exist_files.sh
         chmod +x ./.scripts/check/git_info.sh
@@ -77,11 +75,9 @@ runs:
     - name: Check Solution & Project Values
       id: check-solution-project-value
       run: |
-        # Check Solution & Project Values
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
         value=$(cat solution_project_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
         echo "solution_project_value_result=$value" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -96,11 +92,9 @@ runs:
     - name: Check Git Values
       id: check-git-value
       run: |
-        # Check Git Values
         ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
         value=$(cat git_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
         echo "git_value_result=$value" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
       env: 
         GIT_JSON_DATA: |
           {
@@ -114,11 +108,9 @@ runs:
     - name: Check Else Values
       id: check-else-value
       run: |
-        # Check Else Values
         ./.scripts/check/values.sh "$ELSE_JSON_DATA" "else_value.result"
         value=$(cat else_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
         echo "else_value_result=$value" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
       env: 
         ELSE_JSON_DATA: |
           {
@@ -129,7 +121,6 @@ runs:
 
     - name: Check Exist Files
       run: |
-        # Check Exist Files
         ./.scripts/check/exist_files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
       env: 
         EXIST_FILES_JSON_DATA: |
@@ -144,7 +135,6 @@ runs:
 
     - name: Check Git Info
       run: |
-        # Check Git Info
         ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
@@ -155,54 +145,32 @@ runs:
 
     - name: Result Debug
       run: |
-        # Result Debug
         echo -e "\033[48;5;241m\033[38;5;15mResult Debug\033[0m"
-
-        ################################################################################
-        # Solution Project Value
-        ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "solution_project_value.result" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value.result"
-
-        ################################################################################
-        # Git Value
-        ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "git_value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
-
-        ################################################################################
-        # Else Value
-        ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Deploy Value"
+        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "else_value.result" || echo "::Warning::⚠️ File not found or cannot read: else_value.result"
-
-        ################################################################################
-        # Exist Files
-        ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "exist_files.result" || echo "::Warning::⚠️ File not found or cannot read: exist_files.result"
-
-        ################################################################################
-        # Git Info
-        ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"        
+        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "git_info.result" || echo "::Warning::⚠️ File not found or cannot read: git_info.result"
       shell: bash
       continue-on-error: true
 
     - name: Remove Execute Permission for Scripts
       run: |
-        # Remove Execute Permission for Scripts
         chmod -x ./.scripts/check/values.sh
         chmod -x ./.scripts/check/exist_files.sh
         chmod -x ./.scripts/check/git_info.sh
