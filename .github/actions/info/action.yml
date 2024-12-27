@@ -13,10 +13,6 @@ inputs:
   dll_project_file_path:
     description: ""
     required: true
-  build_directory_path:
-    description: ""
-    required: false
-    default: "N/A"
   tester_project_file_path:
     description: ""
     required: false
@@ -62,10 +58,10 @@ outputs:
     description: other value result
     value: ${{ steps.else-value.outputs.result }}
   exist_files_result:
-    description: other value result
+    description: exist files result
     value: ${{ steps.exist-files.outputs.result }}
   git_info_result:
-    description: other value result
+    description: git info result
     value: ${{ steps.git-info.outputs.result }}
 runs:
   using: "composite"
@@ -101,7 +97,6 @@ runs:
           {
             "Solution File Path": "${{ inputs.solution_file_path }}",
             "Dll File Path": "${{ inputs.dll_project_file_path }}",
-            "Build Directory Path": "${{ inputs.build_directory_path }}",
             "Tester File Path": "${{ inputs.tester_project_file_path }}",
             "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }

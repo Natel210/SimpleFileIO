@@ -1,11 +1,6 @@
 name: Build Test .NET
 description: >
   Build Test .NET
-  Outputs are saved.
-  For example:
-  - Linux Debug -> ./Linux/Debug/build_validation.result
-  - Windows Release -> ./Windows/Release/build_validation.result
-  - Windows MainOhters -> ./Windows/MainOhters/build_validation.result
 inputs:
   project_file_path:
     description: Build Test Project File Path
@@ -16,16 +11,10 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
-  result_file:
-    description: >
-      Result File Name
-      For example:
-      inputs param
-        - Windows, Debug, build_validation.result
-      return
-        - Widnows/Debug/build_validation.result
-    required: false
-    default: build_validation.result
+output:
+  result:
+    description: build result
+    value:
 
 runs:
   using: "composite"
@@ -39,8 +28,26 @@ runs:
       if: runner.os == 'Linux'
       run: |
         # Build Test on Linux
+
+        # Add Execute Permission for Script
         chmod +x ./.scripts/build_validation/dotnet.sh
-        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/${{ inputs.result_file }}"
+
+        # Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Temp
+        rm -f "$temp_file"
+
+        # Remove Execute Permission for Script
         chmod -x ./.scripts/build_validation/dotnet.sh
       shell: bash
 
@@ -48,6 +55,19 @@ runs:
       if: runner.os == 'Windows'
       run: |
         # Build Test on Windows
-        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./${{ runner.os }}/${{ inputs.build_configuration }}/${{ inputs.result_file }}"
-      shell: pwsh
 
+        # Create Temp
+        $temp_file = New-TemporaryFile
+
+        # To Work
+        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$temp_file"
+
+        # Capture multi-line output
+        $multi_line_output = Get-Content $temp_file | Out-String
+        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Execute Permission for Script
+        Remove-Item -Path $temp_file -Force
+      shell: pwsh

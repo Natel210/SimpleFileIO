@@ -43,10 +43,8 @@ if [ -n "$result_file" ]; then
         mkdir -p "$result_dir"
     fi
     touch $result_file
-    echo -e "${background_light_gray}${text_white}Result to File ${result_file}${reset}"
     echo -e "$result" > "$result_file"
 else
-    echo -e "${background_light_gray}${text_white}Result to Console${reset}"
     echo -e "$result"
 fi
 

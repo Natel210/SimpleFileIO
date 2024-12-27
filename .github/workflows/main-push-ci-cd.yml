@@ -14,16 +14,21 @@ jobs:
   info-and-check:
     name: Info And Check
     runs-on: ubuntu-latest
+    outputs:
+      solution_project_value_result: ${{ steps.info-and-check.outputs.solution_project_value_result }}
+      git_value_result: ${{ steps.info-and-check.outputs.git_value_result }}
+      else_value_result: ${{ steps.info-and-check.outputs.else_value_result }}
+      exist_files_result: ${{ steps.info-and-check.outputs.exist_files_result }}
+      git_info_result: ${{ steps.info-and-check.outputs.git_info_result }}
     steps:
       - uses: actions/checkout@v4
       - name: Info And Check
-        id: info
+        id: info-and-check
         uses: ./.github/actions/info
         with:
           # solution & project
           solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"
           dll_project_file_path: "${{ vars.DLL_PROJECT_FILE_PATH }}"
-          build_directory_path: "${{ vars.BUILD_DIRECTORY_PATH }}"
           tester_project_file_path: "${{ vars.TESTER_PROJECT_FILE_PATH }}"
           tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
           # git
@@ -38,38 +43,27 @@ jobs:
       - name: Check Output
         run: |
           # Check Output
-          echo -e "\033[48;5;241m\033[38;5;15mResult Debug\033[0m"
+          echo -e "\033[48;5;241m\033[38;5;15mResult\033[0m"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ Invalid Solution And Project Value Result"
+          echo -e "${{ steps.info-and-check.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ Invalid Solution And Project Value Result"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
+          echo -e "${{ steps.info-and-check.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo "${{ steps.info.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
+          echo "${{ steps.info-and-check.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo "${{ steps.info.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
+          echo "${{ steps.info-and-check.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo "${{ steps.info.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Info
-          path: |
-            ./git_info.result
-            ./exist_files.result
-            ./solution_project_value.result
-            ./else_value.result
-            ./git_value.result
-          if-no-files-found: warn
+          echo "${{ steps.info-and-check.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
 
   build-validation:
     name: Build Validation
@@ -93,6 +87,7 @@ jobs:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
             if-no-files-found: warn
+            
   #create-tag:
   #  name: Create Tag
   #  needs: check-event
@@ -126,7 +121,7 @@ jobs:
 
   results:
     name: Results
-    needs: build-validation
+    needs: [info-and-check, build-validation]
     if: always()
     runs-on: ubuntu-latest
     steps:
