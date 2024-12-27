@@ -200,26 +200,46 @@ jobs:
           rm -f "$temp_file"
         continue-on-error: true
 
-      - name: Job Process
+      - name: Make Job Process Result
         run: |
-          #Job Process
+          #Make Job Process Result
 
+          
+
+          # Set directory
+          if [ ! -d "./results/info/" ]; then
+              mkdir -p "./results/info/"
+          fi
+
+          # Job Process
           temp_file=$(mktemp)
-
           if [[ "${{ needs.info-and-check.result }}" == "success" ]]; then
-            echo -e "\033[38;5;245m[Info And Check] \033[38;5;20m${{ needs.info-and-check.result }}\033[0m" >> "$temp_file"
+            echo -e "\033[38;5;245m[Info And Check] ${{ needs.info-and-check.result }}\033[0m" >> "$temp_file"
           else
             echo -e "\033[38;5;15m[Info And Check] \033[38;5;196m${{ needs.info-and-check.result }}\033[0m" >> "$temp_file"
           fi
-
           if [[ "${{ needs.build-validation.result }}" == "success" ]]; then
-            echo -e "\033[38;5;245m[Build Validation] \033[38;5;20m${{ needs.build-validation.result }}\033[0m" >> "$temp_file"
+            echo -e "\033[38;5;245m[Build Validation] ${{ needs.build-validation.result }}\033[0m" >> "$temp_file"
           else
             echo -e "\033[38;5;15m[Build Validation] \033[38;5;196m${{ needs.build-validation.result }}\033[0m" >> "$temp_file"
           fi
-
           cat "$temp_file"
+          cp "$temp_file" "./results/info/job_process.result"
           rm -f "$temp_file"
+
+      - name: Job Process
+        uses: ./.github/actions/results
+        with:
+          headers_and_files: >
+            [
+              {
+                "header": "Job Process",
+                "path": "./results/info/job_process.result"
+              }
+            ]
+          result_file: ./results/job_process_marge.result
+          result_to_console: false
+        continue-on-error: true
 
       - name: Info
         uses: ./.github/actions/results
@@ -271,8 +291,7 @@ jobs:
 
       - name: Result
         run: |
-          echo ${{ needs.info-and-check.result }}
-          echo ${{ needs.build-validation.result }}
+          cat ./results/job_process_marge.result
           cat ./results/info_marge.result
           cat ./results/build_validation_marge.result
         continue-on-error: true
