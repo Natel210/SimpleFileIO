@@ -103,7 +103,7 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh "${{ inputs.path_value }}" "$temp_file"
+        ./.scripts/check/values.sh "$VALUES" "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
@@ -114,6 +114,7 @@ runs:
         # Remove Temp
         rm -f "$temp_file"
       env:
+        VALUES: $ {{ inputs.path_value }}
         RESULT_NAME: result
       shell: bash
       continue-on-error: true
