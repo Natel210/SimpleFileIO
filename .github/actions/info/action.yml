@@ -122,34 +122,59 @@ runs:
     - name: Check Git Values
       id: check-git-value
       run: |
-        ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
-        value=$(cat git_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
-        echo "git_value_result=$value" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
+        # Check Git Values
+
+        #Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/check/values.sh "$VALUES" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Temp
+        rm -f "$temp_file"
       env: 
-        GIT_JSON_DATA: |
+        VALUES: |
           {
             "Event": "${{ inputs.git_event_name }}",
             "Ref": "${{ inputs.git_ref }}",
             "Head Ref": "${{ inputs.head_ref }}",
             "Base Ref": "${{ inputs.base_ref }}"
           }
+        RESULT_NAME: git_value_result
       shell: bash
 
     - name: Check Else Values
       id: check-else-value
       run: |
-        ./.scripts/check/values.sh "$ELSE_JSON_DATA" "else_value.result"
-        value=$(cat else_value.result | sed ':a;N;$!ba;s/\r//g;s/\n/\\n/g')
-        echo "else_value_result=$value" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
-      
+        # Check Git Values
+
+        #Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/check/values.sh "$VALUES" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Temp
+        rm -f "$temp_file"
       env: 
-        ELSE_JSON_DATA: |
+        VALUES: |
           {
             "Result Zip Name": "${{ inputs.result_zip_name }}",
             "Tag Prefix": "${{ inputs.tag_prefix }}"
           }
+        RESULT_NAME: else_value_result
       shell: bash
 
     - name: Check Exist Files
