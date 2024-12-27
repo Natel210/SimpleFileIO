@@ -3,10 +3,11 @@ description: >
   Outputs are saved.
   List:
   - solution_project_value.result
-  - deploy_value.result
   - git_value.result
+  - else_value.result
   - exist_files.result
   - git_info.result
+
 inputs:
   # solution & project
   solution_file_path:
@@ -28,14 +29,6 @@ inputs:
     required: false
     default: "N/A"
 
-  # deploy
-  result_zip_name:
-    description: ""
-    required: true
-  tag_prefix:
-    description: ""
-    required: true
-
   # git
   git_event_name:
     description: ""
@@ -53,6 +46,23 @@ inputs:
     required: false
     default: "N/A"
 
+  # else
+  result_zip_name:
+    description: ""
+    required: true
+  tag_prefix:
+    description: ""
+    required: true
+
+output:
+  solution_project_value_result:
+    description: solution & project value result
+  git_value_result:
+    description: git value result
+  else_value_result:
+    description: other value result
+
+
 runs:
   using: "composite"
   steps:
@@ -68,6 +78,7 @@ runs:
       run: |
         # Check Solution & Project Values
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
+        echo "solution_project_value_result=$(cat solution_project_value.result)" >> $GITHUB_OUTPUT
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -79,22 +90,11 @@ runs:
           }
       shell: bash
 
-    - name: Check Deploy Values
-      run: |
-        # Check Deploy Values
-        ./.scripts/check/values.sh "$DEPLOY_JSON_DATA" "deploy_value.result"
-      env: 
-        DEPLOY_JSON_DATA: |
-          {
-            "Result Zip Name": "${{ inputs.result_zip_name }}",
-            "Tag Prefix": "${{ inputs.tag_prefix }}"
-          }
-      shell: bash
-
     - name: Check Git Values
       run: |
         # Check Git Values
         ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
+        echo "git_value_result=$(cat git_value.result)" >> $GITHUB_OUTPUT
       env: 
         GIT_JSON_DATA: |
           {
@@ -102,6 +102,19 @@ runs:
             "Ref": "${{ inputs.git_ref }}",
             "Head Ref": "${{ inputs.head_ref }}",
             "Base Ref": "${{ inputs.base_ref }}"
+          }
+      shell: bash
+
+    - name: Check Else Values
+      run: |
+        # Check Else Values
+        ./.scripts/check/values.sh "$ELSE_JSON_DATA" "else_value.result"
+        echo "else_value_result=$(cat else_value.result)" >> $GITHUB_OUTPUT
+      env: 
+        ELSE_JSON_DATA: |
+          {
+            "Result Zip Name": "${{ inputs.result_zip_name }}",
+            "Tag Prefix": "${{ inputs.tag_prefix }}"
           }
       shell: bash
 
@@ -145,20 +158,20 @@ runs:
         cat "solution_project_value.result" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value.result"
 
         ################################################################################
-        # Deploy Value
-        ################################################################################
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Deploy Value"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "deploy_value.result" || echo "::Warning::⚠️ File not found or cannot read: deploy_value.result"
-
-        ################################################################################
         # Git Value
         ################################################################################
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
         cat "git_value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
+
+        ################################################################################
+        # Else Value
+        ################################################################################
+        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Deploy Value"
+        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        cat "else_value.result" || echo "::Warning::⚠️ File not found or cannot read: else_value.result"
 
         ################################################################################
         # Exist Files

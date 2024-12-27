@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Info And Check
+        id: info
         uses: ./.github/actions/info
         with:
           # solution & project
@@ -25,14 +26,21 @@ jobs:
           build_directory_path: "${{ vars.BUILD_DIRECTORY_PATH }}"
           tester_project_file_path: "${{ vars.TESTER_PROJECT_FILE_PATH }}"
           tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
-          # deploy
-          result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
-          tag_prefix: "${{ vars.TAG_PREFIX }}"
           # git
           git_event_name: "${{ github.event_name }}"
           git_ref: "${{ github.ref }}"
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
+          # else
+          result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
+          tag_prefix: "${{ vars.TAG_PREFIX }}"
+      
+      - name: Test
+        run: |
+          echo ${{ steps.info.outputs.solution_project_value_result }}
+          echo ${{ steps.info.outputs.git_value_result }}
+          echo ${{ steps.info.outputs.else_value_result }}
+        
 
       - uses: actions/upload-artifact@v4
         with:
@@ -41,7 +49,7 @@ jobs:
             ./git_info.result
             ./exist_files.result
             ./solution_project_value.result
-            ./deploy_value.result
+            ./else_value.result
             ./git_value.result
           if-no-files-found: warn
 
@@ -150,29 +158,28 @@ jobs:
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m" >> $temp_file
             echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/solution_project_value.result\033[0m"
           fi
-
-          ################################################################################
-          # Apply Deploy Value
-          ################################################################################
-          if [ -f ./results/info/deploy_value.result ]; then
-            echo -e "\033[38;5;245m● Deploy\033[0m" >> $temp_file
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/deploy_value.result >> $temp_file
-          else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m" >> $temp_file
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/deploy_value.result\033[0m"
-          fi
-
+          
           ################################################################################
           # Apply Git Value
           ################################################################################
           if [ -f ./results/info/git_value.result ]; then
-            echo -e "\033[38;5;245m● Git\033[0m" >> $temp_file
-            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git_value.result >> $temp_file
+          echo -e "\033[38;5;245m● Git\033[0m" >> $temp_file
+          awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/git_value.result >> $temp_file
           else
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" >> $temp_file
-            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m"
+          echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m" >> $temp_file
+          echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/git_value.result\033[0m"
           fi
 
+          ################################################################################
+          # Apply Else Value
+          ################################################################################
+          if [ -f ./results/info/else_value.result ]; then
+            echo -e "\033[38;5;245m● Else\033[0m" >> $temp_file
+            awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' ./results/info/else_value.result >> $temp_file
+          else
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/else_value.result\033[0m" >> $temp_file
+            echo -e "\033[48;5;52m\033[38;5;196mFile not found: ./results/info/else_value.result\033[0m"
+          fi
           
           ################################################################################
           # Ensure result file directory exists
@@ -184,12 +191,10 @@ jobs:
           fi
           cp "${temp_file}" "${merge_result}"
 
-
           ################################################################################
           # Delete temp file
           ################################################################################
           rm -f "$temp_file"
-
 
           ################################################################################
           # Debug
@@ -226,7 +231,7 @@ jobs:
             ]
           result_file: ./results/info_marge.result
           result_to_console: false
-          continue-on-error: true
+        continue-on-error: true
 
       - name: Build Validation
         uses: ./.github/actions/results
@@ -252,11 +257,12 @@ jobs:
             ]
           result_file: ./results/build_validation_marge.result
           result_to_console: false
-          continue-on-error: true
+        continue-on-error: true
       - name: Result
         run: |
           cat ./results/info_marge.result
           cat ./results/build_validation_marge.result
+        continue-on-error: true
 
   # check-event:
   #   name: Check Git Event
