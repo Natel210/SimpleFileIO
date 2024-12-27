@@ -10,26 +10,47 @@ if [ -z "$json_data" ]; then
   exit 1
 fi
 
-FILES=$(echo "$json_data" | jq -r 'to_entries[] | "\(.key)\t\(.value)"')
+# FILES=$(echo "$json_data" | jq -r 'to_entries[] | "\(.key)\t\(.value)"')
 
-if [ -z "$FILES" ]; then
-  echo "${background_dark_red}${text_red}Invalid JSON structure.${reset}"
-  exit 1
-fi
+# if [ -z "$FILES" ]; then
+#   echo "${background_dark_red}${text_red}Invalid JSON structure.${reset}"
+#   exit 1
+# fi
 
 total_count=0
 missing_count=0
 output=""
 
-while IFS=$'\t' read -r key path; do
+# while IFS=$'\t' read -r key path; do
+#   total_count=$((total_count + 1))
+#   if [ -f "$path" ] || [ -d "$path" ]; then
+#     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_blue}Exist${reset}"
+#   else
+#     missing_count=$((missing_count + 1))
+#     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_red}Not Exist${reset}"
+#   fi
+# done <<< "$FILES"
+
+
+# Get Json Data
+echo $json_data | jq -c '.[]' | while read -r pair; do
   total_count=$((total_count + 1))
-  if [ -f "$path" ] || [ -d "$path" ]; then
+
+  key=$(echo "$pair" | jq -r '.key')
+  value=$(echo "$pair" | jq -r '.value')
+  if [ -f "$value" ] || [ -d "$value" ]; then
     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_blue}Exist${reset}"
   else
     missing_count=$((missing_count + 1))
     output+="\n${text_light_gray}● $key\n${text_light_gray}  - $path : ${text_dark_red}Not Exist${reset}"
   fi
-done <<< "$FILES"
+done
+
+
+
+
+
+
 
 if [ "$missing_count" -eq 0 ]; then
   summary="${background_dark_green}${text_green}All OK.. ($total_count/$total_count)${reset}"

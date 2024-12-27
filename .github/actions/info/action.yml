@@ -23,7 +23,7 @@ inputs:
     required: false
     default: "N/A"
 
-  path_value:
+  path_values:
     description: >
       A JSON string containing key and value pairs.
       Form: >
@@ -41,7 +41,7 @@ inputs:
             "value": ""
           }
         ]
-  else_value:
+  else_values:
     description: >
       A JSON string containing key and value pairs.
       Form: >
@@ -103,19 +103,16 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh '${{ inputs.path_value }}' "$temp_file"
+        ./.scripts/check/values.sh "${{ inputs.path_values }}" "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
         # Remove Temp
         rm -f "$temp_file"
-      env:
-        VALUES: ${{ inputs.path_value }}
-        RESULT_NAME: result
       shell: bash
       continue-on-error: true
 
@@ -132,21 +129,32 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
         # Remove Temp
         rm -f "$temp_file"
       env: 
-        VALUES: |
-          {
-            "Event": "${{ inputs.git_event_name }}",
-            "Ref": "${{ inputs.git_ref }}",
-            "Head Ref": "${{ inputs.head_ref }}",
-            "Base Ref": "${{ inputs.base_ref }}"
-          }
-        RESULT_NAME: result
+        VALUES: >
+          [
+            {
+              "key": "Event",
+              "value": "${{ inputs.git_event_name }}"
+            },
+            {
+              "key": "Ref",
+              "value": "${{inputs.git_ref }}"
+            },
+            {
+              "key": "Head Ref",
+              "value": "${{ inputs.head_ref }}"
+            },
+            {
+              "key": "Base Ref",
+              "value": "${{ inputs.base_ref }}"
+            }
+          ]
       shell: bash
       continue-on-error: true
 
@@ -159,23 +167,16 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh "$VALUES" "$temp_file"
+        ./.scripts/check/values.sh "${{ inputs.else_values }}" "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
         # Remove Temp
         rm -f "$temp_file"
-      env: 
-        VALUES: |
-          {
-            "Result Zip Name": "${{ inputs.result_zip_name }}",
-            "Tag Prefix": "${{ inputs.tag_prefix }}"
-          }
-        RESULT_NAME: result
       shell: bash
       continue-on-error: true
 

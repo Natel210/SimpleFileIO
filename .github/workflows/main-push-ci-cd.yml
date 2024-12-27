@@ -32,7 +32,7 @@ jobs:
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
 
-          path_value: >
+          path_values: >
             [
               {
                 "key": "Solution File Path",
@@ -51,11 +51,17 @@ jobs:
                 "value": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
               }
             ]
-
-          # else
-          result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
-          tag_prefix: "${{ vars.TAG_PREFIX }}"
-      
+          else_values: >
+            [
+              {
+                "key": "Result Zip Name",
+                "value": "${{ vars.RESULT_ZIP_NAME }}"
+              },
+              {
+                "key": "Tag Prefix",
+                "value": "${{ vars.TAG_PREFIX }}"
+              }
+            ]
       - name: Check Output
         run: |
           # Check Output
