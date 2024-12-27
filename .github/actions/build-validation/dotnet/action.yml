@@ -11,11 +11,11 @@ inputs:
   dotnet_version:
     description: .NET version to use
     required: true
-output:
+outputs:
   result:
     description: build result
     value: ${{ steps.output.outputs.result }}
-
+    
 runs:
   using: "composite"
   steps:
