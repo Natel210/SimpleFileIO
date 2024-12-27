@@ -10,16 +10,26 @@ fi
 json_data="$1"
 result_file="$2"
 
+# Create Temp
+temp_file=$(mktemp)
 
+# Get Json Data
+echo $json_data | jq -c '.[]' | while read -r pair; do
+  key=$(echo "$pair" | jq -r '.key')
+  value=$(echo "$pair" | jq -r '.value')
+  echo "$key : $value" >> "$temp_file"
+done
 
+# Check Result Save File Path
 if [ -z "$result_file" ]; then
-  echo -e "${background_light_gray}${text_white}Result to Console${reset}"
-  echo -e "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"'
+  cat "$temp_file"
 else
-  # Ensure result file directory exists
   result_dir=$(dirname "$result_file")
   if [ ! -d "$result_dir" ]; then
       mkdir -p "$result_dir"
   fi
-  echo -e "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"' > "$result_file"
-fi
+  cp "$temp_file" "$result_file"
+fi  
+
+# Remove Temp
+rm -f "$temp_file"

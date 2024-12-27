@@ -15,7 +15,7 @@ jobs:
     name: Info And Check
     runs-on: ubuntu-latest
     outputs:
-      solution_project_value_result: ${{ steps.info-and-check.outputs.solution_project_value_result }}
+      path_value_result: ${{ steps.info-and-check.outputs.path_value_result }}
       git_value_result: ${{ steps.info-and-check.outputs.git_value_result }}
       else_value_result: ${{ steps.info-and-check.outputs.else_value_result }}
       exist_files_result: ${{ steps.info-and-check.outputs.exist_files_result }}
@@ -26,16 +26,32 @@ jobs:
         id: info-and-check
         uses: ./.github/actions/info
         with:
-          # solution & project
-          solution_file_path: "${{ vars.SOLUTION_FILE_PATH }}"
-          dll_project_file_path: "${{ vars.DLL_PROJECT_FILE_PATH }}"
-          tester_project_file_path: "${{ vars.TESTER_PROJECT_FILE_PATH }}"
-          tester_executable_file_name: "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
           # git
           git_event_name: "${{ github.event_name }}"
           git_ref: "${{ github.ref }}"
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
+          
+          path_value: >
+            [
+              {
+                "header": "Solution File Path",
+                "path": "${{ vars.SOLUTION_FILE_PATH }}"
+              },
+              {
+                "header": "Dll File Path",
+                "path": "${{ vars.DLL_PROJECT_FILE_PATH }}"
+              },
+              {
+                "header": "Tester File Path",
+                "path": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+              },
+              {
+                "header": "Tester Executable File Name",
+                "path": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+              }
+            ]
+
           # else
           result_zip_name: "${{ vars.RESULT_ZIP_NAME }}"
           tag_prefix: "${{ vars.TAG_PREFIX }}"
@@ -45,9 +61,9 @@ jobs:
           # Check Output
           echo -e "\033[48;5;241m\033[38;5;15mResult\033[0m"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Path Value"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ Invalid Solution And Project Value Result"
+          echo -e "${{ steps.info-and-check.outputs.path_value_result }}" || echo "::Warning::⚠️ Invalid Path Value Result"
           echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
           printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
           echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
@@ -180,10 +196,10 @@ jobs:
           # Values
           temp_file=$(mktemp)
           echo -e "\033[38;5;245m● Solution & Project\033[0m" >> "$temp_file"
-          if [[ -z "${{ needs.info-and-check.outputs.solution_project_value_result }}" ]]; then
-            echo -e "\033[38;5;245m⚠️ Empty Solution And Project Value Result\033[0m" >> "$temp_file"
+          if [[ -z "${{ needs.info-and-check.outputs.path_value_result }}" ]]; then
+            echo -e "\033[38;5;245m⚠️ Empty Path Value Result\033[0m" >> "$temp_file"
           else
-            echo "${{ needs.info-and-check.outputs.solution_project_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
+            echo "${{ needs.info-and-check.outputs.path_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
           fi
           echo -e "\033[38;5;245m● Git\033[0m" >> "$temp_file"
           if [[ -z "${{ needs.info-and-check.outputs.git_value_result }}" ]]; then
@@ -222,7 +238,6 @@ jobs:
           else
             echo -e "\033[38;5;15m[Build Validation] \033[38;5;196m${{ needs.build-validation.result }}\033[0m" >> "$temp_file"
           fi
-          cat "$temp_file"
           cp "$temp_file" "./results/info/job_process.result"
           rm -f "$temp_file"
         continue-on-error: true
