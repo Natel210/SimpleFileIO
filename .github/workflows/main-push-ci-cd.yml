@@ -280,7 +280,6 @@ jobs:
 
       - name: Result
         run: |
-          cat ./results/job_process_marge.result
           cat ./results/info_marge.result
           cat ./results/build_validation_marge.result
         continue-on-error: true
