@@ -54,7 +54,7 @@ inputs:
     description: ""
     required: true
 
-output:
+outputs:
   solution_project_value_result:
     description: solution & project value result
   git_value_result:
