@@ -1,12 +1,9 @@
 name: Info And Check
 description: >
-  Outputs are saved.
-  List:
-  - solution_project_value.result
-  - git_value.result
-  - else_value.result
-  - exist_files.result
-  - git_info.result
+  Check Values
+  - Git
+  - File Path
+  - e.t.c
 
 inputs:
   # solution & project
@@ -64,7 +61,12 @@ outputs:
   else_value_result:
     description: other value result
     value: ${{ steps.else-value.outputs.result }}
-
+  exist_files_result:
+    description: other value result
+    value: ${{ steps.exist-files.outputs.result }}
+  git_info_result:
+    description: other value result
+    value: ${{ steps.git-info.outputs.result }}
 runs:
   using: "composite"
   steps:

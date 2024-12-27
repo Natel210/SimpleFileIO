@@ -41,6 +41,8 @@ jobs:
           echo -e "${{ steps.info.outputs.solution_project_value_result }}"
           echo -e "${{ steps.info.outputs.git_value_result }}"
           echo -e "${{ steps.info.outputs.else_value_result }}"
+          echo -e "${{ steps.info.outputs.exist_files_result }}"
+          echo -e "${{ steps.info.outputs.git_info_result }}"
         
 
       - uses: actions/upload-artifact@v4
