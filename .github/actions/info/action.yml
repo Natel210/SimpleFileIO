@@ -55,12 +55,16 @@ inputs:
     required: true
 
 outputs:
-  solution_project_value_result:
+  solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
     description: solution & project value result
-  git_value_result:
+  git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
     description: git value result
-  else_value_result:
+  else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
     description: other value result
+# outputs:
+#   solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
+#   git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
+#   else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
 
 runs:
   using: "composite"
@@ -176,7 +180,3 @@ runs:
         chmod -x ./.scripts/check/git_info.sh
       shell: bash
 
-outputs:
-  solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
-  git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
-  else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
