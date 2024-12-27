@@ -65,13 +65,13 @@ inputs:
 outputs:
   solution_project_value_result:
     description: solution & project value result
-    value: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
+    value: ${{ steps.check-solution-project-value.outputs.result }}
   git_value_result:
     description: git value result
-    value: ${{ steps.check-git-value.outputs.git_value_result }}
+    value: ${{ steps.check-git-value.outputs.result }}
   else_value_result:
     description: other value result
-    value: ${{ steps.check-else-value.outputs.else_value_result }}
+    value: ${{ steps.check-else-value.outputs.result }}
 
 # outputs:
 #   solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
@@ -116,7 +116,7 @@ runs:
             "Tester File Path": "${{ inputs.tester_project_file_path }}",
             "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }
-        RESULT_NAME: solution_project_value_result
+        RESULT_NAME: result
       shell: bash
 
     - name: Check Git Values
@@ -146,7 +146,7 @@ runs:
             "Head Ref": "${{ inputs.head_ref }}",
             "Base Ref": "${{ inputs.base_ref }}"
           }
-        RESULT_NAME: git_value_result
+        RESULT_NAME: result
       shell: bash
 
     - name: Check Else Values
@@ -174,7 +174,7 @@ runs:
             "Result Zip Name": "${{ inputs.result_zip_name }}",
             "Tag Prefix": "${{ inputs.tag_prefix }}"
           }
-        RESULT_NAME: else_value_result
+        RESULT_NAME: result
       shell: bash
 
     - name: Check Exist Files
@@ -207,15 +207,15 @@ runs:
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "${{ steps.check-solution-project-value.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ Invalid Solution \& Project Value Result"
+        echo -e "${{ steps.check-solution-project-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Solution \& Project Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "git_value.result" || echo "::Warning::⚠️ Invalid Git Value Result"
+        cat -e "${{ steps.check-git-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "else_value.result" || echo "::Warning::⚠️ Invalid Else Value Result"
+        cat "${{ steps.else_value.outputs.result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
