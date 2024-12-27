@@ -54,29 +54,16 @@ inputs:
     description: ""
     required: true
 
-
-# outputs:
-#   solution_project_value_result:
-#     description: solution & project value result
-#   git_value_result:
-#     description: git value result
-#   else_value_result:
-#     description: other value result
 outputs:
   solution_project_value_result:
     description: solution & project value result
-    value: ${{ steps.check-solution-project-value.outputs.result }}
+    value: ${{ steps.solution-project-value.outputs.result }}
   git_value_result:
     description: git value result
-    value: ${{ steps.check-git-value.outputs.result }}
+    value: ${{ steps.git-value.outputs.result }}
   else_value_result:
     description: other value result
-    value: ${{ steps.check-else-value.outputs.result }}
-
-# outputs:
-#   solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
-#   git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
-#   else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
+    value: ${{ steps.else-value.outputs.result }}
 
 runs:
   using: "composite"
@@ -88,12 +75,12 @@ runs:
         chmod +x ./.scripts/check/git_info.sh
       shell: bash
 
-    - name: Check Solution & Project Values
-      id: check-solution-project-value
+    - name: Solution & Project Values
+      id: solution-project-value
       run: |
-        # Check Solution & Project Values
+        # Solution & Project Values
 
-        #Create Temp
+        # Create Temp
         temp_file=$(mktemp)
 
         # To Work
@@ -118,13 +105,14 @@ runs:
           }
         RESULT_NAME: result
       shell: bash
+      continue-on-error: true
 
-    - name: Check Git Values
-      id: check-git-value
+    - name: Git Values
+      id: git-value
       run: |
-        # Check Git Values
+        # Git Values
 
-        #Create Temp
+        # Create Temp
         temp_file=$(mktemp)
 
         # To Work
@@ -148,13 +136,14 @@ runs:
           }
         RESULT_NAME: result
       shell: bash
+      continue-on-error: true
 
-    - name: Check Else Values
-      id: check-else-value
+    - name: Else Values
+      id: else-value
       run: |
-        # Check Else Values
+        # Else Values
 
-        #Create Temp
+        # Create Temp
         temp_file=$(mktemp)
 
         # To Work
@@ -176,12 +165,29 @@ runs:
           }
         RESULT_NAME: result
       shell: bash
+      continue-on-error: true
 
-    - name: Check Exist Files
+    - name: Exist Files
+      id: exist-files
       run: |
-        ./.scripts/check/exist_files.sh "$EXIST_FILES_JSON_DATA" "exist_files.result"
+        #Exist Files
+
+        # Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/check/exist_files.sh "$VALUES" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Temp
+        rm -f "$temp_file"
       env: 
-        EXIST_FILES_JSON_DATA: |
+        VALUES: |
           {
             "Solution File Path": "${{ inputs.solution_file_path }}",
             "Dll File Path": "${{ inputs.dll_project_file_path }}",
@@ -189,17 +195,37 @@ runs:
             "Tester Executable File Name": "${{ inputs.tester_project_file_path }}",
             "Tester File Path": "${{ inputs.tester_executable_file_name }}"
           }
+        RESULT_NAME: result
       shell: bash
+      continue-on-error: true
 
-    - name: Check Git Info
+    - name: Git Info
+      id: git-info
       run: |
-        ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "git_info.result"
+        #Exist Files
+
+        # Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/check/git_info.sh "$EVENT_NAME" "$REF" "$HEAD_REF" "$BASE_REF" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Remove Temp
+        rm -f "$temp_file"
       env: 
         EVENT_NAME: "${{ inputs.git_event_name }}"
         REF: "${{ inputs.git_ref }}"
         HEAD_REF: "${{ inputs.head_ref }}"
         BASE_REF: "${{ inputs.base_ref }}"
+        RESULT_NAME: result
       shell: bash
+      continue-on-error: true
 
     - name: Result Debug
       run: |
@@ -207,23 +233,23 @@ runs:
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "${{ steps.check-solution-project-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Solution \& Project Value Result"
+        echo -e "${{ steps.solution-project-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Solution \& Project Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat -e "${{ steps.check-git-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
+        echo -e "${{ steps.git-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "${{ steps.else_value.outputs.result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
+        echo "${{ steps.else-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "exist_files.result" || echo "::Warning::⚠️ File not found or cannot read: exist_files.result"
+        echo "${{ steps.exist-files.outputs.result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "git_info.result" || echo "::Warning::⚠️ File not found or cannot read: git_info.result"
+        echo "${{ steps.git-info.outputs.result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
       shell: bash
       continue-on-error: true
 
