@@ -75,6 +75,7 @@ runs:
       shell: bash
 
     - name: Check Solution & Project Values
+      id: check-solution-project-value
       run: |
         # Check Solution & Project Values
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "solution_project_value.result"
@@ -93,6 +94,7 @@ runs:
       shell: bash
 
     - name: Check Git Values
+      id: check-git-value
       run: |
         # Check Git Values
         ./.scripts/check/values.sh "$GIT_JSON_DATA" "git_value.result"
@@ -110,6 +112,7 @@ runs:
       shell: bash
 
     - name: Check Else Values
+      id: check-else-value
       run: |
         # Check Else Values
         ./.scripts/check/values.sh "$ELSE_JSON_DATA" "else_value.result"
@@ -204,3 +207,8 @@ runs:
         chmod -x ./.scripts/check/exist_files.sh
         chmod -x ./.scripts/check/git_info.sh
       shell: bash
+
+outputs:
+  solution_project_value_result: ${{ steps.check-solution-project-value.outputs.solution_project_value_result }}
+  git_value_result: ${{ steps.check-git-value.outputs.git_value_result }}
+  else_value_result: ${{ steps.check-else-value.outputs.else_value_result }}
