@@ -101,13 +101,15 @@ runs:
         
         # Write the multi-line output as a JSON-formatted string
         echo "solution_project_value_result<<EOF" >> $GITHUB_OUTPUT
-        echo -e "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
+        
+        # Debugging: Display the content of the output
+        echo "solution_project_value_result from GITHUB_OUTPUT:"
+        cat $GITHUB_OUTPUT
         
         # Clean up the temporary file
         rm -f "$temp_file"
-
-        cat $GITHUB_OUTPUT
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
