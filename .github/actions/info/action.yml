@@ -92,11 +92,22 @@ runs:
       id: check-solution-project-value
       run: |
         temp_file=$(mktemp)
+        
+        # Run the shell script and capture its output into the temp file
         ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "${temp_file}"
+        
+        # Read the contents of the temporary file into the multi_line_output variable
         multi_line_output=$(cat ${temp_file})
-        echo -e "solution_project_value_result=$(echo -e $multi_line_output | jq -R .)" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
+        
+        # Write the multi-line output as a JSON-formatted string
+        echo "solution_project_value_result<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+        # Clean up the temporary file
         rm -f "$temp_file"
+
+        cat $GITHUB_OUTPUT
       env:
         SOLUTION_AND_PROJECT_JSON_DATA: |
           {
@@ -171,7 +182,7 @@ runs:
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "${{ steps.check-solution-project-value.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value.result"
+        echo -e "${{ steps.check-solution-project-value.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
