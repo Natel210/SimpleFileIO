@@ -152,7 +152,7 @@ runs:
     - name: Check Else Values
       id: check-else-value
       run: |
-        # Check Git Values
+        # Check Else Values
 
         #Create Temp
         temp_file=$(mktemp)
@@ -204,26 +204,26 @@ runs:
     - name: Result Debug
       run: |
         echo -e "\033[48;5;241m\033[38;5;15mResult Debug\033[0m"
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "${{ steps.check-solution-project-value.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value"
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "git_value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "else_value.result" || echo "::Warning::⚠️ File not found or cannot read: else_value.result"
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "exist_files.result" || echo "::Warning::⚠️ File not found or cannot read: exist_files.result"
-        echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-        printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
-        echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        cat "git_info.result" || echo "::Warning::⚠️ File not found or cannot read: git_info.result"
+        # echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        # printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
+        # echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        # echo -e "${{ steps.check-solution-project-value.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ File not found or cannot read: solution_project_value"
+        # echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        # printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
+        # echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        # cat "git_value.result" || echo "::Warning::⚠️ File not found or cannot read: git_value.result"
+        # echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        # printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
+        # echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        # cat "else_value.result" || echo "::Warning::⚠️ File not found or cannot read: else_value.result"
+        # echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        # printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
+        # echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        # cat "exist_files.result" || echo "::Warning::⚠️ File not found or cannot read: exist_files.result"
+        # echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+        # printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
+        # echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+        # cat "git_info.result" || echo "::Warning::⚠️ File not found or cannot read: git_info.result"
       shell: bash
       continue-on-error: true
 
