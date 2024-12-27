@@ -15,7 +15,8 @@ outputs:
   result:
     description: build result
     value: ${{ steps.output.outputs.result }}
-    
+env:
+  TEMP_RESULT_PATH: ./result.result
 runs:
   using: "composite"
   steps:
@@ -29,7 +30,7 @@ runs:
       run: |
         # Build Test on Linux
         chmod +x ./.scripts/build_validation/dotnet.sh
-        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.result"
+        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" $TEMP_RESULT_PATH
         chmod -x ./.scripts/build_validation/dotnet.sh
       shell: bash
 
@@ -37,7 +38,7 @@ runs:
       if: runner.os == 'Windows'
       run: |
         # Build Test on Windows
-        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.results"
+        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" $TEMP_RESULT_PATH
       shell: pwsh
 
     - name: Output
@@ -46,11 +47,11 @@ runs:
         # Output
 
         # Multi Line
-        multi_line_output=$(cat ./result.result)
+        multi_line_output=$(cat $TEMP_RESULT_PATH)
         echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
         # Remove Temp Result
-        rm -f "./result.result"
+        rm -f $TEMP_RESULT_PATH
       shell: bash
