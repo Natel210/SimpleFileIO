@@ -103,7 +103,7 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh "$inputs.path_values" "$temp_file"
+        ./.scripts/check/values.sh '${{ inputs.path_values }}' "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
@@ -167,7 +167,7 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/values.sh "${{ inputs.else_values }}" "$temp_file"
+        ./.scripts/check/values.sh '${{ inputs.else_values }}' "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
@@ -189,7 +189,7 @@ runs:
         temp_file=$(mktemp)
 
         # To Work
-        ./.scripts/check/exist_files.sh "$inputs.path_values" "$temp_file"
+        ./.scripts/check/exist_files.sh '${{ inputs.path_values }}' "$temp_file"
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
