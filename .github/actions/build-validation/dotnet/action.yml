@@ -14,7 +14,7 @@ inputs:
 output:
   result:
     description: build result
-    value:
+    value: ${{ steps.output.outputs.result }}
 
 runs:
   using: "composite"
@@ -28,26 +28,8 @@ runs:
       if: runner.os == 'Linux'
       run: |
         # Build Test on Linux
-
-        # Add Execute Permission for Script
         chmod +x ./.scripts/build_validation/dotnet.sh
-
-        # Create Temp
-        temp_file=$(mktemp)
-
-        # To Work
-        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$temp_file"
-
-        # Multi Line
-        multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
-        echo "$multi_line_output" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-
-        # Remove Temp
-        rm -f "$temp_file"
-
-        # Remove Execute Permission for Script
+        ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.result"
         chmod -x ./.scripts/build_validation/dotnet.sh
       shell: bash
 
@@ -55,19 +37,20 @@ runs:
       if: runner.os == 'Windows'
       run: |
         # Build Test on Windows
+        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.results"
+      shell: pwsh
 
-        # Create Temp
-        $temp_file = New-TemporaryFile
+    - name: Output
+      id: output
+      run: |
+        # Output
 
-        # To Work
-        ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "$temp_file"
-
-        # Capture multi-line output
-        $multi_line_output = Get-Content $temp_file | Out-String
+        # Multi Line
+        multi_line_output=$(cat ./result.result)
         echo "result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
-        # Remove Execute Permission for Script
-        Remove-Item -Path $temp_file -Force
-      shell: pwsh
+        # Remove Temp Result
+        rm -f "./result.result"
+      shell: bash
