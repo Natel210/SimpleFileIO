@@ -91,19 +91,24 @@ runs:
     - name: Check Solution & Project Values
       id: check-solution-project-value
       run: |
-        temp_file=$(mktemp)
-        ./.scripts/check/values.sh "$SOLUTION_AND_PROJECT_JSON_DATA" "${temp_file}"
-        multi_line_output=$(cat ${temp_file})
+        # Check Solution & Project Values
 
-        echo "solution_project_value_result<<EOF" >> $GITHUB_OUTPUT
+        #Create Temp
+        temp_file=$(mktemp)
+
+        # To Work
+        ./.scripts/check/values.sh "$VALUES" "$temp_file"
+
+        # Multi Line
+        multi_line_output=$(cat $temp_file)
+        echo "$RESULT_NAME<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
-        # echo -e "solution_project_value_result=$(echo -e $multi_line_output | jq -R .)" >> $GITHUB_OUTPUT
-        cat $GITHUB_OUTPUT
+        # Remove Temp
         rm -f "$temp_file"
       env:
-        SOLUTION_AND_PROJECT_JSON_DATA: |
+        VALUES: |
           {
             "Solution File Path": "${{ inputs.solution_file_path }}",
             "Dll File Path": "${{ inputs.dll_project_file_path }}",
@@ -111,6 +116,7 @@ runs:
             "Tester File Path": "${{ inputs.tester_project_file_path }}",
             "Tester Executable File Name": "${{ inputs.tester_executable_file_name }}"
           }
+        RESULT_NAME: solution_project_value_result
       shell: bash
 
     - name: Check Git Values
