@@ -13,7 +13,7 @@ result_file="$5"
 source ./.scripts/tools/colors.sh
 
 if [ "$#" -lt 1 ]; then
-  echo "${background_dark_red}${text_red}No arguments.\n${background_dark_red}${text_red} Usage: $0 '<Git Event Name>'${reset}"
+  echo "\033[38;5;196mNo arguments.\n\033[38;5;196mUsage: $0 '<Git Event Name>'\033[0m"
   exit 1
 fi
 
@@ -22,58 +22,58 @@ is_error=0
 # Handle different events
 case "$event_name" in
   push)
-    output="${text_light_gray}● Detail${reset}"
-    output+="\n${text_light_gray}  - Event : ${text_dark_green}Push${reset}"
-    output+="\n${text_light_gray}  - Ref: $ref${reset}"
+    output="\033[38;5;245m● Detail\033[0m"
+    output+="\n\033[38;5;245m  - Event : ${text_dark_green}Push\033[0m"
+    output+="\n\033[38;5;245m  - Ref: $ref\033[0m"
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
-      output+="\n${text_light_gray}  - Branch: ${text_dark_blue}$branch_name${reset}"
-      summary="${background_dark_green}${text_green}Push Branch : $branch_name${reset}\n"
+      output+="\n\033[38;5;245m  - Branch: ${text_dark_blue}$branch_name\033[0m"
+      summary="${background_dark_green}${text_green}Push Branch : $branch_name\033[0m\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
-      output+="\n${text_light_gray}  - Branch: ${text_dark_blue}$tag_name${reset}"
-      summary="${background_dark_green}${text_green}Push Tag : $tag_name${reset}\n"
+      output+="\n\033[38;5;245m  - Branch: ${text_dark_blue}$tag_name\033[0m"
+      summary="${background_dark_green}${text_green}Push Tag : $tag_name\033[0m\n"
     else
-      output+="\n${text_light_gray}  - ${text_dark_red}Unknown${reset}"
-      summary="${background_dark_red}${text_red}Push Unknown${reset}\n"
+      output+="\033[0m\n\033[0m  - \033[38;5;196mUnknown\033[0m"
+      summary="\033[38;5;196mPush Unknown\033[0m\n"
       is_error=1
     fi
     ;;
   pull_request)
-    summary="${text_green}Pull Request"
-    output="${text_light_gray}● Detail${reset}"
-    output+="${text_light_gray}\n  - Event : ${text_dark_green}Pull Request${reset}\n"
+    summary="\033[0mPull Request"
+    output="\033[38;5;245m● Detail${reset}\033[0m"
+    output+="\033[38;5;245m\n  - Event : ${text_dark_green}Pull Request\033[0m\n"
     if [[ "$head_ref" == refs/heads/* ]]; then
-      output+="${text_light_gray}\n  - Head Ref : ${text_dark_red}$head_ref${reset}"
-      summary+="$\n  ${text_red}Invalid Head Ref ($head_ref)"
+      output+="\033[0m\n\033[0m  - Head Ref : \033[38;5;196m$head_ref\033[0m"
+      summary+="$\n  \033[38;5;196mInvalid Head Ref ($head_ref)\033[0m"
       is_error=1
     else
-      output+="${text_light_gray}\n  - Head Ref : $head_ref${reset}"
+      output+="\033[38;5;245m\n  - Head Ref : $head_ref\033[0m"
     fi
     if [[ "$base_ref" == refs/heads/* ]]; then
-      output+="${text_light_gray}\n  - Base Ref : ${text_dark_red}$base_ref${reset}"
-      summary+="\n  ${text_red}Invalid Base Ref ($base_ref)"
+      output+="\033[0m\n\033[0m  - Base Ref : \033[38;5;196m$base_ref\033[0m"
+      summary+="\n  \033[38;5;196mInvalid Base Ref ($base_ref)\033[0m"
       is_error=1
     else
-      output+="$\n  - Base Ref : $base_ref${reset}"
+      output+="$\n  - Base Ref : $base_ref\033[0m"
     fi
     
     if [[ "$is_error" == "0" ]]; then
       head_branch_name=${head_ref#refs/heads/}
       base_branch_name=${base_ref#refs/heads/}
-      output+="${text_light_gray}\n  - Head Branch : $head_branch_name${reset}"
-      output+="${text_light_gray}\n  - Base Branch : $base_branch_name${reset}"
-      output+="${text_light_gray}\n  $head_branch_name -> $base_branch_name${reset}"
-      summary="${background_dark_green}${summary}${text_green} : $head_branch_name -> $base_branch_name${reset}"
+      output+="\033[38;5;245m\n  - Head Branch : $head_branch_name\033[0m"
+      output+="\033[38;5;245m\n  - Base Branch : $base_branch_name\033[0m"
+      output+="\033[38;5;245m\n  $head_branch_name -> $base_branch_name\033[0m"
+      summary="${summary} : \033[38;5;46m$head_branch_name -> $base_branch_name\033[0m"
     else
-      summary="${background_dark_red}${summary}${reset}"
+      summary="${summary}\033[0m"
     fi
     summary+="\n"
     ;;
   *)
-    output=" ${text_light_gray}Event : ${text_dark_red}$event_name${reset}\n"
-    output+="${text_dark_red}Unknown Event Type${reset}"
-    summary="${background_dark_red}${text_red}Unknown Event Type ($base_ref) ${reset}"
+    output=" \033[0mEvent : \033[38;5;196m$event_name\033[0m\n"
+    output+="\033[38;5;196mUnknown Event Type\033[0m"
+    summary="\033[38;5;196mUnknown Event Type ($base_ref)\033[0m"
     is_error=1
     ;;
 esac

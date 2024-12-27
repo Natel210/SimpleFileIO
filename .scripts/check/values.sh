@@ -15,7 +15,7 @@ temp_file=$(mktemp)
 echo $json_data | jq -c '.[]' | while read -r pair; do
   key=$(echo "$pair" | jq -r '.key')
   value=$(echo "$pair" | jq -r '.value')
-  echo "$key : $value" >> "$temp_file"
+  echo -e "\033[38;5;245m$key : $value\033[0m" >> "$temp_file"
 done
 
 # Check Result Save File Path
