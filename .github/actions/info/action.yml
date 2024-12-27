@@ -204,7 +204,7 @@ runs:
     - name: Git Info
       id: git-info
       run: |
-        #Exist Files
+        # Exist Files
 
         # Create Temp
         temp_file=$(mktemp)
@@ -235,7 +235,7 @@ runs:
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-        echo -e "${{ steps.solution-project-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Solution \& Project Value Result"
+        echo -e "${{ steps.solution-project-value.outputs.result }}" || echo "::Warning::⚠️ Invalid Solution And Project Value Result"
         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"

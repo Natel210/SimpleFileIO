@@ -37,14 +37,28 @@ jobs:
       
       - name: Test
         run: |
-          # cat $GITHUB_OUTPUT
-          echo -e "${{ steps.info.outputs.solution_project_value_result }}"
-          echo -e "${{ steps.info.outputs.git_value_result }}"
-          echo -e "${{ steps.info.outputs.else_value_result }}"
-          echo -e "${{ steps.info.outputs.exist_files_result }}"
-          echo -e "${{ steps.info.outputs.git_info_result }}"
-        
-
+          echo -e "\033[48;5;241m\033[38;5;15mResult Debug\033[0m"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Solution Project Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info.outputs.solution_project_value_result }}" || echo "::Warning::⚠️ Invalid Solution And Project Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo "${{ steps.info.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo "${{ steps.info.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo "${{ steps.info.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
+          
       - uses: actions/upload-artifact@v4
         with:
           name: Info

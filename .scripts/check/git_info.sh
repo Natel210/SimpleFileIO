@@ -82,7 +82,6 @@ esac
 result="$summary$output"
 
 if [ -z "$result_file" ]; then
-  echo -e "${background_light_gray}${text_white}Result to Console${reset}"
   echo -e "$result"
 else
   # Ensure result file directory exists
@@ -90,7 +89,6 @@ else
   if [ ! -d "$result_dir" ]; then
       mkdir -p "$result_dir"
   fi
-  echo -e "${background_light_gray}${text_white}Result to File ${result_file}${reset}"
   echo -e "$result" > "$result_file"
 fi
 

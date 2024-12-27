@@ -21,6 +21,5 @@ else
   if [ ! -d "$result_dir" ]; then
       mkdir -p "$result_dir"
   fi
-  echo -e "${background_light_gray}${text_white}Result to File ${result_file}${reset}"
   echo -e "$json_data" | jq -r 'to_entries[] | "\(.key) : \(.value)"' > "$result_file"
 fi
