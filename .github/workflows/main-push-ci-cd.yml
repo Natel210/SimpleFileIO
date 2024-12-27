@@ -31,24 +31,24 @@ jobs:
           git_ref: "${{ github.ref }}"
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
-          
+
           path_value: >
             [
               {
-                "header": "Solution File Path",
-                "path": "${{ vars.SOLUTION_FILE_PATH }}"
+                "key": "Solution File Path",
+                "value": "${{ vars.SOLUTION_FILE_PATH }}"
               },
               {
-                "header": "Dll File Path",
-                "path": "${{ vars.DLL_PROJECT_FILE_PATH }}"
+                "key": "Dll File Path",
+                "value": "${{ vars.DLL_PROJECT_FILE_PATH }}"
               },
               {
-                "header": "Tester File Path",
-                "path": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+                "key": "Tester File Path",
+                "value": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
               },
               {
-                "header": "Tester Executable File Name",
-                "path": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+                "key": "Tester Executable File Name",
+                "value": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
               }
             ]
 
