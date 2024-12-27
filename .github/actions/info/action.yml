@@ -97,7 +97,7 @@ runs:
     - name: Path Values
       id: path-value
       run: |
-        Path Values
+        # Path Values
 
         # Create Temp
         temp_file=$(mktemp)
