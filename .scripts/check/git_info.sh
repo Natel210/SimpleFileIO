@@ -18,15 +18,15 @@ is_error=0
 case "$event_name" in
   push)
     output="\033[38;5;245m● Detail\033[0m"
-    output+="\n\033[38;5;245m  - Event : \033[38;5;46mPush\033[0m"
+    output+="\n\033[38;5;245m  - Event : Push\033[0m"
     output+="\n\033[38;5;245m  - Ref: $ref\033[0m"
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
-      output+="\n\033[38;5;245m  - Branch: \033[0m$branch_name\033[0m"
+      output+="\n\033[38;5;245m  - Branch: $branch_name\033[0m"
       summary="\033[38;5;46mPush Branch : $branch_name\033[0m\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
-      output+="\n\033[38;5;245m  - Branch: ${text_dark_blue}$tag_name\033[0m"
+      output+="\n\033[38;5;245m  - Branch: $tag_name\033[0m"
       summary="\033[38;5;46mPush Tag : $tag_name\033[0m\n"
     else
       output+="\033[0m\n\033[0m  - \033[38;5;196mUnknown\033[0m"

@@ -205,7 +205,7 @@ runs:
     - name: Git Info
       id: git-info
       run: |
-        # Exist Files
+        # Git Info
 
         # Create Temp
         temp_file=$(mktemp)
