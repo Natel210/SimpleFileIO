@@ -1,5 +1,4 @@
 #!/bin/bash
-source ./.scripts/tools/colors.sh
 
 # Input: Prefix (default is "v") and number of top versions to display (default is all if empty)
 prefix=${1:-v}
@@ -16,7 +15,7 @@ elif [[ "$num_top" =~ ^[0-9]+$ ]]; then
     echo "num_top is a valid number: $num_top"
     output_all_tags=false
 else
-    echo -e "${background_dark_yellow}${text_yellow}Invalid num_top value (${num_top})... showing all versions${reset}"
+    echo -e "\033[38;5;226mInvalid num_top value (${num_top})... showing all versions\033[0m"
     output_all_tags=true
 fi
 
@@ -25,7 +24,7 @@ all_version_tags=$(git tag | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -r
 
 # If no tags are found
 if [[ -z "$all_version_tags" ]]; then
-    echo -e "${background_dark_yellow}${text_yellow}No tags found with prefix '$prefix'${reset}"
+    echo -e "\033[38;5;226mNo tags found with prefix '$prefix'\033[0m"
     exit 0
 fi
 
@@ -41,5 +40,5 @@ fi
 # Output all matching tags in the specified order with commit hashes
 echo "$result_version_tags" | while read -r tag; do
     commit_hash=$(git rev-list -n 1 "$tag")
-    printf "${text_light_gray}> %s (%s)${reset}\n" "$tag" "$commit_hash"
+    printf "\033[38;5;245m> %s (%s)\033[0m\n" "$tag" "$commit_hash"
 done

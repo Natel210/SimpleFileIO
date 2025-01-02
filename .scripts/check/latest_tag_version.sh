@@ -1,5 +1,4 @@
 #!/bin/bash
-source ./.scripts/tools/colors.sh
 
 # Input: Prefix (default is "v")
 prefix=${1:-v}

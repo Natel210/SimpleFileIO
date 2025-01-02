@@ -17,6 +17,8 @@ background_dark_yellow="\033[48;5;220m"
 
 reset="\033[0m"
 
-# text_red="\033[38;5;196m"             ##  color: #;
-# text_light_gray="\033[38;5;245m"      ##  color: #;
-#reset="\033[0m"                        ##  color: unset;
+# Error     ## text_red="\033[38;5;196m"             ##  color: #;
+# Warn      ## text_yellow="\033[38;5;226m"          ##  color: #;
+# 정상 확인 ## text_green="\033[38;5;46m"            ##  color: #;
+# 디폴트    ## text_light_gray="\033[38;5;245m"      ##  color: #;
+# 리셋      ## reset="\033[0m"                       ##  color: unset;

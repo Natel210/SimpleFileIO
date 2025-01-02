@@ -1,16 +1,11 @@
 #!/bin/bash
 
-
-
-
 # Read arguments
 event_name="${1}"
 ref="${2:-unknown_ref}"
 head_ref="${3:-unknown_head_ref}"
 base_ref="${4:-unknown_base_ref}"
 result_file="$5"
-
-source ./.scripts/tools/colors.sh
 
 if [ "$#" -lt 1 ]; then
   echo "\033[38;5;196mNo arguments.\n\033[38;5;196mUsage: $0 '<Git Event Name>'\033[0m"
@@ -23,16 +18,16 @@ is_error=0
 case "$event_name" in
   push)
     output="\033[38;5;245m● Detail\033[0m"
-    output+="\n\033[38;5;245m  - Event : ${text_dark_green}Push\033[0m"
+    output+="\n\033[38;5;245m  - Event : \033[38;5;46mPush\033[0m"
     output+="\n\033[38;5;245m  - Ref: $ref\033[0m"
     if [[ "$ref" == refs/heads/* ]]; then
       branch_name=${ref#refs/heads/}
-      output+="\n\033[38;5;245m  - Branch: ${text_dark_blue}$branch_name\033[0m"
-      summary="${background_dark_green}${text_green}Push Branch : $branch_name\033[0m\n"
+      output+="\n\033[38;5;245m  - Branch: \033[0m$branch_name\033[0m"
+      summary="\033[38;5;46mPush Branch : $branch_name\033[0m\n"
     elif [[ "$ref" == refs/tags/* ]]; then
       tag_name=${ref#refs/tags/}
       output+="\n\033[38;5;245m  - Branch: ${text_dark_blue}$tag_name\033[0m"
-      summary="${background_dark_green}${text_green}Push Tag : $tag_name\033[0m\n"
+      summary="\033[38;5;46mPush Tag : $tag_name\033[0m\n"
     else
       output+="\033[0m\n\033[0m  - \033[38;5;196mUnknown\033[0m"
       summary="\033[38;5;196mPush Unknown\033[0m\n"
@@ -41,8 +36,8 @@ case "$event_name" in
     ;;
   pull_request)
     summary="\033[0mPull Request"
-    output="\033[38;5;245m● Detail${reset}\033[0m"
-    output+="\033[38;5;245m\n  - Event : ${text_dark_green}Pull Request\033[0m\n"
+    output="\033[38;5;245m● Detail\033[0m"
+    output+="\033[38;5;245m\n  - Event : \033[38;5;46mPull Request\033[0m\n"
     if [[ "$head_ref" == refs/heads/* ]]; then
       output+="\033[0m\n\033[0m  - Head Ref : \033[38;5;196m$head_ref\033[0m"
       summary+="$\n  \033[38;5;196mInvalid Head Ref ($head_ref)\033[0m"

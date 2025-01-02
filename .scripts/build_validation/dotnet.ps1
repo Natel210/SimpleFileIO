@@ -4,21 +4,16 @@ param (
     [string]$ResultFile = $null
 )
 
-# Import colors if necessary
-. ./.scripts/tools/colors.ps1
-
 if (-not $ProjectFilePath -or -not $BuildConfiguration)
 {
-    Write-Host "${BackgroundDarkRed}${TextRed}No arguments.${Reset}"
-    Write-Host "${BackgroundDarkRed}${TextRed}Usage: .\dotnet-build.ps1 -ProjectFilePath <ProjectFilePath> -BuildConfiguration <BuildConfiguration> -ResultFile <ResultFile>${Reset}"
+    Write-Host "`e[38;5;196mNo arguments.`e[0m"
+    Write-Host "`e[38;5;196mUsage: .\dotnet-build.ps1 -ProjectFilePath <ProjectFilePath> -BuildConfiguration <BuildConfiguration> -ResultFile <ResultFile>`e[0m"
     exit 1
 }
 
 # Initialize variables
 $isError = $false
-$output = "${BackgroundLightGray}${TextWhite}Building project: $ProjectFilePath with configuration: $BuildConfiguration os:Windows ${Reset} `n"
-
-
+$output = "`e[0mBuilding project: $ProjectFilePath with configuration: $BuildConfiguration os:Windows `e[0m `n"
 
 # Execute build command and capture output
 $buildOutput = & dotnet build $ProjectFilePath -c $BuildConfiguration 2>&1
@@ -27,27 +22,27 @@ $buildExitCode = $LASTEXITCODE
 if ($buildExitCode -ne 0)
 {
     # Handle build failure
-    $output += "${BackgroundDarkRed}${TextRed}Build failed.${Reset}`n"
-    $output += "${TextRed}Error Output:${Reset}`n"
+    $output += "`e[38;5;196mBuild failed.`e[0m`n"
+    $output += "`e[38;5;196mError Output:`e[0m`n"
 
     # Process each line in build output
     foreach ($line in $buildOutput -split "`n")
     {
-        $output += "${TextLightGray} - $line${Reset}`n"
+        $output += "`e[38;5;245m - $line`e[0m`n"
     }
 
-    $summary = "${BackgroundDarkRed}${TextRed}Build failed.${Reset}"
+    $summary = "`e[38;5;196mBuild failed.`e[0m"
     $isError = $true
 }
 else
 {
     # Handle build success
-    $summary = "${BackgroundDarkGreen}${TextGreen}Build Test Completed Successfully.${Reset}"
+    $summary = "`e[38;5;46mBuild Test Completed Successfully.`e[0m"
 
     # Process each line in build output
     foreach ($line in $buildOutput -split "`n")
     {
-        $output += "${TextLightGray} - $line${Reset}`n"
+        $output += "`e[38;5;245m - $line`e[0m`n"
     }
 }
 
