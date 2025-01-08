@@ -8,7 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="33.0.1" />
+      <PackageReference Include="CsvHelper" Version="33.0.1" PrivateAssets="None">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; compile; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="ILRepack" Version="2.0.36">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <InputAssemblies Include="$(OutputPath)$(MSBuildProjectName).dll" />
+      <InputAssemblies Include="$(UserProfile)\.nuget\packages\csvhelper\33.0.1\lib\net8.0\CsvHelper.dll" />
   </ItemGroup>
+
+    <Target Name="Repack" AfterTargets="Build">
+        <Exec Command="$(UserProfile)\.nuget\packages\ilrepack\2.0.36\tools\ILRepack.exe /out:$(OutputPath)test.dll @(InputAssemblies, ' ')" />
+    </Target>
 
 </Project>

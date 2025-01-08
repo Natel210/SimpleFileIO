@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SimpleFileIO\SimpleFileIO.csproj" />
+    <Reference Include="test">
+      <HintPath>..\SimpleFileIO\bin\Debug\net8.0\test.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
