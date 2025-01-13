@@ -169,7 +169,7 @@ jobs:
 
   results:
     name: Results
-    needs: [info-and-check, build-validation]
+    needs: [info-and-check, build-validation, create-tag]
     if: always()
     runs-on: ubuntu-latest
     steps:

@@ -1,12 +1,11 @@
-name: "Create Tag"
-description: "Create and push a new Git tag based on the highest version tag."
+name: "Auto Update Tag"
+description: "Check git tag and auto update git tag versions."
 
 inputs:
   prefix:
     description: "Prefix for tag filtering"
     required: false
     default: "v"
-
 
 runs:
   using: "composite"
