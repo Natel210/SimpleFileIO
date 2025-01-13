@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="SimpleFileIO">
-      <HintPath>..\SimpleFileIO\Bin\Release\net8.0\SimpleFileIO.dll</HintPath>
+      <HintPath>..\SimpleFileIO\Bin\Debug\net8.0\SimpleFileIO.dll</HintPath>
     </Reference>
   </ItemGroup>
 
