@@ -120,7 +120,7 @@ jobs:
             echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
           else
             echo "${{ steps.dll-build-test.outputs.result }}" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
-          if
+          fi
         shell: bash
 
       - uses: actions/upload-artifact@v4
