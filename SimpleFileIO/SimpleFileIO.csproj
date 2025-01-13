@@ -1,30 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
-      <ImplicitUsings>enable</ImplicitUsings>
-      <Nullable>enable</Nullable>
-      <Copyright>MIT</Copyright>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Copyright>MIT</Copyright>
+        <RestorePackagesPath>$(MSBuildProjectDirectory)\Packages</RestorePackagesPath>
+        <BaseOutputPath>Bin\</BaseOutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-      <PackageReference Include="CsvHelper" Version="33.0.1" PrivateAssets="None">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; compile; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="ILRepack" Version="2.0.36">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <InputAssemblies Include="$(OutputPath)$(MSBuildProjectName).dll" />
-      <InputAssemblies Include="$(UserProfile)\.nuget\packages\csvhelper\33.0.1\lib\net8.0\CsvHelper.dll" />
-  </ItemGroup>
-
-    <Target Name="Repack" AfterTargets="Build">
-        <Exec Command="$(UserProfile)\.nuget\packages\ilrepack\2.0.36\tools\ILRepack.exe /out:$(OutputPath)test.dll @(InputAssemblies, ' ')" />
+    <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="33.0.1" PrivateAssets="None" />
+        <PackageReference Include="ILRepack" Version="2.0.36">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <!--Not Release Marged Dll-->
+    <Target Name="Marged_Dll" AfterTargets="Build" Condition="'$(Configuration)' != 'Release' and !Exists('$(ILRepackTargetsFile)')">
+        <ItemGroup>
+            <InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)"/>
+            <InputAssemblies Include="$(OutputPath)*.dll" Exclude="$(OutputPath)$(TargetName)$(TargetExt)"/>
+        </ItemGroup>
+        <ILRepack
+                Parallel="true"
+                DebugInfo="true"
+                AllowDuplicateResources="false"
+                InputAssemblies="@(InputAssemblies)"
+                TargetKind="SameAsPrimaryAssembly"
+                KeyFile="$(KeyFile)"
+                OutputFile="$(OutputPath)$(TargetName)$(TargetExt)"
+        />
     </Target>
-
+    <!--Code Clear After Marged Dll-->
+    <Target Name="Marged_Dll_CleanCode" AfterTargets="Marged_Dll" Condition="'$(Configuration)' != 'Release' and !Exists('$(ILRepackTargetsFile)')">
+        <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')"/>
+        <ItemGroup>
+            <Directories Include="$([System.IO.Directory]::GetDirectories('$(OutDir)%(DestinationSubDirectory)', '*', System.IO.SearchOption.AllDirectories))"/>
+            <Directories>
+                <Files>$([System.IO.Directory]::GetFiles("%(Directories.Identity)", "*", System.IO.SearchOption.AllDirectories).get_Length())</Files>
+            </Directories>
+        </ItemGroup>
+        <RemoveDir Directories="@(Directories)" Condition="%(Files)=='0'"/>
+    </Target>    
 </Project>

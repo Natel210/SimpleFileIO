@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="test">
-      <HintPath>..\SimpleFileIO\bin\Debug\net8.0\test.dll</HintPath>
+    <Reference Include="SimpleFileIO">
+      <HintPath>..\SimpleFileIO\Bin\Release\net8.0\SimpleFileIO.dll</HintPath>
     </Reference>
   </ItemGroup>
 
