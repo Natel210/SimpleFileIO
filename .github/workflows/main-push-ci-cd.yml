@@ -145,8 +145,8 @@ jobs:
           rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
         shell: bash
 
-  create-tag:
-    name: Create Tag
+  auto-update-tag:
+    name: Auto Update Tag
     needs: build-validation
     runs-on: ubuntu-latest
     concurrency:
@@ -167,9 +167,19 @@ jobs:
         with:
           prefix: ${{ vars.TAG_PREFIX }}
 
+  github-release:
+    name: Github Release
+    needs: auto-update-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+         fetch-depth: 0
+      - run: echo making...
+
   results:
     name: Results
-    needs: [info-and-check, build-validation, create-tag]
+    needs: [info-and-check, build-validation, auto-update-tag, github-release]
     if: always()
     runs-on: ubuntu-latest
     steps:
