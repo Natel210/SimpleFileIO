@@ -27,6 +27,7 @@ runs:
       if: runner.os == 'Linux'
       run: |
         # Build Test on Linux
+        dotnet workload update
         chmod +x ./.scripts/build_validation/dotnet.sh
         ./.scripts/build_validation/dotnet.sh "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.result"
         chmod -x ./.scripts/build_validation/dotnet.sh
@@ -36,6 +37,7 @@ runs:
       if: runner.os == 'Windows'
       run: |
         # Build Test on Windows
+        dotnet workload update
         ./.scripts/build_validation/dotnet.ps1 "${{ inputs.project_file_path }}" "${{ inputs.build_configuration }}" "./result.result"
       shell: pwsh
 

@@ -120,7 +120,6 @@ jobs:
           # Check Directory
           if [ ! -d "./${{ runner.os }}/${{ matrix.configuration }}" ]; then
             mkdir -p ./${{ runner.os }}/${{ matrix.configuration }}
-            echo "Directory ./${{ runner.os }}/${{ matrix.configuration }} created."
           fi
           # Logging Result
           if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
@@ -135,7 +134,13 @@ jobs:
             name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
             path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
             if-no-files-found: warn
-            
+
+      - name: Clear Others
+        run: |
+          # Clear Others
+          rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
+        shell: bash
+
   #create-tag:
   #  name: Create Tag
   #  needs: check-event
