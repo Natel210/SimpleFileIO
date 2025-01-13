@@ -116,7 +116,10 @@ jobs:
       - name: To File Output
         run: |
           # To File Output
-          echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+          if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
+            echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+          else
+            echo "${{ steps.dll-build-test.outputs.result }}" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
         shell: bash
 
       - uses: actions/upload-artifact@v4
