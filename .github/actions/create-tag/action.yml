@@ -23,7 +23,7 @@ runs:
         # Check Before Tag State
         count=10
         echo -e Check Before Last $count
-        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '$count'
+        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '${count}'
         echo -e Check Before Lastest
         latest_tag=$(./.scripts/check/latest_tag_version.sh '${{ inputs.prefix }}')
         echo -e "Latest Tag: $latest_tag"
@@ -41,7 +41,7 @@ runs:
         # Check After Tag State
         count=10
         echo -e Check After Last $count
-        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '$count'
+        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '${count}'
         echo -e Check After Lastest
         latest_tag=$(./.scripts/check/latest_tag_version.sh '${{ inputs.prefix }}')
         echo -e "Latest Tag: $latest_tag"
