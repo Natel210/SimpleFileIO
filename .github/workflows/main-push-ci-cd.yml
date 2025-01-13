@@ -147,7 +147,7 @@ jobs:
 
   create-tag:
     name: Create Tag
-    needs: check-event
+    needs: build-validation
     runs-on: ubuntu-latest
     concurrency:
       group: tag-creation
