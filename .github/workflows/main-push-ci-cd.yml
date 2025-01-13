@@ -22,6 +22,8 @@ jobs:
       git_info_result: ${{ steps.info-and-check.outputs.git_info_result }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Info And Check
         id: info-and-check
         uses: ./.github/actions/info
@@ -97,6 +99,8 @@ jobs:
         configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Dll Build Test
         id: dll-build-test
         uses: ./.github/actions/build-validation/dotnet
@@ -141,36 +145,43 @@ jobs:
           rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
         shell: bash
 
-  #create-tag:
-  #  name: Create Tag
-  #  needs: check-event
-  #  runs-on: ubuntu-latest
-  #  concurrency:
-  #    group: tag-creation
-  #    cancel-in-progress: false
-  #  env:
-  #    NEW_VERSION: ""
-  #  outputs:
-  #    new_version: ${{ env.NEW_VERSION }}
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #      with:
-  #        fetch-depth: 0
+  create-tag:
+    name: Create Tag
+    needs: check-event
+    runs-on: ubuntu-latest
+    concurrency:
+      group: tag-creation
+      cancel-in-progress: false
+    env:
+      NEW_VERSION: ""
+    outputs:
+      new_version: ${{ env.NEW_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+         fetch-depth: 0
 
-  #    - name: Before Check Tags
-  #      uses: ./.github/actions/tag/version/check
-  #      with:
-  #        prefix: ${{ vars.TAG_PREFIX }}
+      - name: Create Tag
+        id: create-tag
+        uses: ./.github/actions/create-tag
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
 
-  #    - name: Version Create Tag
-  #      uses: ./.github/actions/tag/version/create
-  #      with:
-  #        prefix: ${{ vars.TAG_PREFIX }}
 
-  #    - name: After Check Tags
-  #      uses: ./.github/actions/tag/version/check
-  #      with:
-  #        prefix: ${{ vars.TAG_PREFIX }}
+      - name: Before Check Tags
+        uses: ./.github/actions/tag/version/check
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
+
+      - name: Version Create Tag
+        uses: ./.github/actions/tag/version/create
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
+
+      - name: After Check Tags
+        uses: ./.github/actions/tag/version/check
+        with:
+          prefix: ${{ vars.TAG_PREFIX }}
 
   results:
     name: Results

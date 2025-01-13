@@ -1,0 +1,57 @@
+name: "Create Tag"
+description: "Create and push a new Git tag based on the highest version tag."
+
+inputs:
+  prefix:
+    description: "Prefix for tag filtering"
+    required: false
+    default: "v"
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Add Execute Permission for Scripts
+      run: |
+        # Add Execute Permission for Scripts
+        chmod +x ./.scripts/check/all_tag_version.sh
+        chmod +x ./.scripts/check/latest_tag_version.sh
+        chmod +x ./.scripts/auto_tags/tag_auto_update.sh
+      shell: bash
+
+    - name: Debug Before Tag State
+      run: |
+        # Check Before Tag State
+        count=10
+        echo -e Check Before Last $count
+        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '$count'
+        echo -e Check Before Lastest
+        latest_tag=$(./.scripts/check/latest_tag_version.sh '${{ inputs.prefix }}')
+        echo -e "Latest Tag: $latest_tag"
+      shell: bash
+
+    - name: Generate and Push New Tag
+      run: |
+        # Generate and Push New Tag
+        ./.scripts/auto_tags/tag_auto_update.sh '${{ inputs.prefix }}' 
+
+      shell: bash
+
+    - name: Debug After Tag State
+      run: |
+        # Check After Tag State
+        count=10
+        echo -e Check After Last $count
+        ./.scripts/check/all_tag_version.sh '${{ inputs.prefix }}' '$count'
+        echo -e Check After Lastest
+        latest_tag=$(./.scripts/check/latest_tag_version.sh '${{ inputs.prefix }}')
+        echo -e "Latest Tag: $latest_tag"
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      run: |
+        # Remove Execute Permission for Scripts
+        chmod -x ./.scripts/check/all_tag_version.sh
+        chmod -x ./.scripts/check/latest_tag_version.sh
+        chmod -x ./.scripts/auto_tags/tag_auto_update.sh
+      shell: bash
