@@ -116,6 +116,13 @@ jobs:
       - name: To File Output
         run: |
           # To File Output
+
+          # Check Directory
+          if [ ! -d "./${{ runner.os }}/${{ matrix.configuration }}" ]; then
+            mkdir -p ./${{ runner.os }}/${{ matrix.configuration }}
+            echo "Directory ./${{ runner.os }}/${{ matrix.configuration }} created."
+          fi
+          # Logging Result
           if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
             echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
           else
