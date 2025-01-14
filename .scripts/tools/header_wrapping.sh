@@ -28,7 +28,7 @@ fi
 
 # Generate dynamic header
 line=$(printf '─%.0s' $(seq 1 "$header_length"))
-padding=$((header_length - header_name_length - 2))
+padding=$((header_length - - ${#header_name} - 2))
 left_padding=$((padding / 2))
 right_padding=$((padding - left_padding))
 
