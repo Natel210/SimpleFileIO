@@ -21,6 +21,9 @@ inputs:
           }
         ]
     required: true
+  header_length:
+    default: 80
+    required: true
   result_to_console:
     required: true
     default: true
@@ -55,7 +58,7 @@ runs:
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo -e "\033[38;5;245m[${key}] ${path}\033[0m"
-          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" )
+          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" "${{ header_length }}" )
           echo "$script_output" >> "$temp_file"
         done
 
