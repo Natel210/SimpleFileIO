@@ -91,3 +91,32 @@ runs:
         chmod -x .scripts/tools/header_wrapping.sh
 
       shell: bash
+
+
+
+# Use
+# - name: Build Validation
+#   uses: ./.github/actions/results
+#   with:
+#     headers_and_files: >
+#       [
+#         {
+#           "header": "Build Validation Linux Debug",
+#           "path": "./results/build_validation/linux/debug/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Linux Release",
+#           "path": "./results/build_validation/linux/release/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Widnows Debug",
+#           "path": "./results/build_validation/windows/debug/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Widnows Release",
+#           "path": "./results/build_validation/windows/release/build_validation.result"
+#         }
+#       ]
+#     result_file: ./results/build_validation_marge.result
+#     result_to_console: false
+#     header_length: 120
