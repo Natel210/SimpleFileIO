@@ -12,74 +12,35 @@ runs:
   using: "composite"
   steps:
     - run: |
-        # Change file mode
-        chmod +x .scripts/tools/header_wrapping.sh
-      shell: bash
-
-    - run: |
         # Values Info Format
 
-        # Params
-        headers_and_files='${{ inputs.headers_and_files }}'  # Json 
-
-        # Create Temp file
         temp_file=$(mktemp)
 
-        # Loop marge sub shell
-        echo -e "\033[48;5;241m\033[38;5;15mData\033[0m"
-        echo $headers_and_files | jq -c '.[]' | while read -r pair; do
-          key=$(echo "$pair" | jq -r '.header')
-          path=$(echo "$pair" | jq -r '.path')
-          echo -e "\033[38;5;245m[${key}] ${path}\033[0m"
-          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" "${{ inputs.header_length }}" )
-          echo "$script_output" >> "$temp_file"
-        done
-
-        # Result output console
-        if [ "${{ inputs.result_to_console }}" = "true" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mResult Output Console\033[0m"
-          cat "${temp_file}"
+        # Solution & Project
+        echo -e "\033[38;5;245m● Solution & Project\033[0m" >> "$temp_file"
+        if [[ -z "${{ needs.info-and-check.outputs.path_value_result }}" ]]; then
+          echo -e "\033[38;5;245m⚠️ Empty Path Value Result\033[0m" >> "$temp_file"
+        else
+          echo "${{ needs.info-and-check.outputs.path_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
         fi
 
-        # Result output file
-        if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mSave File ${{ inputs.result_file }}\033[0m"
-          cp "${temp_file}" "${{ inputs.result_file }}"
+        # Git
+        echo -e "\033[38;5;245m● Git\033[0m" >> "$temp_file"
+        if [[ -z "${{ needs.info-and-check.outputs.git_value_result }}" ]]; then
+          echo -e "\033[38;5;245m⚠️ Empty Git Value Result\033[0m" >> "$temp_file"
+        else
+          echo "${{ needs.info-and-check.outputs.git_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
+        fi
+
+        # Else
+        echo -e "\033[38;5;245m● Else\033[0m" >> "$temp_file"
+        if [[ -z "${{ needs.info-and-check.outputs.else_value_result }}" ]]; then
+          echo -e "\033[38;5;245m⚠️ Empty Else Value Result\033[0m" >> "$temp_file"
+        else
+          echo "${{ needs.info-and-check.outputs.else_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
         fi
 
         # Delete temp file
         rm -f "$temp_file"
 
       shell: bash
-
-    - run: |
-        # Restore file mode
-        chmod -x .scripts/tools/header_wrapping.sh
-      shell: bash
-
-# Use
-# - name: Build Validation
-#   uses: ./.github/actions/results
-#   with:
-#     headers_and_files: >
-#       [
-#         {
-#           "header": "Build Validation Linux Debug",
-#           "path": "./results/build_validation/linux/debug/build_validation.result"
-#         },
-#         {
-#           "header": "Build Validation Linux Release",
-#           "path": "./results/build_validation/linux/release/build_validation.result"
-#         },
-#         {
-#           "header": "Build Validation Widnows Debug",
-#           "path": "./results/build_validation/windows/debug/build_validation.result"
-#         },
-#         {
-#           "header": "Build Validation Widnows Release",
-#           "path": "./results/build_validation/windows/release/build_validation.result"
-#         }
-#       ]
-#     result_file: ./results/build_validation_marge.result
-#     result_to_console: false
-#     header_length: 120
