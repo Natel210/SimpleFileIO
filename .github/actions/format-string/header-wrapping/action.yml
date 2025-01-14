@@ -25,36 +25,33 @@ inputs:
     description: 'The length of the header line'
     required: false
     default: 80
-  result_to_console:
-    required: true
-    default: true
-  result_file:
-    description: 'The file to display contents from'
-    required: false
+
+outputs:
+  output_result:
+    description: make result
+    value: ${{ steps.result-make.outputs.result }}
+
+
 runs:
   using: "composite"
   steps:
-    - run: |
+    - name: Add Execute Permission for Scripts
+      run: |
+        # Add Execute Permission for Scripts
+        chmod +x .scripts/tools/header_wrapping.sh
+      shell: bash
+
+    - id: result-make
+      run: |
         # Result Make
 
-        ################################################################################
-        # Change file mode
-        ################################################################################
-        chmod +x .scripts/tools/header_wrapping.sh
-
-        ################################################################################
         # Params
-        ################################################################################
         headers_and_files='${{ inputs.headers_and_files }}'  # Json 
 
-        ################################################################################
         # Create Temp file
-        ################################################################################
         temp_file=$(mktemp)
 
-        ################################################################################
         # Loop marge sub shell
-        ################################################################################
         echo -e "\033[48;5;241m\033[38;5;15mData\033[0m"
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
@@ -64,35 +61,22 @@ runs:
           echo "$script_output" >> "$temp_file"
         done
 
-        ################################################################################
-        # Result output console
-        ################################################################################
-        if [ "${{ inputs.result_to_console }}" = "true" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mResult Output Console\033[0m"
-          cat "${temp_file}"
-        fi
-
-        ################################################################################
-        # Result output file
-        ################################################################################
-        if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mSave File ${{ inputs.result_file }}\033[0m"
-          cp "${temp_file}" "${{ inputs.result_file }}"
-        fi
-
-        ################################################################################
+        # Output Setting
+        multi_line_output=$(cat $temp_file)
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
+        echo "$multi_line_output" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
         # Delete temp file
-        ################################################################################
         rm -f "$temp_file"
-
-        ################################################################################
-        # Restore file mode
-        ################################################################################
-        chmod -x .scripts/tools/header_wrapping.sh
 
       shell: bash
 
-
+    - name: Remove Execute Permission for Scripts
+      run: |
+        # Remove Execute Permission for Scripts
+        chmod -x .scripts/tools/header_wrapping.sh
+      shell: bash
 
 # Use
 # - name: Build Validation

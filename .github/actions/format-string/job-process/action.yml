@@ -26,7 +26,7 @@ outputs:
   output_result:
     description: make result job process
     value: ${{ steps.make-result-job-process.outputs.result }}
-    
+
 runs:
   using: "composite"
   steps:
@@ -34,6 +34,9 @@ runs:
       run: |
         #Make Result Job Process
         temp_file=$(mktemp)
+
+        # Params
+        jobs_and_results='${{ inputs.jobs_and_results }}'  # Json
 
         echo $jobs_and_results | jq -c '.[]' | while read -r pair; do
           job_name=$(echo "$pair" | jq -r '.job_name')
