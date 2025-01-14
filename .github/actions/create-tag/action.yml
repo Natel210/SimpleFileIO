@@ -38,13 +38,12 @@ runs:
         # Generate and Push New Tag
 
         # Create Temp file
-        temp_file=$(mktemp)
         prefix='${{ inputs.prefix }}'
         # Generate and Push New Tag
-        ./.scripts/auto_tags/tag_auto_update.sh "$prefix" "$temp_file"
+        ./.scripts/auto_tags/tag_auto_update.sh "$prefix" "./new_version.data"
 
         # Output Setting
-        multi_line_output=$(cat $temp_file)
+        multi_line_output=$(cat ./new_version.data)
         echo "new_version<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
