@@ -72,7 +72,7 @@ runs:
         headers_and_files: ${{ inputs.info_valuse }}
         result_file: ./results/info_marge.result
         result_to_console: false
-       continue-on-error: true
+      continue-on-error: true
 
     - name: Build Validation Marge
       uses: ./.github/actions/header-wrapping
