@@ -39,9 +39,9 @@ runs:
 
         # Create Temp file
         temp_file=$(mktemp)
-
+        prefix='${{ inputs.prefix }}'
         # Generate and Push New Tag
-        ./.scripts/auto_tags/tag_auto_update.sh '${{ inputs.prefix }}' "$temp_file"
+        ./.scripts/auto_tags/tag_auto_update.sh "$prefix" "$temp_file"
 
         # Output Setting
         multi_line_output=$(cat $temp_file)
