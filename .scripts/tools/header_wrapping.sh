@@ -37,7 +37,7 @@ top_bottom_line=$(printf '─%.0s' $(seq 1 "$header_length"))
 
 # Print the header
 echo -e "\033[38;5;245m┌${top_bottom_line}┐\033[0m"
-printf "\033[38;5;245m│%${left_padding}s%s%${right_padding}s│\033[0m\n" "" "${plain_header_name}" ""
+printf "\033[38;5;245m│\033[0m%${left_padding}s%s%${right_padding}s\033[38;5;245m│\033[0m\n" "" "${plain_header_name}" ""
 echo -e "\033[38;5;245m└${top_bottom_line}┘\033[0m"
 
 # Check if file exists and display its content
