@@ -230,19 +230,19 @@ jobs:
           jobs_and_results: >
             [
               {
-                "job": "Info And Check",
+                "job_name": "Info And Check",
                 "result": ${{needs.info-and-check.result}}
               },
               {
-                "job": "Build Validation",
+                "job_name": "Build Validation",
                 "result": ${{needs.build-validation.result}}
               },
               {
-                "job": "Auto Update Tag",
+                "job_name": "Auto Update Tag",
                 "result": ${{needs.auto-update-tag.result}}
               },
               {
-                "job": "Github Release",
+                "job_name": "Github Release",
                 "result": ${{needs.github-release.result}}
               }
             ]
