@@ -29,8 +29,7 @@ fi
 # Generate dynamic header
 top_bottom_line_bar_count=$((header_length - 2))
 top_bottom_line=$(printf '─%.0s' $(seq 1 "$top_bottom_line_bar_count"))
-middle_line_content_count=$((header_length - 4))
-
+middle_line_content_count=$((header_length - 2))
 
 # Print the header
 echo -e "\033[38;5;245m┌${top_bottom_line}┐\033[0m"

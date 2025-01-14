@@ -290,19 +290,19 @@ jobs:
           headers_and_files: >
             [
               {
-                "header": "Git Info",
+                "header": "  Git Info",
                 "path": "./results/info/git_info.result"
               },
               {
-                "header": "Job Process",
+                "header": "  Job Process",
                 "path": "./results/info/job_process.result"
               },
               {
-                "header": "File Exist",
+                "header": "  File Exist",
                 "path": "./results/info/exist_files.result"
               },
               {
-                "header": "Values",
+                "header": "  Values",
                 "path": "./results/info/value.result"
               }
             ]
@@ -316,19 +316,19 @@ jobs:
           headers_and_files: >
             [
               {
-                "header": "Build Validation Linux Debug",
+                "header": "  Build Validation Linux Debug",
                 "path": "./results/build_validation/linux/debug/build_validation.result"
               },
               {
-                "header": "Build Validation Linux Release",
+                "header": "  Build Validation Linux Release",
                 "path": "./results/build_validation/linux/release/build_validation.result"
               },
               {
-                "header": "Build Validation Widnows Debug",
+                "header": "  Build Validation Widnows Debug",
                 "path": "./results/build_validation/windows/debug/build_validation.result"
               },
               {
-                "header": "Build Validation Widnows Release",
+                "header": "  Build Validation Widnows Release",
                 "path": "./results/build_validation/windows/release/build_validation.result"
               }
             ]
@@ -336,10 +336,26 @@ jobs:
           result_to_console: false
         continue-on-error: true
 
+      - name: Marge Result
+        uses: ./.github/actions/results
+        with:
+          headers_and_files: >
+            [
+              {
+                "header": "  Info",
+                "path": "./results/info_marge.result"
+              },
+              {
+                "header": "  Build Validation",
+                "path": "./results/build_validation_marge.result"
+              }
+            ]
+          result_file: ./results/results_marge.result
+          result_to_console: false
+        continue-on-error: true
       - name: Result
         run: |
-          cat ./results/info_marge.result
-          cat ./results/build_validation_marge.result
+          cat ./results/results_marge.result
         continue-on-error: true
 
   # check-event:
