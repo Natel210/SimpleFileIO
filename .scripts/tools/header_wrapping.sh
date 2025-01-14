@@ -33,7 +33,7 @@ middle_line_content_count=$((header_length - 2))
 
 # Print the header
 echo -e "\033[38;5;245m┌${top_bottom_line}┐\033[0m"
-printf "\033[38;5;245m│\033[0m%s%${middle_line_content_count}s\033[38;5;245m│\033[0m\n" "${plain_header_name}" ""
+printf "\033[38;5;245m│\033[0m%-${middle_line_content_count}s\033[38;5;245m│\033[0m\n" "${plain_header_name}" ""
 echo -e "\033[38;5;245m└${top_bottom_line}┘\033[0m"
 
 # Check if file exists and display its content
