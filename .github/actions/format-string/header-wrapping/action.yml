@@ -38,7 +38,7 @@ runs:
     - name: Add Execute Permission for Scripts
       run: |
         # Add Execute Permission for Scripts
-        chmod +x .scripts/tools/header_wrapping.sh
+        chmod +x .scripts/format-string/header_wrapping.sh
       shell: bash
 
     - id: result-make
@@ -57,7 +57,7 @@ runs:
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo -e "\033[38;5;245m[${key}], [${path}]\033[0m"
-          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" "${{ inputs.header_length }}" )
+          script_output=$( .scripts/format-string/header_wrapping.sh "$key" "$path" "${{ inputs.header_length }}" )
           echo "$script_output" >> "$temp_file"
         done
 
@@ -75,7 +75,7 @@ runs:
     - name: Remove Execute Permission for Scripts
       run: |
         # Remove Execute Permission for Scripts
-        chmod -x .scripts/tools/header_wrapping.sh
+        chmod -x .scripts/format-string/header_wrapping.sh
       shell: bash
 
 # Use
