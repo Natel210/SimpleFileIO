@@ -295,7 +295,7 @@ jobs:
       ##  continue-on-error: true
       - name: Job Process Format
         id: job-process-format
-        uses: ./.github/actions/format-string\job-process
+        uses: ./.github/actions/format-string/job-process
         with:
           jobs_and_results: >
             [
@@ -320,7 +320,7 @@ jobs:
 
       - name: Temp Save To File
         run: |
-          ${{ job-process-format.outputs.output_result }} > ./results/info/job_process.result
+          ${{ steps.job-process-format.outputs.output_result }} > ./results/info/job_process.result
 
       - name: Make Result
         uses: ./.github/actions/result
