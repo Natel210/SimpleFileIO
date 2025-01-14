@@ -1,36 +1,13 @@
-name: Header Wrapping
+name: Values Info Format
 description: >
-  Generates text with headers based on the header and file path.
+  Generates text based on values.
 inputs:
-  headers_and_files:
-    description: >
-      A JSON string containing header and file path pairs.
-      Example: >
-        [
-          {
-            "header": "Git Info",
-            "path": "./results/info/git-info.result"
-          },
-          {
-            "header": "File Exist",
-            "path": "./results/info/exist-files.result"
-          },
-          {
-            "header": "Values",
-            "path": "./results/info/value.result"
-          }
-        ]
+  path_value_result:
     required: true
-  header_length:
-    description: 'The length of the header line'
-    required: false
-    default: 80
-  result_to_console:
+  git_value_result:
     required: true
-    default: true
-  result_file:
-    description: 'The file to display contents from'
-    required: false
+  else_value_result:
+    required: true        
 runs:
   using: "composite"
   steps:
@@ -40,7 +17,7 @@ runs:
       shell: bash
 
     - run: |
-        # Result Make
+        # Values Info Format
 
         # Params
         headers_and_files='${{ inputs.headers_and_files }}'  # Json 
