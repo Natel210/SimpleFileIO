@@ -60,7 +60,7 @@ runs:
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo -e "\033[38;5;245m[${key}] ${path}\033[0m"
-          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" "${{ header_length }}" )
+          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" "${{ inputs.header_length }}" )
           echo "$script_output" >> "$temp_file"
         done
 
