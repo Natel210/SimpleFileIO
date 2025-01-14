@@ -12,8 +12,8 @@ fi
 
 # Validate header length
 if ! [[ "$header_length" =~ ^[0-9]+$ ]]; then
-  echo -e "\033[38;5;196mError: Header length must be a positive integer.\033[0m"
-  exit 1
+  echo -e "\033[38;5;196mError: Header length must be a positive integer. The header_length is set to the default value of 80.\033[0m"
+  header_length=80
 fi
 
 # Remove ANSI color codes from header name (if any)
@@ -27,17 +27,14 @@ if (( header_length < header_name_length + 2 )); then
 fi
 
 # Generate dynamic header
-line=$(printf '─%.0s' $(seq 1 "$header_length"))
-padding=$((header_length - ${#header_name} - 2))
-left_padding=$((padding / 2))
-right_padding=$((padding - left_padding))
+top_bottom_line_bar_count=$((header_length - 2))
+top_bottom_line=$(printf '─%.0s' $(seq 1 "$top_bottom_line_bar_count"))
+middle_line_content_count=$((header_length - 4))
 
-# Adjust line lengths to ensure top and bottom match the text line
-top_bottom_line=$(printf '─%.0s' $(seq 1 "$header_length"))
 
 # Print the header
 echo -e "\033[38;5;245m┌${top_bottom_line}┐\033[0m"
-printf "\033[38;5;245m│\033[0m%${left_padding}s%s%${right_padding}s\033[38;5;245m│\033[0m\n" "" "${plain_header_name}" ""
+printf "\033[38;5;245m│\033[0m  %s%${middle_line_content_count}s\033[38;5;245m│\033[0m\n" "" "${plain_header_name}" ""
 echo -e "\033[38;5;245m└${top_bottom_line}┘\033[0m"
 
 # Check if file exists and display its content
