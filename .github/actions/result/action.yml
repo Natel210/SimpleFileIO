@@ -25,7 +25,7 @@ inputs:
           }
         ]
     required: true
-    
+
   build_validation_valuse :
     description: >
       A JSON string containing header and file path pairs.
@@ -96,7 +96,7 @@ runs:
         header_length: 120
       continue-on-error: true
 
-    - name: Result
+    - name: Output Result
       if: output-result
       run: |
         # Output Result

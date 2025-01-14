@@ -26,6 +26,7 @@ outputs:
   output_result:
     description: make result job process
     value: ${{ steps.make-result-job-process.outputs.result }}
+    
 runs:
   using: "composite"
   steps:
