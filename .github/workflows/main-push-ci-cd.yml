@@ -33,12 +33,10 @@ jobs:
         id: info-and-check
         uses: ./.github/actions/info
         with:
-          # git
           git_event_name: "${{ github.event_name }}"
           git_ref: "${{ github.ref }}"
           head_ref: "${{ github.head_ref }}"
           base_ref: "${{ github.base_ref }}"
-
           path_values: >
             [
               {
@@ -258,8 +256,6 @@ jobs:
           git_value_result: ${{ needs.info-and-check.outputs.git_value_result }}
           else_value_result: ${{ needs.info-and-check.outputs.else_value_result }}
         continue-on-error: true
-
-
 
       - name: Temp Save To File
         run: |

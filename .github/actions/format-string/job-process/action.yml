@@ -30,6 +30,12 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Add Execute Permission for Scripts
+      run: |
+        # Add Execute Permission for Scripts
+        chmod +x .scripts/format-string/header_wrapping.sh
+      shell: bash
+
     - id: make-result-job-process
       run: |
         #Make Result Job Process
@@ -49,7 +55,7 @@ runs:
           else
             temp_string="\033[38;5;245m[$job_name] \033[38;5;196m$result\033[0m"
           fi
-          script_output=$( .scripts/tools/header_wrapping.sh "$job_name" "$result" "${{ inputs.header_length }}" )
+          script_output=$( .scripts/format-string/header_wrapping.sh "$job_name" "$result" "${{ inputs.header_length }}" )
           echo "$script_output" >> "$temp_file"
         done
 
@@ -61,4 +67,10 @@ runs:
 
         # Delete temp file
         rm -f "$temp_file"
+      shell: bash
+
+    - name: Remove Execute Permission for Scripts
+      run: |
+        # Remove Execute Permission for Scripts
+        chmod -x .scripts/format-string/header_wrapping.sh
       shell: bash
