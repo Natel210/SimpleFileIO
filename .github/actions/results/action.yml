@@ -23,7 +23,7 @@ inputs:
     required: true
   header_length:
     default: 80
-    required: true
+    required: false
   result_to_console:
     required: true
     default: true
