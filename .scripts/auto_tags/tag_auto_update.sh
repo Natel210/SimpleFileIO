@@ -59,6 +59,6 @@ else
   if [ ! -d "$version_info_dir" ]; then
       mkdir -p "$version_info_dir"
   fi
-  echo -e "$new_version" > "$version_info_dir"
+  echo -e "$new_version" > "$version_info_file"
 fi
 

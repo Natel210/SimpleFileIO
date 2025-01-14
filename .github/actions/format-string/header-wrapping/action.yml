@@ -54,7 +54,7 @@ runs:
         echo -e "\033[38;5;245mLoad Data\033[0m"
         echo $headers_and_files | jq -c '.[]' | while read -r pair; do
           key=$(echo "$pair" | jq -r '.header')
-          path=$(echo "$pair" | jq -r '.path')
+          path=$(echo "$pair" | jq -r '.path' | sed 's/\\/\\\\/g')
           echo -e "\033[38;5;245m[${key}], [${path}]\033[0m"
           script_output=$( .scripts/format-string/header_wrapping.sh "$key" "$path" "${{ inputs.header_length }}" )
           echo "$script_output" >> "$temp_file"
