@@ -9,127 +9,247 @@ permissions:
   contents: write
   statuses: write
 
-env:
-  SOLUTION_FILE: "SimpleFileIO.sln"
-  DLL_FILE: "SimpleFileIO/SimpleFileIO.csproj"
-  TESTER_FILE: "SimpleFileIO_Tester/SimpleFileIO_Tester.csproj"
-  BUILD_PATH: "./build/"
-  
 jobs:
 
-  info:
-    name: Info
+  info-and-check:
+    name: Info And Check
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          
-      - name: Check ENV Value
-        uses: ./.github/actions/info/env-check
-        with:
-          config: |
-            {
-              "Event Name": "${{ github.event_name }}",
-              "Ref": "${{ github.ref }}",
-              "Head Ref": "${{ github.head_ref }}",
-              "Base Ref": "${{ github.base_ref }}",
-              "Solution File": "${{ env.SOLUTION_FILE }}",
-              "Dll File": "${{ env.DLL_FILE }}",
-              "Tester file": "${{ env.TESTER_FILE }}"
-            }
-      - name: Git Info
-        uses: ./.github/actions/info/git
-        with:
-          event_name: ${{ github.event_name }}
-          ref: ${{ github.ref }}
-          head_ref: ${{ github.head_ref }}
-          base_ref: ${{ github.base_ref }}
-      - name: Exist Files
-        uses: ./.github/actions/info/exist-files
-        with:
-          files: ${{ env.SOLUTION_FILE }} ${{ env.DLL_FILE }} ${{ env.TESTER_FILE }}
-          
-  windows-debug-ci:
-    name: Windows Debug CI
-    runs-on: windows-latest
-    needs: info
+    outputs:
+      path_value_result: ${{ steps.info-and-check.outputs.path_value_result }}
+      git_value_result: ${{ steps.info-and-check.outputs.git_value_result }}
+      else_value_result: ${{ steps.info-and-check.outputs.else_value_result }}
+      exist_files_result: ${{ steps.info-and-check.outputs.exist_files_result }}
+      git_info_result: ${{ steps.info-and-check.outputs.git_info_result }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll
+      - name: Info And Check
+        id: info-and-check
+        uses: ./.github/actions/info
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
-          configuration: "Debug"
-          dotnet_version: "8.0.x"
+          git_event_name: "${{ github.event_name }}"
+          git_ref: "${{ github.ref }}"
+          head_ref: "${{ github.head_ref }}"
+          base_ref: "${{ github.base_ref }}"
+          path_values: >
+            [
+              {
+                "key": "Solution File Path",
+                "value": "${{ vars.SOLUTION_FILE_PATH }}"
+              },
+              {
+                "key": "Dll File Path",
+                "value": "${{ vars.DLL_PROJECT_FILE_PATH }}"
+              },
+              {
+                "key": "Tester File Path",
+                "value": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+              },
+              {
+                "key": "Tester Executable File Name",
+                "value": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+              }
+            ]
+          else_values: >
+            [
+              {
+                "key": "Result Zip Name",
+                "value": "${{ vars.RESULT_ZIP_NAME }}"
+              },
+              {
+                "key": "Tag Prefix",
+                "value": "${{ vars.TAG_PREFIX }}"
+              }
+            ]
 
-  windows-release-ci:
-    name: Windows Release CI
-    runs-on: windows-latest
-    needs: info
+      - name: Check Output
+        run: |
+          # Check Output
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Path Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info-and-check.outputs.path_value_result }}" || echo "::Warning::⚠️ Invalid Path Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info-and-check.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info-and-check.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info-and-check.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo -e "${{ steps.info-and-check.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
+
+  build-validation:
+    name: Build Validation
+    needs: info-and-check
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        configuration: [Debug, Release]
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Build and Test
-        uses: ./.github/actions/build/windows/dotnet/dll
+      - name: Dll Build Test
+        id: dll-build-test
+        uses: ./.github/actions/build-validation/dotnet
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
-          configuration: "Release"
-          dotnet_version: "8.0.x"
+          project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
+          build_configuration: "${{matrix.configuration}}"
+          dotnet_version: "${{ vars.DOTNET_VERSION }}"
 
-  linux-debug-ci:
-    name: Linux Debug CI
+      - name: Check Output
+        run: |
+          # Check Output
+          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Build Validation"
+          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+          echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result"
+        shell: bash
+
+      - name: To File Output
+        run: |
+          # To File Output
+
+          # Check Directory
+          if [ ! -d "./${{ runner.os }}/${{ matrix.configuration }}" ]; then
+            mkdir -p ./${{ runner.os }}/${{ matrix.configuration }}
+          fi
+          # Logging Result
+          if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
+            echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+          else
+            echo "${{ steps.dll-build-test.outputs.result }}" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+          fi
+        shell: bash
+
+      - uses: actions/upload-artifact@v4
+        with:
+            name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
+            path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
+            if-no-files-found: warn
+
+      - name: Clear Others
+        run: |
+          # Clear Others
+          rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
+        shell: bash
+
+  results:
+    name: Results
+    needs: [info-and-check, build-validation]
+    if: always()
     runs-on: ubuntu-latest
-    needs: info
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-  
-      - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll
+
+      - name: Check Result Directory
+        run: |
+          # Check Result Directory
+          if [ ! -d "./results/" ]; then
+            mkdir -p "./results/"
+          fi
+
+      - uses: actions/download-artifact@v4
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
-          configuration: "Debug"
-          dotnet_version: "8.0.x"
-  
-  linux-release-ci:
-    name: Linux Release CI
-    runs-on: ubuntu-latest
-    needs: info
-    steps:
-      - uses: actions/checkout@v4
+            name: Build_Validation_Linux_Debug
+            path: ./results/build_validation/linux/debug
+        continue-on-error: true
+
+      - uses: actions/download-artifact@v4
         with:
-          fetch-depth: 0
-      - name: Build and Test
-        uses: ./.github/actions/build/linux/dotnet/dll
+            name: Build_Validation_Linux_Release
+            path: ./results/build_validation/linux/release
+        continue-on-error: true
+
+      - name: Job Process Format
+        id: job-process-format
+        uses: ./.github/actions/format-string/job-process
         with:
-          solution_file: ${{ env.SOLUTION_FILE }}
-          dll_file: ${{ env.DLL_FILE }}
-          tester_file: ${{ env.TESTER_FILE }}
-          configuration: "Release"
-          dotnet_version: "8.0.x"
-  
-  check-event:
-    name: Check Event
-    needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
-    runs-on: ubuntu-latest
-    if: ${{github.event_name == 'pull_request'}}
-    steps:
-      - uses: actions/checkout@v4
+          jobs_and_results: >
+            [
+              {
+                "header": "Info And Check",
+                "path": ${{needs.info-and-check.result}}
+              },
+              {
+                "header": "Build Validation",
+                "path": ${{needs.build-validation.result}}
+              }
+            ]
+        continue-on-error: true
+
+      - name: Value Info Format
+        id:  value-info-format
+        uses: ./.github/actions/format-string/values-info
         with:
-          fetch-depth: 0
-  
-      - name: Is Pull Request Event
-        run: echo -e "\033[32mRequest Event Ok...\033[0m"
+          path_value_result: ${{ needs.info-and-check.outputs.path_value_result }}
+          git_value_result: ${{ needs.info-and-check.outputs.git_value_result }}
+          else_value_result: ${{ needs.info-and-check.outputs.else_value_result }}
+        continue-on-error: true
+
+      - name: Temp Save To File
+        run: |
+          # Temp Save To File
+          if [ ! -d "./results/info/" ]; then
+            mkdir -p "./results/info/"
+          fi
+          echo -e "${{ needs.info-and-check.outputs.git_info_result }}" > ./results/info/git_info.result
+          echo -e "${{ steps.job-process-format.outputs.output_result }}" > ./results/info/job_process.result
+          echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
+          echo -e "${{ steps.value-info-format.outputs.output_result }}" > ./results/info/value.result
+        continue-on-error: true
+
+      - name: Make Result
+        id: nake-result
+        uses: ./.github/actions/result
+        with:
+          info_valuse: >
+            [
+              {
+                "header": "  Git Info",
+                "path": "./results/info/git_info.result"
+              },
+              {
+                "header": "  Job Process",
+                "path": "./results/info/job_process.result"
+              },
+              {
+                "header": "  File Exist",
+                "path": "./results/info/exist_files.result"
+              },
+              {
+                "header": "  Values",
+                "path": "./results/info/value.result"
+              }
+            ]
+          build_validation_valuse: >
+            [
+              {
+                "header": "  Build Validation Linux Debug",
+                "path": "./results/build_validation/linux/debug/build_validation.result"
+              },
+              {
+                "header": "  Build Validation Linux Release",
+                "path": "./results/build_validation/linux/release/build_validation.result"
+              }
+            ]
+        continue-on-error: true
+      
+      - name: output Result
+        run: |
+          echo -e "${{ steps.nake-result.outputs.output_result }}"
+        continue-on-error: true

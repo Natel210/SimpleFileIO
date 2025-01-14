@@ -316,7 +316,7 @@ jobs:
       - name: output Result
         run: |
           echo -e "${{ steps.nake-result.outputs.output_result }}"
-        continue-on-error: true      
+        continue-on-error: true
   # check-event:
   #   name: Check Git Event
   #   needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
