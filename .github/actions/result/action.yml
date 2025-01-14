@@ -60,27 +60,25 @@ runs:
   steps:
 
     - name: Info Marge
+      id: info-marge
       uses: ./.github/actions/format-string/header-wrapping
       with:
         headers_and_files: ${{ inputs.info_valuse }}
-        result_file: ./results/info_marge.result
-        result_to_console: false
         header_length: 80
       continue-on-error: true
 
     - name: Build Validation Marge
+      id: build-validation-marge
       uses: ./.github/actions/format-string/header-wrapping
       with:
         headers_and_files: ${{ inputs.build_validation_valuse }}
-        result_file: ./results/build_validation_marge.result
-        result_to_console: false
         header_length: 80
       continue-on-error: true
 
     - name: To File
       run: |
-        echo -e > ./results/info_marge.result
-        echo -e > ./results/build_validation_marge.result
+        echo -e "${{ steps.info-marge.outputs.output_result}}" > ./results/info_marge.result
+        echo -e "${{ steps.build-validation-marge.outputs.output_result}}" > ./results/build_validation_marge.result
       shell: bash
 
 
@@ -99,8 +97,6 @@ runs:
               "path": "./results/build_validation_marge.result"
             }
           ]
-        result_file: ./results/results_marge.result
-        result_to_console: false
         header_length: 120
       continue-on-error: true
 

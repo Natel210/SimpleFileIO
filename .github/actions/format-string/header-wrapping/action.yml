@@ -25,12 +25,6 @@ inputs:
     description: 'The length of the header line'
     required: false
     default: 80
-  result_to_console:
-    required: true
-    default: true
-  result_file:
-    description: 'The file to display contents from'
-    required: false
 outputs:
   output_result:
     description: make result
@@ -72,19 +66,6 @@ runs:
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
         
-        # Result output console
-        if [ "${{ inputs.result_to_console }}" = "true" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mResult Output Console\033[0m"
-          cat "${temp_file}"
-        fi
-
-        # Result output file
-        if [ -n "${{ inputs.result_file }}" ]; then
-          echo -e "\033[48;5;241m\033[38;5;15mSave File ${{ inputs.result_file }}\033[0m"
-          cp "${temp_file}" "${{ inputs.result_file }}"
-        fi
-
-
         # Delete temp file
         rm -f "$temp_file"
 
@@ -119,6 +100,4 @@ runs:
 #           "path": "./results/build_validation/windows/release/build_validation.result"
 #         }
 #       ]
-#     result_file: ./results/build_validation_marge.result
-#     result_to_console: false
 #     header_length: 120
