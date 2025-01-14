@@ -71,24 +71,25 @@ inputs:
 outputs:
   path_value_result:
     description: path value result
-    value: ${{ steps.path-value.outputs.result }}
+    value: ${{ steps.path-value.outputs.output_result }}
   git_value_result:
     description: git value result
-    value: ${{ steps.git-value.outputs.result }}
+    value: ${{ steps.git-value.outputs.output_result }}
   else_value_result:
     description: other value result
-    value: ${{ steps.else-value.outputs.result }}
+    value: ${{ steps.else-value.outputs.output_result }}
   exist_files_result:
     description: exist files result
-    value: ${{ steps.exist-files.outputs.result }}
+    value: ${{ steps.exist-files.outputs.output_result }}
   git_info_result:
     description: git info result
-    value: ${{ steps.git-info.outputs.result }}
+    value: ${{ steps.git-info.outputs.output_result }}
 runs:
   using: "composite"
   steps:
     - name: Add Execute Permission for Scripts
       run: |
+        # Add Execute Permission for Scripts
         chmod +x ./.scripts/check/values.sh
         chmod +x ./.scripts/check/exist_files.sh
         chmod +x ./.scripts/check/git_info.sh
@@ -107,7 +108,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -129,7 +130,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -171,7 +172,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -193,7 +194,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -215,7 +216,7 @@ runs:
 
         # Multi Line
         multi_line_output=$(cat $temp_file)
-        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
@@ -231,6 +232,7 @@ runs:
 
     - name: Remove Execute Permission for Scripts
       run: |
+        # Remove Execute Permission for Scripts
         chmod -x ./.scripts/check/values.sh
         chmod -x ./.scripts/check/exist_files.sh
         chmod -x ./.scripts/check/git_info.sh
