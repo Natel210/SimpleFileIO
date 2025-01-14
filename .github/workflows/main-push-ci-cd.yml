@@ -311,8 +311,6 @@ jobs:
                 "path": "./results/build_validation/windows/release/build_validation.result"
               }
             ]
-          result_file: ./results/result.result
-          result_to_console: false
         continue-on-error: true
       
       - name: output Result
