@@ -19,3 +19,27 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+### **Third-Party Libraries**
+
+This project is licensed under the MIT License. It also integrates third-party libraries that are distributed under their respective licenses. Below are the details of the third-party components and how they comply with their licensing terms:
+
+---
+
+### **Third-Party Libraries**
+
+This project integrates third-party libraries licensed under their respective terms:
+
+1. CsvHelper (Apache-2.0 OR MS-PL):
+   - Fully integrated into this software.
+   - For more details, please refer to [CsvHelper LICENSE](https://www.nuget.org/packages/CsvHelper).
+
+2. ILRepack.Lib.MSBuild.Task (MIT License):
+   - Used internally for assembly merging during the build process.
+
+3. SimpleComposeActions (MIT License):
+   - Used for CI/CD workflow management.
+
+This project adheres to the respective licenses of all integrated libraries.

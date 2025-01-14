@@ -1,5 +1,6 @@
 ﻿using SimpleFileIO.Utility;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleFileIO.State.Ini
 {
@@ -239,7 +240,7 @@ namespace SimpleFileIO.State.Ini
             return File.Exists(fileInfo.FullName);
         }
 
-        public T GetValue_UseParser<T>(string section, string key, T defaultValue) where T : notnull
+        public T GetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string section, string key, T defaultValue) where T : notnull
         {
             StringTypeParser parser;
             if (_stringTypeParsers.TryGetValue(typeof(T), out parser) is false)
@@ -260,7 +261,7 @@ namespace SimpleFileIO.State.Ini
                 return defaultValue;
         }
 
-        public bool SetValue_UseParser<T>(string section, string key, T value) where T : notnull
+        public bool SetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string section, string key, T value) where T : notnull
         {
             StringTypeParser parser;
             if (_stringTypeParsers.TryGetValue(typeof(T), out parser) is false)
@@ -273,7 +274,7 @@ namespace SimpleFileIO.State.Ini
             return SetValue(section, key, valueString);
         }
 
-        public T GetValue_UseParser<T>(ref IniItem<T> item) where T : notnull
+        public T GetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(ref IniItem<T> item) where T : notnull
         {
             if (item is null)
                 throw new ArgumentNullException(nameof(item));
@@ -312,7 +313,7 @@ namespace SimpleFileIO.State.Ini
                 return item.DefaultValue;
         }
 
-        public bool SetValue_UseParser<T>(IniItem<T> item) where T : notnull
+        public bool SetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(IniItem<T> item) where T : notnull
         {
             if (item is null)
                 throw new ArgumentNullException(nameof(item));

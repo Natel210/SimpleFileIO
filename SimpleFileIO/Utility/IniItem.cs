@@ -1,6 +1,9 @@
-﻿namespace SimpleFileIO.Utility
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+
+namespace SimpleFileIO.Utility
 {
-    public class IniItem<T> where T : notnull
+    public class IniItem<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> where T : notnull
     {
         public string Section { get; set; } = "";
         public string Key { get; set; } = "";
@@ -37,7 +40,6 @@
             throw new InvalidOperationException($"Type {typeof(T)} does not have a parameterless constructor.");
         }
 
-
         private T CreateInstanceOrAssign(T value)
         {
             if (value == null)
@@ -46,6 +48,7 @@
             var constructor = typeof(T).GetConstructor(new[] { typeof(T) });
             if (constructor != null)
                 return (T)constructor.Invoke(new object[] { value });
+
             return value;
         }
     }

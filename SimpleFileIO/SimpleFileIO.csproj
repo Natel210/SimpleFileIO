@@ -7,32 +7,14 @@
         <Copyright>MIT</Copyright>
         <RestorePackagesPath>$(MSBuildProjectDirectory)\Packages</RestorePackagesPath>
         <BaseOutputPath>Bin\</BaseOutputPath>
+        <ILRepackTargetsEnabled>false</ILRepackTargetsEnabled>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="CsvHelper" Version="33.0.1" PrivateAssets="None" />
-        <PackageReference Include="ILRepack" Version="2.0.36">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-    <!--Not Release Marged Dll-->
-    <Target Name="Marged_Dll" AfterTargets="Build" Condition="'$(Configuration)' != 'Release' and !Exists('$(ILRepackTargetsFile)')">
-        <ItemGroup>
-            <InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)" />
-            <InputAssemblies Include="$(RestorePackagesPath)\csvhelper\33.0.1\lib\net8.0\CsvHelper.dll" />
-        </ItemGroup>
-        <ILRepack Parallel="true" DebugInfo="true" AllowDuplicateResources="false" InputAssemblies="@(InputAssemblies)" TargetKind="SameAsPrimaryAssembly" KeyFile="$(KeyFile)" OutputFile="$(OutputPath)$(TargetName)$(TargetExt)" />
-    </Target>
-    <!--Code Clear After Marged Dll-->
-    <Target Name="Marged_Dll_CleanCode" AfterTargets="Marged_Dll" Condition="'$(Configuration)' != 'Release' and !Exists('$(ILRepackTargetsFile)')">
-        <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
-        <ItemGroup>
-            <Directories Include="$([System.IO.Directory]::GetDirectories('$(OutDir)%(DestinationSubDirectory)', '*', System.IO.SearchOption.AllDirectories))" />
-            <Directories>
-                <Files>$([System.IO.Directory]::GetFiles("%(Directories.Identity)", "*", System.IO.SearchOption.AllDirectories).get_Length())</Files>
-            </Directories>
-        </ItemGroup>
-        <RemoveDir Directories="@(Directories)" Condition="%(Files)=='0'" />
-    </Target>    
 </Project>
