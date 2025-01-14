@@ -1,6 +1,6 @@
-name: Results Processor
+name: Header Wrapping
 description: >
-  Processes headers and file paths for validation.
+  Generates text with headers based on the header and file path.
 inputs:
   headers_and_files:
     description: >

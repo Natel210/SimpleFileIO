@@ -1,0 +1,145 @@
+name: Results Processor
+description: >
+  Processes headers and file paths for validation.
+inputs:
+  info_valuse :
+    description: >
+      A JSON string containing header and file path pairs.
+      Example: >
+        [
+          {
+            "header": "  Git Info",
+            "path": "./results/info/git_info.result"
+          },
+          {
+            "header": "  Job Process",
+            "path": "./results/info/job_process.result"
+          },
+          {
+            "header": "  File Exist",
+            "path": "./results/info/exist_files.result"
+          },
+          {
+            "header": "  Values",
+            "path": "./results/info/value.result"
+          }
+        ]
+    required: true
+  build_validation_valuse :
+    description: >
+      A JSON string containing header and file path pairs.
+      Example: >
+        [
+          {
+            "header": "  Build Validation Linux Debug",
+            "path": "./results/build_validation/linux/debug/build_validation.result"
+          },
+          {
+            "header": "  Build Validation Linux Release",
+            "path": "./results/build_validation/linux/release/build_validation.result"
+          },
+          {
+            "header": "  Build Validation Widnows Debug",
+            "path": "./results/build_validation/windows/debug/build_validation.result"
+          },
+          {
+            "header": "  Build Validation Widnows Release",
+            "path": "./results/build_validation/windows/release/build_validation.result"
+          }
+        ]
+    required: true
+
+
+
+
+#   header_length:
+#     description: 'The length of the header line'
+#     required: false
+#     default: 80
+#   result_to_console:
+#     required: true
+#     default: true
+#   result_file:
+#     description: 'The file to display contents from'
+#     required: false
+runs:
+  using: "composite"
+  steps:
+
+    - name: Info Marge
+      uses: ./.github/actions/header-wrapping
+      with:
+        headers_and_files: ${{ inputs.info_valuse }}
+        result_file: ./results/info_marge.result
+        result_to_console: false
+       continue-on-error: true
+
+    - name: Build Validation Marge
+      uses: ./.github/actions/header-wrapping
+      with:
+        headers_and_files: ${{ inputs.build_validation_valuse }}
+        result_file: ./results/build_validation_marge.result
+        result_to_console: false
+      shell: bash
+      continue-on-error: true
+
+    - name: Marge Result
+      uses: ./.github/actions/header-wrapping
+      with:
+        headers_and_files: >
+          [
+            {
+              "header": "  Info",
+              "path": "./results/info_marge.result"
+            },
+            {
+              "header": "  Build Validation",
+              "path": "./results/build_validation_marge.result"
+            }
+          ]
+        result_file: ./results/results_marge.result
+        result_to_console: false
+      shell: bash
+      continue-on-error: true
+
+    - name: Result
+      run: |
+        cat ./results/results_marge.result
+      shell: bash
+      continue-on-error: true
+
+    - name: Remove Marge Result
+      run: |
+        rm ./results/info_marge.result
+        rm ./results/build_validation_marge.result
+        rm ./results/build_validation_marge.result
+      shell: bash
+      continue-on-error: true
+
+
+# Use
+# - name: Build Validation
+#   uses: ./.github/actions/results
+#   with:
+#     headers_and_files: >
+#       [
+#         {
+#           "header": "Build Validation Linux Debug",
+#           "path": "./results/build_validation/linux/debug/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Linux Release",
+#           "path": "./results/build_validation/linux/release/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Widnows Debug",
+#           "path": "./results/build_validation/windows/debug/build_validation.result"
+#         },
+#         {
+#           "header": "Build Validation Widnows Release",
+#           "path": "./results/build_validation/windows/release/build_validation.result"
+#         }
+#       ]
+#     result_file: ./results/build_validation_marge.result
+#     result_to_console: false
+#     header_length: 120

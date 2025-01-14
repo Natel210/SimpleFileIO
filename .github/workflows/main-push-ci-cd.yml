@@ -285,9 +285,9 @@ jobs:
         continue-on-error: true
 
       - name: Info
-        uses: ./.github/actions/results
+        uses: ./.github/actions/result
         with:
-          headers_and_files: >
+          info_valuse: >
             [
               {
                 "header": "  Git Info",
@@ -306,14 +306,7 @@ jobs:
                 "path": "./results/info/value.result"
               }
             ]
-          result_file: ./results/info_marge.result
-          result_to_console: false
-        continue-on-error: true
-
-      - name: Build Validation
-        uses: ./.github/actions/results
-        with:
-          headers_and_files: >
+          build_validation_valuse: >
             [
               {
                 "header": "  Build Validation Linux Debug",
@@ -332,30 +325,6 @@ jobs:
                 "path": "./results/build_validation/windows/release/build_validation.result"
               }
             ]
-          result_file: ./results/build_validation_marge.result
-          result_to_console: false
-        continue-on-error: true
-
-      - name: Marge Result
-        uses: ./.github/actions/results
-        with:
-          headers_and_files: >
-            [
-              {
-                "header": "  Info",
-                "path": "./results/info_marge.result"
-              },
-              {
-                "header": "  Build Validation",
-                "path": "./results/build_validation_marge.result"
-              }
-            ]
-          result_file: ./results/results_marge.result
-          result_to_console: false
-        continue-on-error: true
-      - name: Result
-        run: |
-          cat ./results/results_marge.result
         continue-on-error: true
 
   # check-event:
