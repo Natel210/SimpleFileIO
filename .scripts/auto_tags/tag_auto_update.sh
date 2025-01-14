@@ -55,7 +55,7 @@ if [ -z "$version_info_file" ]; then
   echo -e "$new_version"
 else
   # Ensure result file directory exists
-  $version_info_dir=$(dirname "$version_info_file")
+  version_info_dir=$(dirname "$version_info_file")
   if [ ! -d "$version_info_dir" ]; then
       mkdir -p "$version_info_dir"
   fi
