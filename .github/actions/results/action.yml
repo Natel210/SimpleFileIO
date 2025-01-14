@@ -22,12 +22,14 @@ inputs:
         ]
     required: true
   header_length:
-    default: 80
+    description: 'The length of the header line'
     required: false
+    default: 80
   result_to_console:
     required: true
     default: true
   result_file:
+    description: 'The file to display contents from'
     required: false
 runs:
   using: "composite"

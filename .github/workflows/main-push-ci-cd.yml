@@ -265,6 +265,17 @@ jobs:
           else
             echo -e "\033[38;5;15m[Build Validation] \033[38;5;196m${{ needs.build-validation.result }}\033[0m" >> "$temp_file"
           fi
+          if [[ "${{ needs.auto-update-tag.result }}" == "success" ]]; then
+            echo -e "\033[38;5;245m[Build Validation] ${{ needs.auto-update-tag.result }}\033[0m" >> "$temp_file"
+          else
+            echo -e "\033[38;5;15m[Build Validation] \033[38;5;196m${{ needs.auto-update-tag.result }}\033[0m" >> "$temp_file"
+          fi
+          if [[ "${{ needs.github-release.result }}" == "success" ]]; then
+            echo -e "\033[38;5;245m[Build Validation] ${{ needs.github-release.result }}\033[0m" >> "$temp_file"
+          else
+            echo -e "\033[38;5;15m[Build Validation] \033[38;5;196m${{ needs.github-release.result }}\033[0m" >> "$temp_file"
+          fi
+          
           cp "$temp_file" "./results/info/job_process.result"
           rm -f "$temp_file"
         continue-on-error: true
