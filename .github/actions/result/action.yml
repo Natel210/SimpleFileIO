@@ -66,6 +66,7 @@ runs:
         result_file: ./results/info_marge.result
         result_to_console: false
         header_length: 80
+      shell: bash
       continue-on-error: true
 
     - name: Build Validation Marge
