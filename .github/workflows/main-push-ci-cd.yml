@@ -231,19 +231,19 @@ jobs:
             [
               {
                 "job_name": "Info And Check",
-                "result": ${{needs.info-and-check.result}}
+                "result": "${{ needs.info-and-check.result }}"
               },
               {
                 "job_name": "Build Validation",
-                "result": ${{needs.build-validation.result}}
+                "result": "${{ needs.build-validation.result }}"
               },
               {
                 "job_name": "Auto Update Tag",
-                "result": ${{needs.auto-update-tag.result}}
+                "result": "${{ needs.auto-update-tag.result }}"
               },
               {
                 "job_name": "Github Release",
-                "result": ${{needs.github-release.result}}
+                "result": "${{ needs.github-release.result }}"
               }
             ]
         continue-on-error: true
