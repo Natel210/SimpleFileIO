@@ -9,6 +9,10 @@ permissions:
   contents: write
   statuses: write
 
+concurrency:
+  group: main-push
+  cancel-in-progress: false
+
 jobs:
 
   info-and-check:
