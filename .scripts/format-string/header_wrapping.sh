@@ -38,7 +38,9 @@ echo -e "\033[38;5;245m└${top_bottom_line}┘\033[0m"
 
 # Check if file exists and display its content
 if [ -f "$result_file" ]; then
-  cat "$result_file"
+  while IFS= read -r line; do
+  echo -e "$line"
+done < "$result_file"
 else
   echo -e "\033[38;5;196mFile not found: $result_file\033[0m"
 fi
