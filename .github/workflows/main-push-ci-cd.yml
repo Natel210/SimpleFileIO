@@ -270,7 +270,7 @@ jobs:
         continue-on-error: true
 
       - name: Make Result
-        id: nake-result
+        id: make-result
         uses: ./.github/actions/result
         with:
           info_valuse: >
@@ -315,7 +315,7 @@ jobs:
       
       - name: output Result
         run: |
-          echo -e "${{ steps.nake-result.outputs.output_result }}"
+          echo -e "${{ steps.make-result.outputs.output_result }}"
         continue-on-error: true
 
   # cd:
