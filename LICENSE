@@ -24,12 +24,6 @@ SOFTWARE.
 
 ### **Third-Party Libraries**
 
-This project is licensed under the MIT License. It also integrates third-party libraries that are distributed under their respective licenses. Below are the details of the third-party components and how they comply with their licensing terms:
-
----
-
-### **Third-Party Libraries**
-
 This project integrates third-party libraries licensed under their respective terms:
 
 1. CsvHelper (Apache-2.0 OR MS-PL):

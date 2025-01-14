@@ -35,7 +35,7 @@ runs:
         ################################################################################
         # Change file mode
         ################################################################################
-        chmod +x .scripts/tools/result_output.sh
+        chmod +x .scripts/tools/header_wrapping.sh
 
         ################################################################################
         # Params
@@ -55,7 +55,7 @@ runs:
           key=$(echo "$pair" | jq -r '.header')
           path=$(echo "$pair" | jq -r '.path')
           echo -e "\033[38;5;245m[${key}] ${path}\033[0m"
-          script_output=$( .scripts/tools/result_output.sh "$key" "$path" )
+          script_output=$( .scripts/tools/header_wrapping.sh "$key" "$path" )
           echo "$script_output" >> "$temp_file"
         done
 
@@ -83,6 +83,6 @@ runs:
         ################################################################################
         # Restore file mode
         ################################################################################
-        chmod -x .scripts/tools/result_output.sh
+        chmod -x .scripts/tools/header_wrapping.sh
 
       shell: bash
