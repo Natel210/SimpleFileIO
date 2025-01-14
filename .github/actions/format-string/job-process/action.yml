@@ -36,8 +36,8 @@ runs:
         echo $jobs_and_results | jq -c '.[]' | while read -r pair; do
           job_name=$(echo "$pair" | jq -r '.job_name')
           result=$(echo "$pair" | jq -r '.result')
-          
-          echo -e "\033[38;5;245m[${job_name}] ${path}\033[0m"
+
+          echo -e "\033[38;5;245m[${job_name}] ${result}\033[0m"
 
           if [[ "$result" == "success" ]]; then
             temp_string="\033[38;5;245m[$job_name] $result\033[0m"
