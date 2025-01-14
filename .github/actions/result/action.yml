@@ -77,7 +77,15 @@ runs:
         header_length: 80
       continue-on-error: true
 
+    - name: To File
+      run: |
+        echo -e > ./results/info_marge.result
+        echo -e > ./results/build_validation_marge.result
+      shell: bash
+
+
     - name: Marge Result
+      id: marge-result
       uses: ./.github/actions/format-string/header-wrapping
       with:
         headers_and_files: >
@@ -100,7 +108,7 @@ runs:
       id: output-result
       run: |
         # Output Result
-        multi_line_output=$(cat ./results/results_marge.result)
+        multi_line_output="${{ steps.marge-result.outputs.output_result}}"
         echo "output_result<<EOF" >> $GITHUB_OUTPUT
         echo "$multi_line_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
