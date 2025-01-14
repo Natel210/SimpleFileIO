@@ -77,8 +77,9 @@ runs:
 
     - name: To File
       run: |
-        echo -e "${{ steps.info-marge.outputs.output_result}}" > ./results/info_marge.result
-        echo -e "${{ steps.build-validation-marge.outputs.output_result}}" > ./results/build_validation_marge.result
+        # To File
+        echo -e "${{ steps.info-marge.outputs.output_result }}" > ./results/info_marge.result
+        echo -e "${{ steps.build-validation-marge.outputs.output_result }}" > ./results/build_validation_marge.result
       shell: bash
 
 
