@@ -250,45 +250,13 @@ jobs:
             ]
         continue-on-error: true
 
-
-
-      - name: Make Info Result Files
-        run: |
-          # Make Info Result Files
-
-          # Set directory
-          if [ ! -d "./results/info/" ]; then
-              mkdir -p "./results/info/"
-          fi
-
-          # Git Info
-          echo -e "${{ needs.info-and-check.outputs.git_info_result }}" > ./results/info/git_info.result
-
-          # Exist Files
-          echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
-
-          # Values
-          temp_file=$(mktemp)
-          echo -e "\033[38;5;245m● Solution & Project\033[0m" >> "$temp_file"
-          if [[ -z "${{ needs.info-and-check.outputs.path_value_result }}" ]]; then
-            echo -e "\033[38;5;245m⚠️ Empty Path Value Result\033[0m" >> "$temp_file"
-          else
-            echo "${{ needs.info-and-check.outputs.path_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
-          fi
-          echo -e "\033[38;5;245m● Git\033[0m" >> "$temp_file"
-          if [[ -z "${{ needs.info-and-check.outputs.git_value_result }}" ]]; then
-            echo -e "\033[38;5;245m⚠️ Empty Git Value Result\033[0m" >> "$temp_file"
-          else
-            echo "${{ needs.info-and-check.outputs.git_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
-          fi
-          echo -e "\033[38;5;245m● Else\033[0m" >> "$temp_file"
-          if [[ -z "${{ needs.info-and-check.outputs.else_value_result }}" ]]; then
-            echo -e "\033[38;5;245m⚠️ Empty Else Value Result\033[0m" >> "$temp_file"
-          else
-            echo "${{ needs.info-and-check.outputs.else_value_result }}" | awk '{printf "\033[38;5;245m - %s\033[0m\n", $0}' >> "$temp_file"
-          fi
-          cp "${temp_file}" "./results/info/value.result"
-          rm -f "$temp_file"
+      - name: Value Info Format
+        id:  value-info-format
+        uses: ./.github/actions/format-string/values-info
+        with:
+          path_value_result: ${{ needs.info-and-check.outputs.path_value_result }}
+          git_value_result: ${{ needs.info-and-check.outputs.git_value_result }}
+          else_value_result: ${{ needs.info-and-check.outputs.else_value_result }}
         continue-on-error: true
 
 
@@ -300,8 +268,9 @@ jobs:
             mkdir -p "./results/info/"
           fi
           echo -e "${{ needs.info-and-check.outputs.git_info_result }}" > ./results/info/git_info.result
-          echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
           echo -e "${{ steps.job-process-format.outputs.output_result }}" > ./results/info/job_process.result
+          echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
+          echo -e "${{ steps.value-info-format.outputs.output_result }}" > ./results/info/value.result
         continue-on-error: true
 
       - name: Make Result
