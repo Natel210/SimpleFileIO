@@ -97,7 +97,7 @@ runs:
       continue-on-error: true
 
     - name: Output Result
-      if: output-result
+      id: output-result
       run: |
         # Output Result
         multi_line_output=$(cat ./results/results_marge.result)
