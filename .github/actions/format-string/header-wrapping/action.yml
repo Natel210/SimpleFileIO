@@ -28,7 +28,7 @@ inputs:
 outputs:
   output_result:
     description: make result
-    value: ${{ steps.result-make.outputs.result }}
+    value: ${{ steps.result-make.outputs.output_result }}
 
 
 runs:

@@ -82,7 +82,6 @@ runs:
         echo -e "${{ steps.build-validation-marge.outputs.output_result }}" > ./results/build_validation_marge.result
       shell: bash
 
-
     - name: Marge Result
       id: marge-result
       uses: ./.github/actions/format-string/header-wrapping
