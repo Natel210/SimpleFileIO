@@ -230,20 +230,20 @@ jobs:
           jobs_and_results: >
             [
               {
-                "header": "Info And Check",
-                "path": ${{needs.info-and-check.result}}
+                "job": "Info And Check",
+                "result": ${{needs.info-and-check.result}}
               },
               {
-                "header": "Build Validation",
-                "path": ${{needs.build-validation.result}}
+                "job": "Build Validation",
+                "result": ${{needs.build-validation.result}}
               },
               {
-                "header": "Auto Update Tag",
-                "path": ${{needs.auto-update-tag.result}}
+                "job": "Auto Update Tag",
+                "result": ${{needs.auto-update-tag.result}}
               },
               {
-                "header": "Github Release",
-                "path": ${{needs.github-release.result}}
+                "job": "Github Release",
+                "result": ${{needs.github-release.result}}
               }
             ]
         continue-on-error: true
@@ -317,50 +317,6 @@ jobs:
         run: |
           echo -e "${{ steps.nake-result.outputs.output_result }}"
         continue-on-error: true
-  # check-event:
-  #   name: Check Git Event
-  #   needs: [windows-debug-ci, windows-release-ci, linux-debug-ci, linux-release-ci]
-  #   # needs: [linux-debug-ci, linux-release-ci]
-  #   runs-on: ubuntu-latest
-  #   if: ${{github.event_name == 'push'}}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Is Push Event
-  #       run: echo -e "\033[32mPush Ok...\033[0m Continue to Create Tag..."
-
-  # create-tag:
-  #   name: Create Tag
-  #   needs: check-event
-  #   runs-on: ubuntu-latest
-  #   concurrency:
-  #     group: tag-creation
-  #     cancel-in-progress: false
-  #   env:
-  #     NEW_VERSION: ""
-  #   outputs:
-  #     new_version: ${{ env.NEW_VERSION }}
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-
-  #     - name: Before Check Tags
-  #       uses: ./.github/actions/tag/version/check
-  #       with:
-  #         prefix: ${{ vars.TAG_PREFIX }}
-
-  #     - name: Version Create Tag
-  #       uses: ./.github/actions/tag/version/create
-  #       with:
-  #         prefix: ${{ vars.TAG_PREFIX }}
-
-  #     - name: After Check Tags
-  #       uses: ./.github/actions/tag/version/check
-  #       with:
-  #         prefix: ${{ vars.TAG_PREFIX }}
 
   # cd:
   #   name: CD
