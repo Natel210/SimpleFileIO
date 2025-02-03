@@ -22,8 +22,6 @@ This library eliminates unnecessary dependencies while maintaining flexibility a
 
 ## Third-Party Libraries
 
-This library relies on the following third-party components but does not embed them, allowing users to manage dependencies externally.
-
 ### CsvHelper
 - Version: 33.0.1
 - License: Apache-2.0 OR MS-PL
