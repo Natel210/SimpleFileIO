@@ -1,4 +1,4 @@
-# **SimpleFileIO**
+## **SimpleFileIO**
 
 ---
 
@@ -11,54 +11,49 @@ SimpleFileIO is a library designed to provide a unified interface for **record-b
 - **Text**: General text file management.
 - **Appendable Text (Log)**: Incremental logging into plain text files.
 
-This library eliminates external dependencies by integrating required components, and **provides a single DLL that includes CsvHelper for advanced CSV management**. Through the use of managed objects and interfaces, SimpleFileIO ensures consistent and efficient file operations across different formats.
-
-
+This library eliminates unnecessary dependencies while maintaining flexibility and ease of use. CsvHelper is used for advanced CSV management, but it is **not embedded** in the DLL, allowing developers to manage dependencies separately.
 
 ---
 
 ## **How to**
 
-
 ## **Third-Party Libraries**
 
-This library integrates the following third-party components. It is designed as a single DLL to eliminate external dependencies, with certain libraries configured for public access.
+This library relies on the following third-party components but does not embed them, allowing users to manage dependencies externally.
 
 ### **1. CsvHelper**
 - **Version**: 33.0.1
 - **License**: Apache-2.0 OR MS-PL
 - **Copyright**: © 2009–2024 Josh Close
-- **Project URL**: [https://joshclose.github.io/CsvHelper](https://joshclose.github.io/CsvHelper)
-- **Nuget**: [https://www.nuget.org/packages/CsvHelper](https://www.nuget.org/packages/CsvHelper)
+- **Project URL**: [CsvHelper Project](https://joshclose.github.io/CsvHelper)
+- **Nuget**: [CsvHelper NuGet](https://www.nuget.org/packages/CsvHelper)
 - **Usage**:  
-  - Fully integrated into the SimpleFileIO DLL.  
-  - **Publicly accessible**: External consumers can directly use CsvHelper's functionality without additional dependencies.
-  - **Modified**: **False**
-
+  - Used for advanced CSV parsing and serialization.
+  - **Not embedded**: Developers must install CsvHelper separately via NuGet.
+  
 ### **2. SimpleComposeActions**
 - **Version**: N/A
 - **License**: MIT  
 - **Copyright**:
   - © 2024–2025 Natel210
-- **Project URL**: [https://github.com/Natel210/SimpleComposeActions](https://github.com/Natel210/SimpleComposeActions)
+- **Project URL**: [SimpleComposeActions](https://github.com/Natel210/SimpleComposeActions)
 - **Usage**:  
   - Used as a modular and reusable GitHub Actions workflow template.
   - Facilitates simplified CI/CD pipeline setup by enabling developers to compose workflows using pre-defined modular actions.
-  - rovides pre-tested components to improve productivity and reduce workflow errors.
+  - Provides pre-tested components to improve productivity and reduce workflow errors.
   
 ---
 
 ## **Key Features**
 
 - Unified interface for multiple file types (CSV, Text, Logs).
-- Integration of CsvHelper for advanced CSV processing.
-- Single DLL distribution without external dependencies.
+- CsvHelper integration for advanced CSV processing (requires external installation).
+- Modular approach with minimal external dependencies.
 
 ---
 
 ## **Notes**
 
-- **Public Access**: CsvHelper is publicly accessible for external use.  
-- **Private Components**: ILRepack.Lib.MSBuild.Task are solely used for internal processes and are not exposed to external consumers.
+- **CsvHelper is not embedded**: Developers must install it via NuGet.
+- **No ILRepack usage**: The library does not merge external dependencies into a single DLL.
 
----
