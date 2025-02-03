@@ -30,10 +30,7 @@ This project integrates third-party libraries licensed under their respective te
    - Fully integrated into this software.
    - For more details, please refer to [CsvHelper LICENSE](https://www.nuget.org/packages/CsvHelper).
 
-2. ILRepack.Lib.MSBuild.Task (MIT License):
-   - Used internally for assembly merging during the build process.
-
-3. SimpleComposeActions (MIT License):
+2. SimpleComposeActions (MIT License):
    - Used for CI/CD workflow management.
 
 This project adheres to the respective licenses of all integrated libraries.

@@ -2,6 +2,7 @@
 using SimpleFileIO.Log.Text;
 using SimpleFileIO.State.Ini;
 using SimpleFileIO.Utility;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleFileIO

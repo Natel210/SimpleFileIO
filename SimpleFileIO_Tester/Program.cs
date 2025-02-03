@@ -3,7 +3,9 @@ using SimpleFileIO;
 using SimpleFileIO.Log.Csv;
 using SimpleFileIO.Log.Text;
 using SimpleFileIO.State.Ini;
+using SimpleFileIO.Utility;
 using System.Globalization;
+using System.Resources;
 using TEST_CONSOLE;
 
 namespace SimpleFileIO_Tester
@@ -12,6 +14,8 @@ namespace SimpleFileIO_Tester
     {
         static void Main(string[] args)
         {
+
+
             Manager.CreateTextLog("TestTextLog",new() { RootDirectory = new("./Test"), FileName="TestTextLog", Extension="txtlog" });
             ITextLog? textLog = Manager.GetTextLog("TestTextLog") ?? null;
             if (textLog is null)

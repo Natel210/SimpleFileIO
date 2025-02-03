@@ -18,7 +18,7 @@ namespace SimpleFileIO.Log.Csv
                 return Get(name);
 
             CSVLog_BaseForm addItem = new CSVLog_BaseForm();
-            addItem.Property = properties;
+            addItem.PathProperty = properties;
             _itemDic.Add(name, addItem);
             return Get(name);
         }

@@ -8,11 +8,20 @@ using System.Threading.Tasks;
 
 namespace SimpleFileIO.Log.Csv
 {
+    /// <summary>
+    /// Recordable CSV interface.
+    /// </summary>
     public interface ICSVLog
     {
-        PathProperty Property { get; set; }
+        /// <summary>
+        /// Path Property 
+        /// </summary>
+        PathProperty PathProperty { get; set; }
 
-        bool IsWriting { get; }
+        /// <summary>
+        /// Is it being recorded?
+        /// </summary>
+        bool IsRecording { get; }
 
         EAddItemErrorCode Add<T>(T logEntry) where T : class;
 

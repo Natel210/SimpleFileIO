@@ -1,20 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <Copyright>MIT</Copyright>
-        <RestorePackagesPath>$(MSBuildProjectDirectory)\Packages</RestorePackagesPath>
-        <BaseOutputPath>Bin\</BaseOutputPath>
-        <ILRepackTargetsEnabled>false</ILRepackTargetsEnabled>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BaseOutputPath>Bin\</BaseOutputPath>
+    <Copyright>MIT</Copyright>
+    <!--<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>-->
+      
+    <!-- Local Test -->
+    <VersionPrefix>0.0.1</VersionPrefix>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="33.0.1" PrivateAssets="None" />
-        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.34.2">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
+  <!-- NuGet -->
+  <PropertyGroup>
+    <Authors>Natel210</Authors>
+    <PackageLicenseExpression>$(Copyright)</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Natel210/SimpleFileIO</PackageProjectUrl>
+    <!--<PackageIcon>none.png</PackageIcon>-->
+    <PackageTags>Simple;File;IO;SimpleFileIO;FileIO</PackageTags>
+    <!--<PackageReleaseNotes>https://github.com/Natel210/SimpleFileIO/releases</PackageReleaseNotes>-->
+    <RepositoryUrl>https://github.com/Natel210/SimpleFileIO.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>$(AssemblyName)</Title>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <!-- Package Add -->
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.0.1">
+      <IncludeAssets>all</IncludeAssets>
+      <PrivateAssets>none</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Add PackageIn  -->
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\ErrorMessages\ErrorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ErrorMessages\ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+    
 </Project>

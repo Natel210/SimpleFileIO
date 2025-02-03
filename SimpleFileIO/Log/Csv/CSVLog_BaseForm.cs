@@ -2,6 +2,10 @@
 using System.Globalization;
 using SimpleFileIO.Enum;
 using SimpleFileIO.Utility;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.IO;
 
 namespace SimpleFileIO.Log.Csv
 {
@@ -13,7 +17,7 @@ namespace SimpleFileIO.Log.Csv
         private readonly object _logPropertiesMutex = new object();
         private Type? _dataType = null; // Check DataType
 
-        public PathProperty Property
+        public PathProperty PathProperty
         {
             get
             {
@@ -40,7 +44,7 @@ namespace SimpleFileIO.Log.Csv
             }
         }
 
-        public bool IsWriting { get; private set; } = false;
+        public bool IsRecording { get; private set; } = false;
 
         /// <summary>
         /// 
@@ -74,10 +78,10 @@ namespace SimpleFileIO.Log.Csv
 
         public EWriteItemErrorCode Write()
         {
-            if (IsWriting)
+            if (IsRecording)
                 return EWriteItemErrorCode.AlreadyWriting;
 
-            IsWriting = true;
+            IsRecording = true;
 
             List<object> tempItems;
             lock (_logItemsMutex)
@@ -88,12 +92,12 @@ namespace SimpleFileIO.Log.Csv
 
             if (tempItems.Count == 0)
             {
-                IsWriting = false;
+                IsRecording = false;
                 return EWriteItemErrorCode.InvalidEmpty;
             }
 
             EWriteItemErrorCode result = EWriteItemErrorCode.Unknown;
-            var tempProperties = Property;
+            var tempProperties = PathProperty;
             try
             {
                 if (!tempProperties.RootDirectory.Exists)
@@ -126,7 +130,7 @@ namespace SimpleFileIO.Log.Csv
             {
                 result = EWriteItemErrorCode.TaskRunWritingException;
             }
-            IsWriting = false;
+            IsRecording = false;
             return result;
         }
 

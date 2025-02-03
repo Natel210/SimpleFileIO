@@ -1,4 +1,5 @@
 ﻿using SimpleFileIO.Utility;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SimpleFileIO.State.Ini

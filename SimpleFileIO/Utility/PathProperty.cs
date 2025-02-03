@@ -1,4 +1,6 @@
-﻿namespace SimpleFileIO.Utility
+﻿using System.IO;
+
+namespace SimpleFileIO.Utility
 {
     public struct PathProperty
     {

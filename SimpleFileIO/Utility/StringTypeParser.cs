@@ -1,4 +1,6 @@
-﻿namespace SimpleFileIO.Utility
+﻿using System;
+
+namespace SimpleFileIO.Utility
 {
     public struct StringTypeParser
     {

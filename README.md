@@ -35,23 +35,7 @@ This library integrates the following third-party components. It is designed as 
   - **Publicly accessible**: External consumers can directly use CsvHelper's functionality without additional dependencies.
   - **Modified**: **False**
 
----
-
-### **2. ILRepack.Lib.MSBuild.Task**
-- **Version**: 2.0.34.2
-- **License**: MIT  
-- **Copyright**:
-  - © 2009–2024 contributors from the ILMerge project
-- **Project URL**: [https://joshclose.github.io/CsvHelper](https://joshclose.github.io/CsvHelper)
-- **Nuget**: [https://www.nuget.org/packages/CsvHelper](https://www.nuget.org/packages/CsvHelper)
-- **Usage**:  
-  - Utilized internally during the build process to assist in merging assemblies.  
-  - **Private**: This library does not affect runtime behavior.
-  - **Modified**: **False**
-
----
-
-### **3. SimpleComposeActions**
+### **2. SimpleComposeActions**
 - **Version**: N/A
 - **License**: MIT  
 - **Copyright**:
