@@ -115,11 +115,74 @@ namespace SimpleFileIO.Resources.ErrorMessages {
         }
         
         /// <summary>
+        ///   Array of the corresponding Tpye is not supported.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string csv_log_array_converter_invalid_array_type {
+            get {
+                return ResourceManager.GetString("csv_log_array_converter_invalid_array_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   List of Tpye is not supported.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string csv_log_array_converter_invalid_list_type {
+            get {
+                return ResourceManager.GetString("csv_log_array_converter_invalid_list_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   That Tpye is not supported.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string csv_log_array_converter_invalid_type {
+            get {
+                return ResourceManager.GetString("csv_log_array_converter_invalid_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   This item does not exist. It is returned as an empty value (&quot;&quot;).과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string get_value_invalid_item {
             get {
                 return ResourceManager.GetString("get_value_invalid_item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no default constructor.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ini_item_invaild_constructior {
+            get {
+                return ResourceManager.GetString("ini_item_invaild_constructior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Key value is invalid.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ini_item_invaild_key {
+            get {
+                return ResourceManager.GetString("ini_item_invaild_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Section value is invalid.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ini_item_invaild_section {
+            get {
+                return ResourceManager.GetString("ini_item_invaild_section", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Value is invalid.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string ini_item_invaild_value {
+            get {
+                return ResourceManager.GetString("ini_item_invaild_value", resourceCulture);
             }
         }
         

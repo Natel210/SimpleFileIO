@@ -8,7 +8,7 @@
     <!--<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>-->
       
     <!-- Local Test -->
-    <VersionPrefix>0.0.2</VersionPrefix>
+    <VersionPrefix>0.0.3</VersionPrefix>
   </PropertyGroup>
 
   <!-- NuGet -->
@@ -35,6 +35,7 @@
       <IncludeAssets>all</IncludeAssets>
       <PrivateAssets>none</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="SimpleFileIO" Version="0.0.3" />
   </ItemGroup>
 
   <!-- Add PackageIn  -->

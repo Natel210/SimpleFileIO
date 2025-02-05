@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using SimpleFileIO.Resources.ErrorMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,30 +9,45 @@ using System.Linq;
 
 namespace SimpleFileIO.Log.Csv
 {
+    /// <summary>
+    /// Provides a type converter for converting arrays of type <typeparamref name="T"/> to and from CSV format.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the array.</typeparam>
     public class CSVLogArrayConverter<T> : ITypeConverter
     {
+        /// <summary>
+        /// Converts an object to a CSV-formatted string.
+        /// </summary>
+        /// <param name="value">The object to be converted.</param>
+        /// <param name="row">The CSV writer row.</param>
+        /// <param name="memberMapData">Metadata about the member being mapped.</param>
+        /// <returns>A CSV-formatted string representation of the array.</returns>
         public string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
             if (value == null)
                 return string.Empty;
-
             if (!IsValidType(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
-
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
             var array = value as T[];
             if (array == null)
-                throw new InvalidOperationException("The value is not an array of the specified type.");
-
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_array_type}, Type '{typeof(T)}'");
             return string.Join(";", array.Select(item => item?.ToString()));
         }
 
+        /// <summary>
+        /// Converts a CSV-formatted string to an array of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="text">The CSV string.</param>
+        /// <param name="row">The CSV reader row.</param>
+        /// <param name="memberMapData">Metadata about the member being mapped.</param>
+        /// <returns>An array of type <typeparamref name="T"/>.</returns>
         public object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
         {
             if (string.IsNullOrEmpty(text))
                 return Array.Empty<T>();
 
             if (!IsValidType(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
 
             var elements = text.Split(';');
             if (typeof(T) == typeof(bool))
@@ -67,9 +83,14 @@ namespace SimpleFileIO.Log.Csv
             else if (typeof(T) == typeof(ulong))
                 return elements.Select(e => ulong.Parse(e)).ToArray();
             else
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
         }
 
+        /// <summary>
+        /// Determines whether the specified type is supported for conversion.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns><c>true</c> if the type is supported; otherwise, <c>false</c>.</returns>
         private bool IsValidType(Type type)
         {
             return type == typeof(bool)
@@ -83,34 +104,51 @@ namespace SimpleFileIO.Log.Csv
         }
     }
 
+    /// <summary>
+    /// Provides a type converter for converting lists of type <typeparamref name="T"/> to and from CSV format.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
     public class CSVLogListConverter<T> : ITypeConverter
     {
+        /// <summary>
+        /// Converts an object to a CSV-formatted string.
+        /// </summary>
+        /// <param name="value">The object to be converted.</param>
+        /// <param name="row">The CSV writer row.</param>
+        /// <param name="memberMapData">Metadata about the member being mapped.</param>
+        /// <returns>A CSV-formatted string representation of the list.</returns>
         public string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
         {
             if (value == null)
                 return string.Empty;
 
             if (!IsValidType(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
 
             var list = value as List<T>;
             if (list == null)
-                throw new InvalidOperationException("The value is not a List of the specified type.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_list_type}, Type '{typeof(T)}'");
 
             return string.Join(";", list.Select(item => item?.ToString()));
         }
 
+        /// <summary>
+        /// Converts a CSV-formatted string to a list of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="text">The CSV string.</param>
+        /// <param name="row">The CSV reader row.</param>
+        /// <param name="memberMapData">Metadata about the member being mapped.</param>
+        /// <returns>A list of type <typeparamref name="T"/>.</returns>
         public object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
         {
             if (string.IsNullOrEmpty(text))
                 return new List<T>();
 
             if (!IsValidType(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
 
             var elements = text.Split(';');
 
-            // 각 타입에 맞게 변환
             if (typeof(T) == typeof(bool))
                 return elements.Select(e => bool.Parse(e)).ToList();
             else if (typeof(T) == typeof(char))
@@ -144,10 +182,14 @@ namespace SimpleFileIO.Log.Csv
             else if (typeof(T) == typeof(ulong))
                 return elements.Select(e => ulong.Parse(e)).ToList();
             else
-                throw new InvalidOperationException($"Type '{typeof(T)}' is not supported for conversion.");
+                throw new InvalidOperationException($"{ErrorMessages.csv_log_array_converter_invalid_type}, Type '{typeof(T)}'");
         }
 
-        // 기본 자료형만 허용하는 메서드
+        /// <summary>
+        /// Determines whether the specified type is supported for conversion.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns><c>true</c> if the type is supported; otherwise, <c>false</c>.</returns>
         private bool IsValidType(Type type)
         {
             return type == typeof(bool)

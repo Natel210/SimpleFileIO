@@ -192,4 +192,25 @@
   <data name="check_path_property_invaild_extension" xml:space="preserve">
     <value>확장자명이 비어있습니다.</value>
   </data>
+  <data name="csv_log_array_converter_invalid_type" xml:space="preserve">
+    <value>해당 Tpye은 지원되지 않습니다.</value>
+  </data>
+  <data name="csv_log_array_converter_invalid_array_type" xml:space="preserve">
+    <value>해당 Tpye의 Array를 지원하지 않습니다.</value>
+  </data>
+  <data name="csv_log_array_converter_invalid_list_type" xml:space="preserve">
+    <value>해당 Tpye의 List를 지원하지 않습니다.</value>
+  </data>
+  <data name="ini_item_invaild_key" xml:space="preserve">
+    <value>Key값이 유효하지 않습니다.</value>
+  </data>
+  <data name="ini_item_invaild_section" xml:space="preserve">
+    <value>Section값이 유효하지 않습니다.</value>
+  </data>
+  <data name="ini_item_invaild_constructior" xml:space="preserve">
+    <value>기본 생성자가 없습니다.</value>
+  </data>
+  <data name="ini_item_invaild_value" xml:space="preserve">
+    <value>Value가 유효하지 않습니다.</value>
+  </data>
 </root>
