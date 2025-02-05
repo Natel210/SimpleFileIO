@@ -1,4 +1,5 @@
-﻿using SimpleFileIO.Utility;
+﻿using SimpleFileIO.Resources.ErrorMessages;
+using SimpleFileIO.Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,156 +7,376 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SimpleFileIO.State.Ini
 {
+    /// <summary>
+    /// Provides a basic implementation of the <see cref="IINIState"/> interface for INI-based logging.
+    /// This class offers functionality to manage log entries, write them to a file, and clear them.
+    /// It provides default values internally and allows customization through inheritance.
+    /// </summary>
     internal partial class INIState_BaseForm : IINIState
     {
+        /// Provides a basic implementation of the <see cref="IINIState"/> interface for INI-based logging.
+        /// This class offers functionality to manage log entries, write them to a file, and clear them.
+        /// It provides default values internally and allows customization through inheritance.
+        private PathProperty _pathProperties = new();
+
         /// <summary>
-        /// gets or sets the file path of the INI file.<br/>
+        /// Mutex object to ensure thread safety for log property operations.
         /// </summary>
-        public PathProperty Properties
+        private readonly object _pathPropertiesMutex = new object();
+
+        /// <summary>
+        /// Dictionary storing section and key-value pairs of the INI file.
+        /// </summary>
+        private readonly Dictionary<string, Dictionary<string, string>> _sections = new();
+
+        /// <summary>
+        /// Mutex object to ensure thread safety for content entry operations.
+        /// </summary>
+        private readonly object _sectionsMutex = new object();
+
+        /// <summary>
+        /// Dictionary storing type parsers for converting values.
+        /// </summary>
+        private readonly Dictionary<Type, StringTypeParser> _stringTypeParsers = new();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INIState_BaseForm"/> class.
+        /// </summary>
+        internal INIState_BaseForm() : base()
         {
-            get => _properties;
+            AddParsers();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="INIState_BaseForm"/> class with a specified file path.
+        /// </summary>
+        /// <param name="path">The file path of the INI file.</param>
+        internal INIState_BaseForm(string path) : base()
+        {
+            lock (_pathPropertiesMutex)
+            {
+                _pathProperties.RootDirectory = new(Path.GetDirectoryName(path) ?? string.Empty);
+                _pathProperties.FileName = Path.GetFileNameWithoutExtension(path);
+                _pathProperties.Extension = Path.GetExtension(path).TrimStart('.');
+            }
+            AddParsers();
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether exceptions should be thrown when an error occurs.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if exceptions should be thrown; otherwise, <c>false</c>. 
+        /// When set to <c>false</c>, errors will be handled internally without throwing exceptions.
+        /// </value>
+        public bool ThrowExceptionMode { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the file path properties of the INI file.
+        /// This includes the root directory, file name, and extension.
+        /// </summary>
+        public PathProperty PathProperty
+        {
+            get
+            {
+                PathProperty result = new PathProperty();
+                try
+                {
+                    lock (_pathPropertiesMutex)
+                    {
+                        result = new PathProperty();
+                        if (_pathProperties.RootDirectory is not null)
+                            result.RootDirectory = new DirectoryInfo(_pathProperties.RootDirectory.FullName);
+                        result.FileName = _pathProperties.FileName;
+                        result.Extension = _pathProperties.Extension;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ErrorMessages.path_property_work);
+                    if (ThrowExceptionMode is true)
+                        throw new Exception(ErrorMessages.path_property_work, ex);
+                }
+                return result;
+            }
             set
             {
-                if (value.RootDirectory != _properties.RootDirectory ||
-                    value.FileName != _properties.FileName ||
-                    value.Extension != _properties.Extension)
+                if (value.RootDirectory != _pathProperties.RootDirectory ||
+                    value.FileName != _pathProperties.FileName ||
+                    value.Extension != _pathProperties.Extension)
                 {
-                    _properties = value;
-                    Load();
+                    try
+                    {
+                        lock (_pathPropertiesMutex)
+                        {
+                            _pathProperties.RootDirectory = new DirectoryInfo(value.RootDirectory.FullName);
+                            _pathProperties.FileName = value.FileName;
+                            _pathProperties.Extension = value.Extension;
+                        }
+                        Load();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ErrorMessages.path_property_work);
+                        if (ThrowExceptionMode is true)
+                            throw new InvalidOperationException(ErrorMessages.path_property_work, ex);
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the logging process is currently in progress.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if logging is in progress; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSaving { get; private set; } = false;
+
+        /// <summary>
+        /// Indicates whether the INI file is currently being loaded.
+        /// </summary>
+        public bool IsLoading { get; private set; } = false;
+
+        /// <summary>
+        /// Retrieves a string value from the specified section and key in the INI file.
+        /// If the key does not exist, the provided default value is returned.
+        /// </summary>
+        /// <param name="section">The section of the INI file.</param>
+        /// <param name="key">The key within the section.</param>
+        /// <param name="defaultValue">The default value to return if the key does not exist.</param>
+        /// <returns>The retrieved string value, or the default value if the key is missing.</returns>
         public string GetValue(string section, string key, string defaultValue)
         {
             if (_sections.ContainsKey(section) is false)
                 return defaultValue;
             if (_sections[section].ContainsKey(key) is false)
                 return defaultValue;
-            string tempValue = _sections[section][key];
-            if (string.IsNullOrEmpty(tempValue) is true)
-                return defaultValue;
-            return tempValue;
+            lock (_sectionsMutex)
+            {
+                string tempValue = _sections[section][key];
+                if (string.IsNullOrEmpty(tempValue) is true)
+                    return defaultValue;
+                return tempValue;
+            }
         }
 
-        public bool SetValue(string section, string key, string value)
-        {
-            if (string.IsNullOrEmpty(section))
-                throw new ArgumentNullException(nameof(section));
-            if (string.IsNullOrEmpty(key))
-                throw new ArgumentNullException(nameof(key));
-            if (string.IsNullOrEmpty(value))
-                throw new ArgumentNullException(nameof(value));
-
-            if (!_sections.ContainsKey(section))
-                _sections[section] = new Dictionary<string, string>();
-
-            _sections[section][key] = value;
-            return true;
-        }
-
+        /// <summary>
+        /// Retrieves a string value from an <see cref="IniItem{T}"/> reference.
+        /// </summary>
+        /// <param name="item">The INI item containing the section and key reference.</param>
+        /// <returns>The retrieved value from the INI file.</returns>
         public string GetValue(ref IniItem<string> item)
         {
             if (item is null)
-                throw new ArgumentNullException(nameof(item));
+            {
+                Debug.WriteLine(ErrorMessages.get_value_invalid_item);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(ErrorMessages.get_value_invalid_item);
+                return "";
+            }
             if (!item.IsValidSectionKey)
                 return item.DefaultValue;
             item.Value = GetValue(item.Section, item.Key, item.DefaultValue);
             return item.Value;
         }
 
+        /// <summary>
+        /// Sets a string value for the specified section and key in the INI file.
+        /// </summary>
+        /// <param name="section">The section of the INI file.</param>
+        /// <param name="key">The key to update or create.</param>
+        /// <param name="value">The value to store.</param>
+        /// <returns><c>true</c> if the value was successfully set; otherwise, <c>false</c>.</returns>
+        public bool SetValue(string section, string key, string value)
+        {
+            if (string.IsNullOrEmpty(section))
+            {
+                string errorMessage = $"{ErrorMessages.set_value_invaild_section},{nameof(section)}";
+                Debug.WriteLine(errorMessage);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(errorMessage);
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                string errorMessage = $"{ErrorMessages.set_value_invaild_key},{nameof(key)}";
+                Debug.WriteLine(errorMessage);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(errorMessage);
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                string errorMessage = $"{ErrorMessages.set_value_invaild_value},{nameof(value)}";
+                Debug.WriteLine(errorMessage);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(errorMessage);
+                return false;
+            }
+
+            lock (_sectionsMutex)
+            {
+                if (!_sections.ContainsKey(section))
+                    _sections[section] = new Dictionary<string, string>();
+                _sections[section][key] = value;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Sets a value for an <see cref="IniItem{T}"/> entry.
+        /// </summary>
+        /// <param name="item">The INI item to update.</param>
+        /// <returns><c>true</c> if the value was successfully set; otherwise, <c>false</c>.</returns>
         public bool SetValue(IniItem<string> item)
         {
             if (item is null)
-                throw new ArgumentNullException(nameof(item));
+            {
+                Debug.WriteLine(ErrorMessages.get_value_invalid_item);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(ErrorMessages.set_value_invalid_item);
+                return false;
+            }
             if (!item.IsValidSectionKey)
                 return false;
             return SetValue(item.Section, item.Key, item.Value);
         }
 
         /// <summary>
-        /// saves changes to the INI file.
+        /// Saves any modifications to the INI file.
         /// </summary>
+        /// <returns><c>true</c> if the file was successfully saved; otherwise, <c>false</c>.</returns>
         public bool Save()
         {
-            if (_isWriting)
-                return false;
-            if (!CheckPathProperty(Properties))
-                return false;
-            _isWriting = true;
-            // async run
-            Task.Run(async () =>
+            if (IsSaving)
             {
-                try
+                Debug.WriteLine(ErrorMessages.write_already_writing);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.write_already_writing);
+                return false;
+            }
+            if (!CheckPathProperty(PathProperty))
+                return false;
+            IsSaving = true;
+            Dictionary<string, Dictionary<string, string>> tempSections;
+            try
+            {
+                lock (_sectionsMutex)
                 {
-                    // saving tempProperty, use task
-                    PathProperty tempPathProperty = Properties;
-
-                    // Directory check and create if necessary
-                    if (!tempPathProperty.RootDirectory.Exists)
-                        tempPathProperty.RootDirectory.Create();
-
-                    FileInfo fileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
-                    using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
-                    using (var streamWriter = new StreamWriter(fileStream))
+                    if (_sections.Count != 0)
                     {
-                        foreach (var section in _sections)
+                        tempSections = new Dictionary<string, Dictionary<string, string>>();
+                        foreach (var item in _sections)
+                            tempSections.Add(item.Key, new Dictionary<string,string>(item.Value));
+                        if (tempSections == null || tempSections.Count == 0)
                         {
-                            await streamWriter.WriteLineAsync($"[{section.Key}]");
-                            foreach (var keyValue in section.Value)
-                                await streamWriter.WriteLineAsync($"{keyValue.Key} = {keyValue.Value}");
-                            await streamWriter.WriteLineAsync();
+                            Debug.WriteLine(ErrorMessages.save_deep_copying);
+                            throw new InvalidOperationException(ErrorMessages.save_deep_copying);
                         }
                     }
-                }
-                catch (Exception)
-                {
-#if DEBUG
-                    throw;
-#endif
-                }
-                finally
-                {
-                    _isWriting = false;
-                }
-            });
 
-            return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                IsSaving = false;
+                Debug.WriteLine(ErrorMessages.save_deep_copying);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.save_deep_copying, ex);
+                return false;
+            }
+            var tempProperties = PathProperty;
+            bool isError = false;
+            try
+            {
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        if (tempProperties.RootDirectory is null)
+                        {
+                            Debug.WriteLine(ErrorMessages.save_task_root_directory_not_found);
+                            throw new DirectoryNotFoundException(ErrorMessages.save_task_root_directory_not_found);
+                        }
+
+                        // Directory check and create if necessary
+                        if (!tempProperties.RootDirectory.Exists)
+                            tempProperties.RootDirectory.Create();
+                        FileInfo fileInfo = new FileInfo(Path.Combine(tempProperties.RootDirectory.FullName, $"{tempProperties.FileName}.{tempProperties.Extension}"));
+                        using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Create, FileAccess.Write, FileShare.None))
+                        using (var streamWriter = new StreamWriter(fileStream))
+                        {
+                            foreach (var section in _sections)
+                            {
+                                await streamWriter.WriteLineAsync($"[{section.Key}]");
+                                foreach (var keyValue in section.Value)
+                                    await streamWriter.WriteLineAsync($"{keyValue.Key} = {keyValue.Value}");
+                                await streamWriter.WriteLineAsync();
+                            }
+                        }
+                    }
+                    catch (Exception ex )
+                    {
+                        isError = true;
+                        IsSaving = false;
+                        Debug.WriteLine(ErrorMessages.save_task_work);
+                        if (ThrowExceptionMode is true)
+                            throw new InvalidOperationException(ErrorMessages.save_task_work, ex);
+                        return;
+                    }
+                }).Wait();
+            }
+            catch (Exception ex)
+            {
+                isError = true;
+                IsSaving = false;
+                Debug.WriteLine(ErrorMessages.save_task_cancellation_token);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.save_task_cancellation_token, ex);
+                return false;
+            }
+
+
+            IsSaving = false;
+            return !isError;
         }
 
         /// <summary>
-        /// loads the INI file.
+        /// Loads the contents of the INI file into memory.
         /// </summary>
-        /// <returns>true if the file was successfully loaded; otherwise, false.</returns>
+        /// <returns><c>true</c> if the file was successfully loaded; otherwise, <c>false</c>.</returns>
         public bool Load()
         {
-            if (_isLoading)
+            if (IsLoading)
                 return false;
-            if (!CheckPathProperty(Properties))
+            if (!CheckPathProperty(PathProperty))
                 return false;
             if (!CheckFileExist())
                 return false;
 
+            IsLoading = true;
             // Directory check and create if necessary
             if (!Directory.Exists("./TempIniData/"))
                 Directory.CreateDirectory("./TempIniData/");
 
-            PathProperty tempPathProperty = Properties;
+            PathProperty tempPathProperty = PathProperty;
             var getCurTick = DateTime.UtcNow.Ticks;
             FileInfo originFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
             FileInfo tempCopyFileInfo = new FileInfo(Path.Combine("./TempIniData/", $"{tempPathProperty.FileName}_{getCurTick}.{tempPathProperty.Extension}"));
 
+            // copy from origin
+            originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
+            bool isError = false;
             try
             {
-                // 원본 파일을 복사
-                originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
-
-                _isLoading = true;
-
-                // 비동기 작업 실행
+                // run async
                 Task.Run(async () =>
                 {
                     try
@@ -185,66 +406,65 @@ namespace SimpleFileIO.State.Ini
                             }
                         }
                     }
-#if DEBUG
                     catch (Exception ex)
-#else
-                    catch (Exception)
-#endif
                     {
-#if DEBUG
-                        Debug.WriteLine($"Error during file reading: {ex.Message}");
-                        throw;
-#endif
-                }
-                    finally
-                    {
-                        _isLoading = false;
-                        if (tempCopyFileInfo.Exists)
-                        {
-                            try
-                            {
-                                tempCopyFileInfo.Delete();
-                            }
-#if DEBUG
-                            catch (Exception ex)
-#else
-                            catch (Exception)
-#endif
-                            {
-#if DEBUG
-                                Debug.WriteLine($"Error during file deletion: {ex.Message}");
-#endif
-                            }
-                        }
+                        isError = true;
+                        IsLoading = false;
+                        Debug.WriteLine(ErrorMessages.load_task_work);
+                        if (ThrowExceptionMode is true)
+                            throw new InvalidOperationException(ErrorMessages.load_task_work, ex);
+                        return;
                     }
                 }).Wait();
-            }
-#if DEBUG
-            catch (Exception ex)
-#else
-            catch (Exception)
-#endif
-            {
-#if DEBUG
-                Console.WriteLine($"Error during file operation: {ex.Message}");
-                throw;
-#endif
-            }
+                //Delete Temp File
+                if (tempCopyFileInfo.Exists)
+                {
+                    try
+                    {
+                        tempCopyFileInfo.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ErrorMessages.load_task_delete_temp_file);
+                        if (ThrowExceptionMode is true)
+                            throw new InvalidOperationException(ErrorMessages.load_task_delete_temp_file, ex);
+                    }
+                }
 
-            return true;
+            }
+            catch (Exception ex)
+            {
+                isError = true;
+                IsLoading = false;
+                Debug.WriteLine(ErrorMessages.load_task_cancellation_token);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.load_task_cancellation_token, ex);
+                return false;
+            }
+            IsLoading = false;
+            return !isError;
         }
 
 
         /// <summary>
-        /// checks if the INI file exists.
+        /// Checks if the INI file exists at the specified path.
         /// </summary>
-        /// <returns>true if the file exists; otherwise, false.</returns>
+        /// <returns><c>true</c> if the file exists; otherwise, <c>false</c>.</returns>
         public bool CheckFileExist()
         {
-            FileInfo fileInfo = new FileInfo(Path.Combine(Properties.RootDirectory.FullName, $"{Properties.FileName}.{Properties.Extension}"));
+            FileInfo fileInfo = new FileInfo(Path.Combine(PathProperty.RootDirectory.FullName, $"{PathProperty.FileName}.{PathProperty.Extension}"));
             return File.Exists(fileInfo.FullName);
         }
 
+        /// <summary>
+        /// Retrieves a value from the INI file and converts it to the specified type using a registered parser.
+        /// If the key does not exist or conversion fails, the default value is returned.
+        /// </summary>
+        /// <typeparam name="T">The target type for conversion (must have a public parameterless constructor).</typeparam>
+        /// <param name="section">The section of the INI file.</param>
+        /// <param name="key">The key within the section.</param>
+        /// <param name="defaultValue">The default value to return if retrieval or conversion fails.</param>
+        /// <returns>The retrieved and parsed value, or the default value if not found.</returns>
         public T GetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string section, string key, T defaultValue) where T : notnull
         {
             StringTypeParser parser;
@@ -266,23 +486,23 @@ namespace SimpleFileIO.State.Ini
                 return defaultValue;
         }
 
-        public bool SetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string section, string key, T value) where T : notnull
-        {
-            StringTypeParser parser;
-            if (_stringTypeParsers.TryGetValue(typeof(T), out parser) is false)
-                return false;
-            if (parser.ObjectToString is null)
-                return false;
-            string? valueString = parser.ObjectToString(value);
-            if (string.IsNullOrWhiteSpace(valueString) is true)
-                return false;
-            return SetValue(section, key, valueString);
-        }
-
+        /// <summary>
+        /// Retrieves a value from an <see cref="IniItem{T}"/> reference and converts it using a registered parser.
+        /// </summary>
+        /// <typeparam name="T">The target type for conversion (must have a public constructor).</typeparam>
+        /// <param name="item">The INI item containing the section and key reference.</param>
+        /// <returns>The retrieved and parsed value.</returns>
         public T GetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(ref IniItem<T> item) where T : notnull
         {
             if (item is null)
-                throw new ArgumentNullException(nameof(item));
+            {
+                string errorMessage = $"{ErrorMessages.get_value_invalid_item}, {typeof(T).Name}";
+                Debug.WriteLine(errorMessage);
+                if (ThrowExceptionMode is true)
+                    throw new ArgumentNullException(errorMessage);
+                return default!;
+            }
+
             if (!item.IsValidSectionKey)
                 return item.DefaultValue;
 
@@ -318,6 +538,34 @@ namespace SimpleFileIO.State.Ini
                 return item.DefaultValue;
         }
 
+        /// <summary>
+        /// Sets a typed value in the INI file using a registered parser.
+        /// The value is converted to a string before storage.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to store (must have a public parameterless constructor).</typeparam>
+        /// <param name="section">The section of the INI file.</param>
+        /// <param name="key">The key to store the value under.</param>
+        /// <param name="value">The value to store.</param>
+        /// <returns><c>true</c> if the value was successfully stored; otherwise, <c>false</c>.</returns>
+        public bool SetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>(string section, string key, T value) where T : notnull
+        {
+            StringTypeParser parser;
+            if (_stringTypeParsers.TryGetValue(typeof(T), out parser) is false)
+                return false;
+            if (parser.ObjectToString is null)
+                return false;
+            string? valueString = parser.ObjectToString(value);
+            if (string.IsNullOrWhiteSpace(valueString) is true)
+                return false;
+            return SetValue(section, key, valueString);
+        }
+
+        /// <summary>
+        /// Sets a typed value for an <see cref="IniItem{T}"/> entry using a registered parser.
+        /// </summary>
+        /// <typeparam name="T">The type of the value to store (must have a public constructor).</typeparam>
+        /// <param name="item">The INI item to update.</param>
+        /// <returns><c>true</c> if the value was successfully set; otherwise, <c>false</c>.</returns>
         public bool SetValue_UseParser<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(IniItem<T> item) where T : notnull
         {
             if (item is null)
@@ -343,6 +591,13 @@ namespace SimpleFileIO.State.Ini
             return SetValue(tempItem);
         }
 
+        /// <summary>
+        /// Registers a custom parser for a specific type, allowing conversion between string and object representations.
+        /// </summary>
+        /// <param name="type">The type to register the parser for.</param>
+        /// <param name="parser">The <see cref="StringTypeParser"/> containing conversion functions.</param>
+        /// <param name="overwrite">If <c>true</c>, overwrites an existing parser for the type.</param>
+        /// <returns><c>true</c> if the parser was successfully added; otherwise, <c>false</c>.</returns>
         public bool AddParser(Type type, StringTypeParser parser, bool overwrite = false)
         {
             if (overwrite)
@@ -356,6 +611,11 @@ namespace SimpleFileIO.State.Ini
             return true;
         }
 
+        /// <summary>
+        /// Removes a registered parser for a specific type.
+        /// </summary>
+        /// <param name="type">The type whose parser should be removed.</param>
+        /// <returns><c>true</c> if the parser was successfully removed; otherwise, <c>false</c>.</returns>
         public bool RemoveParser(Type type)
         {
             return _stringTypeParsers.Remove(type);
@@ -365,53 +625,44 @@ namespace SimpleFileIO.State.Ini
 
     internal partial class INIState_BaseForm
     {
-        private PathProperty _properties = new();
-        private readonly Dictionary<string, Dictionary<string, string>> _sections = new();
-        private readonly Dictionary<Type, StringTypeParser> _stringTypeParsers = new ();
-        private bool _isWriting = false;
-        private bool _isLoading = false;
 
-        internal INIState_BaseForm() : base()
-        {
-            AddParsers();
-        }
 
-        internal INIState_BaseForm(string path) : base()
-        {
-            _properties.RootDirectory = new(Path.GetDirectoryName(path) ?? string.Empty);
-            _properties.FileName = Path.GetFileNameWithoutExtension(path);
-            _properties.Extension = Path.GetExtension(path);
-            AddParsers();
-        }
-
+        /// <summary>
+        /// Checks if the given path property is valid.
+        /// </summary>
+        /// <param name="pathProperty">The path property to check.</param>
+        /// <returns>Returns true if the path property is valid; otherwise, false.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when any part of the path property is null or empty.</exception>
         private bool CheckPathProperty(PathProperty pathProperty)
         {
             if (pathProperty.RootDirectory is null)
-#if DEBUG
-                throw new ArgumentNullException($"Check PathProperty [{nameof(pathProperty.RootDirectory)}] null.");
-#else
-                    return false;
-#endif
+            {
+                Debug.WriteLine(ErrorMessages.check_path_property_invaild_root_direcroty);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.check_path_property_invaild_root_direcroty);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(pathProperty.RootDirectory.FullName))
-#if DEBUG
-                throw new ArgumentNullException($"Check PathProperty [{nameof(pathProperty.RootDirectory)}].FullName null or empty.");
-#else
-                    return false;
-#endif
-
+            {
+                Debug.WriteLine(ErrorMessages.check_path_property_invaild_root_direcroty);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.check_path_property_invaild_root_direcroty);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(pathProperty.FileName))
-#if DEBUG
-                throw new ArgumentNullException($"Check PathProperty [{nameof(pathProperty.FileName)}] null or empty.");
-#else
-                    return false;
-#endif
-
+            {
+                Debug.WriteLine(ErrorMessages.check_path_property_invaild_file_name);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.check_path_property_invaild_file_name);
+                return false;
+            }
             if (string.IsNullOrWhiteSpace(pathProperty.Extension))
-#if DEBUG
-                throw new ArgumentNullException($"Check PathProperty [{nameof(pathProperty.Extension)}] null or empty.");
-#else
-                    return false;
-#endif
+            {
+                Debug.WriteLine(ErrorMessages.check_path_property_invaild_extension);
+                if (ThrowExceptionMode is true)
+                    throw new InvalidOperationException(ErrorMessages.check_path_property_invaild_extension);
+                return false;
+            }
             return true;
         }
 
@@ -419,6 +670,9 @@ namespace SimpleFileIO.State.Ini
 
     internal partial class INIState_BaseForm
     {
+        /// <summary>
+        /// Base Parsers Forms.
+        /// </summary>
         private void AddParsers()
         {
             //Integer Types
@@ -592,8 +846,6 @@ namespace SimpleFileIO.State.Ini
                 },
                 StringToObject = (str) =>
                 {
-                    if (bool.TryParse(str, out bool result))
-                        return result;
                     return str.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(item => item.Trim()).ToArray();
                 }
             });
@@ -607,11 +859,9 @@ namespace SimpleFileIO.State.Ini
                         string getRootDirectoryFullPath = "";
                         if (stringlist.RootDirectory is not null)
                             getRootDirectoryFullPath = stringlist.RootDirectory.FullName;
-                        //Path.Combine(,)
-
-
-
-                        return string.Join(", ", stringlist);
+                        else
+                            getRootDirectoryFullPath = "./";
+                        return $"{getRootDirectoryFullPath}/{stringlist.FileName}.{stringlist.Extension}";
                     }
                     else
                         return null;
@@ -619,9 +869,11 @@ namespace SimpleFileIO.State.Ini
                 },
                 StringToObject = (str) =>
                 {
-                    if (bool.TryParse(str, out bool result))
-                        return result;
-                    return str.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(item => item.Trim()).ToArray();
+                    var result = new PathProperty();
+                    result.RootDirectory = new(Path.GetDirectoryName(str) ?? string.Empty);
+                    result.FileName = Path.GetFileNameWithoutExtension(str);
+                    result.Extension = Path.GetExtension(str).TrimStart('.');
+                    return result;
                 }
             });
 

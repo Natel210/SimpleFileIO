@@ -141,4 +141,55 @@
   <data name="write_task_cancellation_token" xml:space="preserve">
     <value>Write Task 예외 발생</value>
   </data>
+  <data name="clear_work" xml:space="preserve">
+    <value>클리어 도중에 예외 발생</value>
+  </data>
+  <data name="add_different_data_type" xml:space="preserve">
+    <value>이전의 데이터의 형식과 지금의 형식이 서로 다릅니다.</value>
+  </data>
+  <data name="get_value_invalid_item" xml:space="preserve">
+    <value>해당 아이템이 존재하지 않습니다. 빈값("")으로 반환됩니다.</value>
+  </data>
+  <data name="set_value_invaild_section" xml:space="preserve">
+    <value>[Key]가 비어있습니다.</value>
+  </data>
+  <data name="set_value_invaild_key" xml:space="preserve">
+    <value>[Section]이 비어있습니다.</value>
+  </data>
+  <data name="set_value_invaild_value" xml:space="preserve">
+    <value>[Value]가 비어있습니다.</value>
+  </data>
+  <data name="set_value_invalid_item" xml:space="preserve">
+    <value>IniItem&lt;string&gt;item이 Null입니다.</value>
+  </data>
+  <data name="save_deep_copying" xml:space="preserve">
+    <value>Buffer가 0이 아닌 상태에서 깊은 복사 이후 값이 0</value>
+  </data>
+  <data name="save_task_root_directory_not_found" xml:space="preserve">
+    <value>루트 디랙토리가 Null</value>
+  </data>
+  <data name="save_task_work" xml:space="preserve">
+    <value>Save Task 내부 동작중 예외 발생</value>
+  </data>
+  <data name="save_task_cancellation_token" xml:space="preserve">
+    <value>Save Task 예외 발생</value>
+  </data>
+  <data name="load_task_work" xml:space="preserve">
+    <value>Load Task 예외 발생</value>
+  </data>
+  <data name="load_task_delete_temp_file" xml:space="preserve">
+    <value>temp file 삭제시 문제가 발생하였습니다.</value>
+  </data>
+  <data name="load_task_cancellation_token" xml:space="preserve">
+    <value>Load Task 내부 동작중 예외 발생</value>
+  </data>
+  <data name="check_path_property_invaild_root_direcroty" xml:space="preserve">
+    <value>루트 디랙토리를 다시 확인해 주시요.</value>
+  </data>
+  <data name="check_path_property_invaild_file_name" xml:space="preserve">
+    <value>파일 이름이 비어있습니다.</value>
+  </data>
+  <data name="check_path_property_invaild_extension" xml:space="preserve">
+    <value>확장자명이 비어있습니다.</value>
+  </data>
 </root>

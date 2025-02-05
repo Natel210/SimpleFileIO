@@ -61,6 +61,15 @@ namespace SimpleFileIO.Resources.ErrorMessages {
         }
         
         /// <summary>
+        ///   The previous data format is different from the current format.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string add_different_data_type {
+            get {
+                return ResourceManager.GetString("add_different_data_type", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Exception occurred while adding log과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string add_work {
@@ -70,11 +79,74 @@ namespace SimpleFileIO.Resources.ErrorMessages {
         }
         
         /// <summary>
-        ///   111과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   The extension name is empty.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string check_path_property_invaild_extension {
+            get {
+                return ResourceManager.GetString("check_path_property_invaild_extension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The file name is empty.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string check_path_property_invaild_file_name {
+            get {
+                return ResourceManager.GetString("check_path_property_invaild_file_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please check the root directory again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string check_path_property_invaild_root_direcroty {
+            get {
+                return ResourceManager.GetString("check_path_property_invaild_root_direcroty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Exception occurred during clearing과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         internal static string clear_work {
             get {
                 return ResourceManager.GetString("clear_work", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This item does not exist. It is returned as an empty value (&quot;&quot;).과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string get_value_invalid_item {
+            get {
+                return ResourceManager.GetString("get_value_invalid_item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Load Task exception occurs과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string load_task_cancellation_token {
+            get {
+                return ResourceManager.GetString("load_task_cancellation_token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   A problem occurred when deleting the temp file.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string load_task_delete_temp_file {
+            get {
+                return ResourceManager.GetString("load_task_delete_temp_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Exception occurred during internal operation of Load Task과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string load_task_work {
+            get {
+                return ResourceManager.GetString("load_task_work", resourceCulture);
             }
         }
         
@@ -84,6 +156,78 @@ namespace SimpleFileIO.Resources.ErrorMessages {
         internal static string path_property_work {
             get {
                 return ResourceManager.GetString("path_property_work", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Value is 0 after deep copy when Buffer is non-zero과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string save_deep_copying {
+            get {
+                return ResourceManager.GetString("save_deep_copying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save Task exception occurs과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string save_task_cancellation_token {
+            get {
+                return ResourceManager.GetString("save_task_cancellation_token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Root directory is Null과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string save_task_root_directory_not_found {
+            get {
+                return ResourceManager.GetString("save_task_root_directory_not_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Exception occurred during internal operation of Save Task과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string save_task_work {
+            get {
+                return ResourceManager.GetString("save_task_work", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   [Section] is empty.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string set_value_invaild_key {
+            get {
+                return ResourceManager.GetString("set_value_invaild_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   [Key] is empty.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string set_value_invaild_section {
+            get {
+                return ResourceManager.GetString("set_value_invaild_section", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   [Value] is empty.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string set_value_invaild_value {
+            get {
+                return ResourceManager.GetString("set_value_invaild_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   IniItem&lt;string&gt;item is Null.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string set_value_invalid_item {
+            get {
+                return ResourceManager.GetString("set_value_invalid_item", resourceCulture);
             }
         }
         
