@@ -18,6 +18,30 @@ This library eliminates unnecessary dependencies while maintaining flexibility a
 
 ## How to
 
+### Text Log
+- Create
+```cs
+using SimpleFileIO;
+using SimpleFileIO.Log.Text;
+
+// Create Intance
+PathProperty pathProperty =new PathProperty() {
+    RootDirectory = new DirectoryInfo("./Test"),
+    FileName="TestTextLog",
+    Extension="txtlog" };
+ITextLog? returnItem = Manager.CreateTextLog("TestTextLog", pathProperty);
+// Get Intance
+ITextLog? getItem = Manager.GetTextLog("TestTextLog") ?? null;
+// Check Invaild Intance
+if (textLog is null)
+    throw new Exception("not create text log.");
+// Add log contents
+getItem.Add("aaa");
+getItem.Add("bbb");
+// Write
+getItem.Write();
+```
+
 ## Notes
 
 ## Third-Party Libraries
