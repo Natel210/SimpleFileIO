@@ -76,7 +76,7 @@ jobs:
       - name: Publish .NET Application
         run: |
           mkdir -p publish_output
-          dotnet publish -c Release -p:VersionPrefix="${{ needs.versioning.outputs.version }}" -o publish_output
+          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -p:VersionPrefix="${{ needs.versioning.outputs.version }}" -o publish_output
           Compress-Archive -Path publish_output -DestinationPath release_package.zip
         shell: pwsh
 
