@@ -115,7 +115,7 @@ jobs:
 
   release:
     name: GitHub Release & NuGet Publish
-    needs: [versioning, build]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Download Release Package
