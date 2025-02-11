@@ -19,8 +19,7 @@ env:
 
 jobs:
   versioning:
-    name: Versioning
-    runs-on: ubuntu-latest  # 기본적으로 리눅스 환경 사용
+    runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.update_version.outputs.version }}
     steps:
@@ -85,13 +84,23 @@ jobs:
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
 
       - name: Publish Only Main Project
-        run: dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o publish_output --no-build
+        run: |
+          mkdir -p artifacts
+          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o publish_output --no-build
+          Compress-Archive -Path publish_output -DestinationPath artifacts/publish_output.zip
+        shell: pwsh
+
+      - name: Pack NuGet Package
+        run: |
+          mkdir -p artifacts
+          dotnet pack -c Release -p:Version="${{ needs.versioning.outputs.version }}" -o artifacts
+        shell: pwsh
 
       - name: Upload Release Package
         uses: actions/upload-artifact@v4
         with:
           name: release_package
-          path: release_package.zip
+          path: artifacts/publish_output.zip
 
       - name: Upload NuGet Package
         uses: actions/upload-artifact@v4
@@ -101,20 +110,20 @@ jobs:
 
   release:
     name: GitHub Release & NuGet Publish
-    needs: build  # 빌드 작업이 완료된 후 실행
-    runs-on: ubuntu-latest  # 릴리즈 및 NuGet 푸시는 다시 리눅스에서 실행
+    needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Download Release Package
         uses: actions/download-artifact@v4
         with:
           name: release_package
-          path: .
+          path: artifacts
 
       - name: Download NuGet Package
         uses: actions/download-artifact@v4
         with:
           name: nuget_package
-          path: .
+          path: artifacts
 
       - name: Github Release
         uses: softprops/action-gh-release@v1
@@ -122,10 +131,10 @@ jobs:
           tag_name: ${{ needs.versioning.outputs.version }}
           name: ${{ env.TAG_PREFIX }}${{ needs.versioning.outputs.version }}
           body: "Release version ${{ needs.versioning.outputs.version }}"
-          files: release_package.zip
+          files: artifacts/publish_output.zip
 
       - name: Push NuGet Package
         run: |
-          dotnet nuget push "*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
+          dotnet nuget push "artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
