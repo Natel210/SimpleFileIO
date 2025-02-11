@@ -64,14 +64,14 @@ jobs:
           dotnet-version: "8.0.X"
         continue-on-error: true
 
-      - name: Publish Files
+      - name: Build Files
         run: |
-          # Publish Files
-          mkdir -p publish_output
+          # Build Files
+          mkdir -p build_output
 
-          dotnet publish -c Release -p:VersionPrefix="${{ steps.update_version.outputs.value }}" -o publish_output
+          dotnet Build -c Release -p:VersionPrefix="${{ steps.update_version.outputs.value }}" -o build_output
 
-          zip -r release_package.zip publish_output
+          zip -r release_package.zip build_output
 
           mkdir -p artifacts
           mv release_package.zip artifacts/
