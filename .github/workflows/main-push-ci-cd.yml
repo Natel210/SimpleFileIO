@@ -83,17 +83,21 @@ jobs:
       - name: Build Only Main Project
         run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
 
+      - name: Ensure Artifacts Directory Exists
+        run: |
+          if (!(Test-Path -Path "artifacts")) {
+            New-Item -ItemType Directory -Path "artifacts"
+          }
+        shell: pwsh
+
       - name: Publish Only Main Project
         run: |
-          mkdir -p artifacts
-          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o publish_output --no-build
-          Compress-Archive -Path publish_output -DestinationPath artifacts/publish_output.zip
+          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o artifacts/publish_output --no-build
+          Compress-Archive -Path artifacts/publish_output -DestinationPath artifacts/publish_output.zip
         shell: pwsh
 
       - name: Pack NuGet Package
-        run: |
-          mkdir -p artifacts
-          dotnet pack -c Release -p:Version="${{ needs.versioning.outputs.version }}" -o artifacts
+        run: dotnet pack -c Release -p:Version="${{ needs.versioning.outputs.version }}" -o artifacts
         shell: pwsh
 
       - name: Upload Release Package
@@ -107,6 +111,7 @@ jobs:
         with:
           name: nuget_package
           path: artifacts/*.nupkg
+
 
   release:
     name: GitHub Release & NuGet Publish
