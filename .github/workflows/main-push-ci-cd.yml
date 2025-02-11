@@ -73,11 +73,11 @@ jobs:
         with:
           dotnet-version: "8.0.X"
 
-      - name: Publish .NET Application
+      - name: build .NET Application
         run: |
-          mkdir -p publish_output
-          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -p:VersionPrefix="${{ needs.versioning.outputs.version }}" -o publish_output
-          Compress-Archive -Path publish_output -DestinationPath release_package.zip
+          mkdir -p build_output
+          dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release -p:VersionPrefix="${{ needs.versioning.outputs.version }}" -o build_output
+          Compress-Archive -Path build_output -DestinationPath release_package.zip
         shell: pwsh
 
       - name: Pack NuGet Package
