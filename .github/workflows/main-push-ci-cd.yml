@@ -1,4 +1,5 @@
-name: Main Push CI/CD
+name: Main CD
+description: Push after
 
 on:
   push:
@@ -13,393 +14,485 @@ concurrency:
   group: main-push
   cancel-in-progress: false
 
+env:
+  TAG_PREFIX: "v"
+
 jobs:
-
-  info-and-check:
-    name: Info And Check
-    runs-on: ubuntu-latest
-    outputs:
-      path_value_result: ${{ steps.info-and-check.outputs.path_value_result }}
-      git_value_result: ${{ steps.info-and-check.outputs.git_value_result }}
-      else_value_result: ${{ steps.info-and-check.outputs.else_value_result }}
-      exist_files_result: ${{ steps.info-and-check.outputs.exist_files_result }}
-      git_info_result: ${{ steps.info-and-check.outputs.git_info_result }}
+  cd:
+    name: CD
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Git Check Out
+        uses: actions/checkout@v4
 
-      - name: Info And Check
-        id: info-and-check
-        uses: ./.github/actions/info
-        with:
-          git_event_name: "${{ github.event_name }}"
-          git_ref: "${{ github.ref }}"
-          head_ref: "${{ github.head_ref }}"
-          base_ref: "${{ github.base_ref }}"
-          path_values: >
-            [
-              {
-                "key": "Solution File Path",
-                "value": "${{ vars.SOLUTION_FILE_PATH }}"
-              },
-              {
-                "key": "Dll File Path",
-                "value": "${{ vars.DLL_PROJECT_FILE_PATH }}"
-              },
-              {
-                "key": "Tester File Path",
-                "value": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
-              },
-              {
-                "key": "Tester Executable File Name",
-                "value": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
-              }
-            ]
-          else_values: >
-            [
-              {
-                "key": "Result Zip Name",
-                "value": "${{ vars.RESULT_ZIP_NAME }}"
-              },
-              {
-                "key": "Tag Prefix",
-                "value": "${{ vars.TAG_PREFIX }}"
-              }
-            ]
-
-      - name: Check Output
+      - name: Update Version
+        id: update_version
         run: |
-          # Check Output
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Path Value"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.path_value_result }}" || echo "::Warning::⚠️ Invalid Path Value Result"
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo -e "${{ steps.info-and-check.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
-
-  build-validation:
-    name: Build Validation
-    needs: info-and-check
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        configuration: [Debug, Release]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Dll Build Test
-        id: dll-build-test
-        uses: ./.github/actions/build-validation/dotnet
-        with:
-          project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
-          build_configuration: "${{matrix.configuration}}"
-          dotnet_version: "${{ vars.DOTNET_VERSION }}"
-
-      - name: Check Output
-        run: |
-          # Check Output
-          echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
-          printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Build Validation"
-          echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
-          echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result"
-        shell: bash
-
-      - name: To File Output
-        run: |
-          # To File Output
-
-          # Check Directory
-          if [ ! -d "./${{ runner.os }}/${{ matrix.configuration }}" ]; then
-            mkdir -p ./${{ runner.os }}/${{ matrix.configuration }}
-          fi
-          # Logging Result
-          if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
-            echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+          # Update Version
+          git fetch --tags
+          latest_version=$(git tag | grep "^$prefix" | grep -E "^$prefix[0-9]+\.[0-9]+\.[0-9]+$" | sort -V | tail -n 1 || echo "${prefix}0.0.0")
+          if [[ "$latest_version" =~ ^${prefix}([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            major=${BASH_REMATCH[1]}
+            minor=${BASH_REMATCH[2]}
+            patch=${BASH_REMATCH[3]}
+            new_patch=$((patch + 1))
+            new_version="$major.$minor.$new_patch"
           else
-            echo "${{ steps.dll-build-test.outputs.result }}" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
-          fi
-        shell: bash
-
-      - uses: actions/upload-artifact@v4
-        with:
-            name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
-            path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
-            if-no-files-found: warn
-
-      - name: Clear Others
-        run: |
-          # Clear Others
-          rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
-        shell: bash
-
-  auto-update-tag:
-    name: Auto Update Tag
-    needs: build-validation
-    runs-on: ubuntu-latest
-    concurrency:
-      group: tag-creation
-      cancel-in-progress: false
-    env:
-      NEW_VERSION: ""
-    outputs:
-      new_version: ${{ env.NEW_VERSION }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-         fetch-depth: 0
-
-      - name: Create Tag
-        id: create-tag
-        uses: ./.github/actions/create-tag
-        with:
-          prefix: ${{ vars.TAG_PREFIX }}
-
-  github-release:
-    name: Github Release
-    needs: auto-update-tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-         fetch-depth: 0
-      - run: echo making...
-
-  results:
-    name: Results
-    needs: [info-and-check, build-validation, auto-update-tag, github-release]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-         fetch-depth: 0
-
-      - name: Check Result Directory
-        run: |
-          # Check Result Directory
-          if [ ! -d "./results/" ]; then
-            mkdir -p "./results/"
+            new_version="0.0.1"
           fi
 
-      - uses: actions/download-artifact@v4
-        with:
-            name: Build_Validation_Linux_Debug
-            path: ./results/build_validation/linux/debug
+          echo "value=$new_version" >> $GITHUB_OUTPUT
         continue-on-error: true
 
-      - uses: actions/download-artifact@v4
-        with:
-            name: Build_Validation_Linux_Release
-            path: ./results/build_validation/linux/release
-        continue-on-error: true
-
-      - uses: actions/download-artifact@v4
-        with:
-            name: Build_Validation_Windows_Debug
-            path: ./results/build_validation/windows/debug
-        continue-on-error: true
-
-      - uses: actions/download-artifact@v4
-        with:
-            name: Build_Validation_Windows_Release
-            path: ./results/build_validation/windows/release
-        continue-on-error: true
-
-      - name: Job Process Format
-        id: job-process-format
-        uses: ./.github/actions/format-string/job-process
-        with:
-          jobs_and_results: >
-            [
-              {
-                "job_name": "Info And Check",
-                "result": "${{ needs.info-and-check.result }}"
-              },
-              {
-                "job_name": "Build Validation",
-                "result": "${{ needs.build-validation.result }}"
-              },
-              {
-                "job_name": "Auto Update Tag",
-                "result": "${{ needs.auto-update-tag.result }}"
-              },
-              {
-                "job_name": "Github Release",
-                "result": "${{ needs.github-release.result }}"
-              }
-            ]
-        continue-on-error: true
-
-      - name: Value Info Format
-        id:  value-info-format
-        uses: ./.github/actions/format-string/values-info
-        with:
-          path_value_result: ${{ needs.info-and-check.outputs.path_value_result }}
-          git_value_result: ${{ needs.info-and-check.outputs.git_value_result }}
-          else_value_result: ${{ needs.info-and-check.outputs.else_value_result }}
-        continue-on-error: true
-
-      - name: Temp Save To File
+      - name: Update Tag
         run: |
-          # Temp Save To File
-          if [ ! -d "./results/info/" ]; then
-            mkdir -p "./results/info/"
+          # Update Tag
+          git fetch --tags
+          TAG_NAME="${{ env.TAG_PREFIX }}${{ steps.update_version.outputs.value }}"
+          if git rev-parse "$TAG_NAME" >/dev/null 2>&1; then
+            echo "Tag $TAG_NAME already exists. Deleting it..."
+            git push --delete origin "$TAG_NAME"
+            git tag -d "$TAG_NAME"
           fi
-          echo -e "${{ needs.info-and-check.outputs.git_info_result }}" > ./results/info/git_info.result
-          echo -e "${{ steps.job-process-format.outputs.output_result }}" > ./results/info/job_process.result
-          echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
-          echo -e "${{ steps.value-info-format.outputs.output_result }}" > ./results/info/value.result
+          git tag "$TAG_NAME"
+          git push origin "$TAG_NAME"
         continue-on-error: true
-
-      - name: Make Result
-        id: make-result
-        uses: ./.github/actions/result
+          
+      - name: Setup Dotnet 8.0
+        uses: actions/setup-dotnet@v4
         with:
-          info_valuse: >
-            [
-              {
-                "header": "  Git Info",
-                "path": "./results/info/git_info.result"
-              },
-              {
-                "header": "  Job Process",
-                "path": "./results/info/job_process.result"
-              },
-              {
-                "header": "  File Exist",
-                "path": "./results/info/exist_files.result"
-              },
-              {
-                "header": "  Values",
-                "path": "./results/info/value.result"
-              }
-            ]
-          build_validation_valuse: >
-            [
-              {
-                "header": "  Build Validation Linux Debug",
-                "path": "./results/build_validation/linux/debug/build_validation.result"
-              },
-              {
-                "header": "  Build Validation Linux Release",
-                "path": "./results/build_validation/linux/release/build_validation.result"
-              },
-              {
-                "header": "  Build Validation Widnows Debug",
-                "path": "./results/build_validation/windows/debug/build_validation.result"
-              },
-              {
-                "header": "  Build Validation Widnows Release",
-                "path": "./results/build_validation/windows/release/build_validation.result"
-              }
-            ]
-        continue-on-error: true
-      
-      - name: output Result
-        run: |
-          echo -e "${{ steps.make-result.outputs.output_result }}"
+          dotnet-version: "8.0.X"
         continue-on-error: true
 
-  # cd:
-  #   name: CD
-  #   needs: [create-tag]
+      - name: Publish Files
+        run: |
+          # Publish Files
+          mkdir -p publish_output
+
+          dotnet publish -c Release -p:VersionPrefix="${{ steps.update_version.outputs.value }}" -o publish_output
+
+          zip -r release_package.zip publish_output
+
+          mkdir -p artifacts
+          mv release_package.zip artifacts/
+        continue-on-error: true
+
+      - name: Pack NuGet Package
+        run: |
+          # Pack NuGet Package
+          dotnet pack -c Release -p:VersionPrefix="${{ steps.update_version.outputs.value }}" -o artifacts
+
+      - name: Push NuGet Package
+        run: |
+          # Push NuGet Package to nuget.org
+          dotnet nuget push "artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.update_version.outputs.Value }}
+          name: ${{ env.TAG_PREFIX }}${{ steps.update_version.outputs.value }}
+          body: ${{ steps.update_version.outputs.value }}
+          files: artifacts/release_package.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+
+
+
+
+
+
+
+
+  # info-and-check:
+  #   name: Info And Check
   #   runs-on: ubuntu-latest
-  #   env:
-  #     NEW_VERSION: ${{ needs.create-tag.outputs.new_version }}
-  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   outputs:
+  #     path_value_result: ${{ steps.info-and-check.outputs.path_value_result }}
+  #     git_value_result: ${{ steps.info-and-check.outputs.git_value_result }}
+  #     else_value_result: ${{ steps.info-and-check.outputs.else_value_result }}
+  #     exist_files_result: ${{ steps.info-and-check.outputs.exist_files_result }}
+  #     git_info_result: ${{ steps.info-and-check.outputs.git_info_result }}
   #   steps:
-
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+  #     - uses: actions/checkout@v4
   #       with:
   #         fetch-depth: 0
 
-  #     - name: Show Current Tag
+  #     - name: Info And Check
+  #       id: info-and-check
+  #       uses: ./.github/actions/info
+  #       with:
+  #         git_event_name: "${{ github.event_name }}"
+  #         git_ref: "${{ github.ref }}"
+  #         head_ref: "${{ github.head_ref }}"
+  #         base_ref: "${{ github.base_ref }}"
+  #         path_values: >
+  #           [
+  #             {
+  #               "key": "Solution File Path",
+  #               "value": "${{ vars.SOLUTION_FILE_PATH }}"
+  #             },
+  #             {
+  #               "key": "Dll File Path",
+  #               "value": "${{ vars.DLL_PROJECT_FILE_PATH }}"
+  #             },
+  #             {
+  #               "key": "Tester File Path",
+  #               "value": "${{ vars.TESTER_PROJECT_FILE_PATH }}"
+  #             },
+  #             {
+  #               "key": "Tester Executable File Name",
+  #               "value": "${{ vars.TESTER_EXECUTABLE_FILE_NAME }}"
+  #             }
+  #           ]
+  #         else_values: >
+  #           [
+  #             {
+  #               "key": "Result Zip Name",
+  #               "value": "${{ vars.RESULT_ZIP_NAME }}"
+  #             },
+  #             {
+  #               "key": "Tag Prefix",
+  #               "value": "${{ vars.TAG_PREFIX }}"
+  #             }
+  #           ]
+
+  #     - name: Check Output
   #       run: |
-  #         echo "Current VERSION: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}"
+  #         # Check Output
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Path Value"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo -e "${{ steps.info-and-check.outputs.path_value_result }}" || echo "::Warning::⚠️ Invalid Path Value Result"
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Value"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo -e "${{ steps.info-and-check.outputs.git_value_result }}" || echo "::Warning::⚠️ Invalid Git Value Result"
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Else Value"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo -e "${{ steps.info-and-check.outputs.else_value_result }}" || echo "::Warning::⚠️ Invalid Else Value Result"
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Exist Files"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo -e "${{ steps.info-and-check.outputs.exist_files_result }}" || echo "::Warning::⚠️ Invalid Exist Files Result"
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Git Info"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo -e "${{ steps.info-and-check.outputs.git_info_result }}" || echo "::Warning::⚠️ Invalid Git Info Result"
 
-  #     - name: Build Debug
-  #       uses: ./.github/actions/build/linux/dotnet/dll
+  # build-validation:
+  #   name: Build Validation
+  #   needs: info-and-check
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-latest, windows-latest]
+  #       configuration: [Debug, Release]
+  #   steps:
+  #     - uses: actions/checkout@v4
   #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Debug"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
-  #         assembly_version: ${{ vars.NEW_VERSION }}
-  #         file_version: ${{ vars.NEW_VERSION }}
-  #         informational_version: ${{ vars.NEW_VERSION }}
+  #         fetch-depth: 0
 
-  #     - name: Build Release
-  #       uses: ./.github/actions/build/linux/dotnet/dll
+  #     - name: Dll Build Test
+  #       id: dll-build-test
+  #       uses: ./.github/actions/build-validation/dotnet
   #       with:
-  #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
-  #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         configuration: "Release"
-  #         dotnet_version: ${{ vars.DOTNET_VERSION }}
-  #         assembly_version: ${{ env.NEW_VERSION }}
-  #         file_version: ${{ env.NEW_VERSION }}
-  #         informational_version: ${{ env.NEW_VERSION }}
+  #         project_file_path: "${{vars.DLL_PROJECT_FILE_PATH}}"
+  #         build_configuration: "${{matrix.configuration}}"
+  #         dotnet_version: "${{ vars.DOTNET_VERSION }}"
 
-  #     - name: Zip Build File
-  #       uses: ./.github/actions/deploy/build-result-as-zip
-  #       with:
-  #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
-  #         result_zip_name: ${{ vars.RESULT_ZIP_NAME }}
-
-  #     - name: Generate Changelog
-  #       id: generate_changelog
+  #     - name: Check Output
   #       run: |
-  #         git fetch --all
-      
-  #         base_ref=${{ github.base_ref }}
-  #         head_sha=${{ github.sha }}
-      
-  #         if [ -z "$base_ref" ]; then
-  #           # If base_ref is not provided, fallback to the previous commit
-  #           base_ref=$(git rev-parse HEAD^)
+  #         # Check Output
+  #         echo -e "\033[38;5;245m┌──────────────────────────────────────────────────────────────────────────────┐\033[0m"
+  #         printf "\033[38;5;245m|\033[38;5;15m  %-76s\033[38;5;245m│\033[0m\n" "Build Validation"
+  #         echo -e "\033[38;5;245m└──────────────────────────────────────────────────────────────────────────────┘\033[0m"
+  #         echo "${{ steps.dll-build-test.outputs.result }}" || echo "::Warning::⚠️ Invalid Build Validation Result"
+  #       shell: bash
+
+  #     - name: To File Output
+  #       run: |
+  #         # To File Output
+
+  #         # Check Directory
+  #         if [ ! -d "./${{ runner.os }}/${{ matrix.configuration }}" ]; then
+  #           mkdir -p ./${{ runner.os }}/${{ matrix.configuration }}
   #         fi
-      
-  #         # Generate the changelog with commit title, hyperlinked hash, and body
-  #         changelog=$(git log $base_ref..$head_sha --pretty=format:"%s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n------------------------%n%b" --no-merges)
-      
-  #         if [ -z "$changelog" ]; then
-  #           echo "No changes to log."
-  #           changelog="No changes available for this release."
+  #         # Logging Result
+  #         if [ -z "${{ steps.dll-build-test.outputs.result }}" ]; then
+  #           echo "::Warning::⚠️ Invalid Build Validation Result" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
+  #         else
+  #           echo "${{ steps.dll-build-test.outputs.result }}" > "./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result"
   #         fi
-      
-  #         echo "CHANGELOG<<EOF" >> $GITHUB_ENV
-  #         echo "$changelog" >> $GITHUB_ENV
-  #         echo "EOF" >> $GITHUB_ENV
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
-  #     - name: Create GitHub Release
-  #       uses: softprops/action-gh-release@v1
+  #       shell: bash
+
+  #     - uses: actions/upload-artifact@v4
   #       with:
-  #         tag_name: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
-  #         name: Release ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
-  #         body: ${{ env.CHANGELOG }}
-  #         files: ${{ vars.BUILD_DIRECTORY_PATH }}/${{ vars.RESULT_ZIP_NAME }}.zip
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         CHANGELOG: ${{ env.CHANGELOG }}
+  #           name: Build_Validation_${{ runner.os }}_${{ matrix.configuration }}
+  #           path: ./${{ runner.os }}/${{ matrix.configuration }}/build_validation.result
+  #           if-no-files-found: warn
+
+  #     - name: Clear Others
+  #       run: |
+  #         # Clear Others
+  #         rm -rf ./${{ runner.os }}/${{ matrix.configuration }}
+  #       shell: bash
+
+  # auto-update-tag:
+  #   name: Auto Update Tag
+  #   needs: build-validation
+  #   runs-on: ubuntu-latest
+  #   concurrency:
+  #     group: tag-creation
+  #     cancel-in-progress: false
+  #   env:
+  #     NEW_VERSION: ""
+  #   outputs:
+  #     new_version: ${{ env.NEW_VERSION }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #        fetch-depth: 0
+
+  #     - name: Create Tag
+  #       id: create-tag
+  #       uses: ./.github/actions/create-tag
+  #       with:
+  #         prefix: ${{ vars.TAG_PREFIX }}
+
+  # github-release:
+  #   name: Github Release
+  #   needs: auto-update-tag
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #        fetch-depth: 0
+  #     - run: echo making...
+
+  # results:
+  #   name: Results
+  #   needs: [info-and-check, build-validation, auto-update-tag, github-release]
+  #   if: always()
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #        fetch-depth: 0
+
+  #     - name: Check Result Directory
+  #       run: |
+  #         # Check Result Directory
+  #         if [ ! -d "./results/" ]; then
+  #           mkdir -p "./results/"
+  #         fi
+
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #           name: Build_Validation_Linux_Debug
+  #           path: ./results/build_validation/linux/debug
+  #       continue-on-error: true
+
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #           name: Build_Validation_Linux_Release
+  #           path: ./results/build_validation/linux/release
+  #       continue-on-error: true
+
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #           name: Build_Validation_Windows_Debug
+  #           path: ./results/build_validation/windows/debug
+  #       continue-on-error: true
+
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #           name: Build_Validation_Windows_Release
+  #           path: ./results/build_validation/windows/release
+  #       continue-on-error: true
+
+  #     - name: Job Process Format
+  #       id: job-process-format
+  #       uses: ./.github/actions/format-string/job-process
+  #       with:
+  #         jobs_and_results: >
+  #           [
+  #             {
+  #               "job_name": "Info And Check",
+  #               "result": "${{ needs.info-and-check.result }}"
+  #             },
+  #             {
+  #               "job_name": "Build Validation",
+  #               "result": "${{ needs.build-validation.result }}"
+  #             },
+  #             {
+  #               "job_name": "Auto Update Tag",
+  #               "result": "${{ needs.auto-update-tag.result }}"
+  #             },
+  #             {
+  #               "job_name": "Github Release",
+  #               "result": "${{ needs.github-release.result }}"
+  #             }
+  #           ]
+  #       continue-on-error: true
+
+  #     - name: Value Info Format
+  #       id:  value-info-format
+  #       uses: ./.github/actions/format-string/values-info
+  #       with:
+  #         path_value_result: ${{ needs.info-and-check.outputs.path_value_result }}
+  #         git_value_result: ${{ needs.info-and-check.outputs.git_value_result }}
+  #         else_value_result: ${{ needs.info-and-check.outputs.else_value_result }}
+  #       continue-on-error: true
+
+  #     - name: Temp Save To File
+  #       run: |
+  #         # Temp Save To File
+  #         if [ ! -d "./results/info/" ]; then
+  #           mkdir -p "./results/info/"
+  #         fi
+  #         echo -e "${{ needs.info-and-check.outputs.git_info_result }}" > ./results/info/git_info.result
+  #         echo -e "${{ steps.job-process-format.outputs.output_result }}" > ./results/info/job_process.result
+  #         echo -e "${{ needs.info-and-check.outputs.exist_files_result }}" > ./results/info/exist_files.result
+  #         echo -e "${{ steps.value-info-format.outputs.output_result }}" > ./results/info/value.result
+  #       continue-on-error: true
+
+  #     - name: Make Result
+  #       id: make-result
+  #       uses: ./.github/actions/result
+  #       with:
+  #         info_valuse: >
+  #           [
+  #             {
+  #               "header": "  Git Info",
+  #               "path": "./results/info/git_info.result"
+  #             },
+  #             {
+  #               "header": "  Job Process",
+  #               "path": "./results/info/job_process.result"
+  #             },
+  #             {
+  #               "header": "  File Exist",
+  #               "path": "./results/info/exist_files.result"
+  #             },
+  #             {
+  #               "header": "  Values",
+  #               "path": "./results/info/value.result"
+  #             }
+  #           ]
+  #         build_validation_valuse: >
+  #           [
+  #             {
+  #               "header": "  Build Validation Linux Debug",
+  #               "path": "./results/build_validation/linux/debug/build_validation.result"
+  #             },
+  #             {
+  #               "header": "  Build Validation Linux Release",
+  #               "path": "./results/build_validation/linux/release/build_validation.result"
+  #             },
+  #             {
+  #               "header": "  Build Validation Widnows Debug",
+  #               "path": "./results/build_validation/windows/debug/build_validation.result"
+  #             },
+  #             {
+  #               "header": "  Build Validation Widnows Release",
+  #               "path": "./results/build_validation/windows/release/build_validation.result"
+  #             }
+  #           ]
+  #       continue-on-error: true
+      
+  #     - name: output Result
+  #       run: |
+  #         echo -e "${{ steps.make-result.outputs.output_result }}"
+  #       continue-on-error: true
+
+  # # cd:
+  # #   name: CD
+  # #   needs: [create-tag]
+  # #   runs-on: ubuntu-latest
+  # #   env:
+  # #     NEW_VERSION: ${{ needs.create-tag.outputs.new_version }}
+  # #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # #   steps:
+
+  # #     - name: Checkout Repository
+  # #       uses: actions/checkout@v4
+  # #       with:
+  # #         fetch-depth: 0
+
+  # #     - name: Show Current Tag
+  # #       run: |
+  # #         echo "Current VERSION: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}"
+
+  # #     - name: Build Debug
+  # #       uses: ./.github/actions/build/linux/dotnet/dll
+  # #       with:
+  # #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  # #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  # #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  # #         configuration: "Debug"
+  # #         dotnet_version: ${{ vars.DOTNET_VERSION }}
+  # #         assembly_version: ${{ vars.NEW_VERSION }}
+  # #         file_version: ${{ vars.NEW_VERSION }}
+  # #         informational_version: ${{ vars.NEW_VERSION }}
+
+  # #     - name: Build Release
+  # #       uses: ./.github/actions/build/linux/dotnet/dll
+  # #       with:
+  # #         solution_file_path: ${{ vars.SOLUTION_FILE_PATH }}
+  # #         dll_project_file_path: ${{ vars.DLL_PROJECT_FILE_PATH }}
+  # #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  # #         configuration: "Release"
+  # #         dotnet_version: ${{ vars.DOTNET_VERSION }}
+  # #         assembly_version: ${{ env.NEW_VERSION }}
+  # #         file_version: ${{ env.NEW_VERSION }}
+  # #         informational_version: ${{ env.NEW_VERSION }}
+
+  # #     - name: Zip Build File
+  # #       uses: ./.github/actions/deploy/build-result-as-zip
+  # #       with:
+  # #         build_directory_path: ${{ vars.BUILD_DIRECTORY_PATH }}
+  # #         result_zip_name: ${{ vars.RESULT_ZIP_NAME }}
+
+  # #     - name: Generate Changelog
+  # #       id: generate_changelog
+  # #       run: |
+  # #         git fetch --all
+      
+  # #         base_ref=${{ github.base_ref }}
+  # #         head_sha=${{ github.sha }}
+      
+  # #         if [ -z "$base_ref" ]; then
+  # #           # If base_ref is not provided, fallback to the previous commit
+  # #           base_ref=$(git rev-parse HEAD^)
+  # #         fi
+      
+  # #         # Generate the changelog with commit title, hyperlinked hash, and body
+  # #         changelog=$(git log $base_ref..$head_sha --pretty=format:"%s [#%h](https://github.com/${{ github.repository }}/commit/%H)%n------------------------%n%b" --no-merges)
+      
+  # #         if [ -z "$changelog" ]; then
+  # #           echo "No changes to log."
+  # #           changelog="No changes available for this release."
+  # #         fi
+      
+  # #         echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+  # #         echo "$changelog" >> $GITHUB_ENV
+  # #         echo "EOF" >> $GITHUB_ENV
+  # #       env:
+  # #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+  # #     - name: Create GitHub Release
+  # #       uses: softprops/action-gh-release@v1
+  # #       with:
+  # #         tag_name: ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
+  # #         name: Release ${{ vars.TAG_PREFIX }}${{ env.NEW_VERSION }}
+  # #         body: ${{ env.CHANGELOG }}
+  # #         files: ${{ vars.BUILD_DIRECTORY_PATH }}/${{ vars.RESULT_ZIP_NAME }}.zip
+  # #       env:
+  # #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # #         CHANGELOG: ${{ env.CHANGELOG }}

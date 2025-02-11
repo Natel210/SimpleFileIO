@@ -25,7 +25,7 @@ using SimpleFileIO.Utility;
 using SimpleFileIO.Log.Text;
 
 // Create Intance
-PathProperty pathProperty =new PathProperty() {
+PathProperty pathProperty = new PathProperty() {
     RootDirectory = new DirectoryInfo("./Test"),
     FileName="TestTextLog",
     Extension="txtlog" };
@@ -49,7 +49,7 @@ using SimpleFileIO.Utility;
 using SimpleFileIO.Log.Csv;
 
 // Create Intance
-PathProperty pathProperty =new PathProperty() {
+PathProperty pathProperty = new PathProperty() {
     RootDirectory = new DirectoryInfo("./Test"),
     FileName="TestCSVLog",
     Extension="csvlog" };
@@ -262,13 +262,3 @@ internal class parserTpye1
 - Nuget: [CsvHelper NuGet](https://www.nuget.org/packages/CsvHelper)
 - Usage:  
   - Used for advanced CSV parsing and serialization.
-  
-### SimpleComposeActions
-- Version: N/A
-- License: MIT  
-- Copyright: © 2024–2025 Natel210
-- Project URL: [SimpleComposeActions](https://github.com/Natel210/SimpleComposeActions)
-- Usage:  
-  - Used as a modular and reusable GitHub Actions workflow template.
-  - Facilitates simplified CI/CD pipeline setup by enabling developers to compose workflows using pre-defined modular actions.
-  - Provides pre-tested components to improve productivity and reduce workflow errors.

@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <BaseOutputPath>Bin\</BaseOutputPath>
+    <BaseOutputPath>../Bin/</BaseOutputPath>
     <Copyright>MIT</Copyright>
     <!--<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>-->
-      
+    <PublishDir>$(BaseOutputPath)Publish</PublishDir>
     <!-- Local Test -->
     <VersionPrefix>0.0.3</VersionPrefix>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <RepositoryUrl>https://github.com/Natel210/SimpleFileIO.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <DocumentationFile>$(BaseOutputPath)/$(Configuration)/$(TargetFramework)/$(AssemblyName).xml</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>$(AssemblyName)</Title>
@@ -35,7 +35,6 @@
       <IncludeAssets>all</IncludeAssets>
       <PrivateAssets>none</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="SimpleFileIO" Version="0.0.3" />
   </ItemGroup>
 
   <!-- Add PackageIn  -->
@@ -60,6 +59,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
     
 </Project>
