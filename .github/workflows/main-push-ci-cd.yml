@@ -133,7 +133,7 @@ jobs:
       - name: Github Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ needs.versioning.outputs.version }}
+          tag_name: ${{ env.TAG_PREFIX }}${{ needs.versioning.outputs.version }}
           name: ${{ env.TAG_PREFIX }}${{ needs.versioning.outputs.version }}
           body: "Release version ${{ needs.versioning.outputs.version }}"
           files: artifacts/publish_output.zip
