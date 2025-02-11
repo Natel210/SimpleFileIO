@@ -61,29 +61,30 @@ jobs:
           git push origin "$TAG_NAME"
 
   build:
-    name: Build & Publish
-    needs: versioning  # versioning 작업이 완료된 후 실행
-    runs-on: windows-latest  # 빌드와 NuGet 패키징은 Windows에서 실행
+    runs-on: windows-latest
     steps:
-      - name: Git Check Out
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Dotnet 8.0
+      - name: Setup .NET 8.0
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.X"
 
-      - name: build .NET Application
-        run: |
-          mkdir -p build_output
-          dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release -p:VersionPrefix="${{ needs.versioning.outputs.version }}" -o build_output
-          Compress-Archive -Path build_output -DestinationPath release_package.zip
-        shell: pwsh
+      - name: Remove Test Project from Solution
+        run: dotnet sln SimpleFileIO.sln remove SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
 
-      - name: Pack NuGet Package
-        run: |
-          dotnet pack -c Release -p:Version="${{ needs.versioning.outputs.version }}" -o artifacts
-        shell: pwsh
+      - name: Clear NuGet Cache
+        run: dotnet nuget locals all --clear
+
+      - name: Restore Only Main Project
+        run: dotnet restore SimpleFileIO/SimpleFileIO.csproj
+
+      - name: Build Only Main Project
+        run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
+
+      - name: Publish Only Main Project
+        run: dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o publish_output --no-build
 
       - name: Upload Release Package
         uses: actions/upload-artifact@v4
