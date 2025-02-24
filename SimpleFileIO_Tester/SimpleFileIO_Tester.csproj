@@ -9,6 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SimpleFileIO" Version="0.0.3" />
+    <ProjectReference Include="..\SimpleFileIO\SimpleFileIO.csproj" />
   </ItemGroup>
 </Project>

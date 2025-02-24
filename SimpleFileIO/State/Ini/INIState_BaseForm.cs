@@ -212,14 +212,14 @@ namespace SimpleFileIO.State.Ini
                 return false;
             }
 
-            if (string.IsNullOrEmpty(value))
-            {
-                string errorMessage = $"{ErrorMessages.set_value_invaild_value},{nameof(value)}";
-                Debug.WriteLine(errorMessage);
-                if (ThrowExceptionMode is true)
-                    throw new ArgumentNullException(errorMessage);
-                return false;
-            }
+            //if (string.IsNullOrEmpty(value))
+            //{
+            //    string errorMessage = $"{ErrorMessages.set_value_invaild_value},{nameof(value)}";
+            //    Debug.WriteLine(errorMessage);
+            //    if (ThrowExceptionMode is true)
+            //        throw new ArgumentNullException(errorMessage);
+            //    return false;
+            //}
 
             lock (_sectionsMutex)
             {
