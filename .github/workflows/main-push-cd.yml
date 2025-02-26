@@ -92,7 +92,7 @@ jobs:
 
       - name: Publish Only Main Project
         run: |
-          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -o artifacts/publish_output --no-build
+          dotnet publish SimpleFileIO/SimpleFileIO.csproj -c Release -p:Version="${{ needs.versioning.outputs.version }}" -o artifacts/publish_output --no-build
           Compress-Archive -Path artifacts/publish_output -DestinationPath artifacts/publish_output.zip
         shell: pwsh
 
@@ -115,7 +115,7 @@ jobs:
 
   release:
     name: GitHub Release & NuGet Publish
-    needs: build
+    needs: [versioning, build]
     runs-on: ubuntu-latest
     steps:
       - name: Download Release Package
