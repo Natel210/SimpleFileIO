@@ -24,21 +24,21 @@ jobs:
     outputs:
       skip: ${{ steps.check.outputs.skip }}
     steps:
-      - name: Checkout Code
+      - name: Checkout Code with Full History
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check Actor and Changed Files
         id: check
         run: |
           SKIP=false
           
-          # GitHub 웹 UI에서 푸시한 경우
           if [[ "${{ github.actor }}" == "web-flow" ]]; then
             echo "Detected web-flow commit, skipping..."
             SKIP=true
           fi
 
-          # README.md 같은 문서 파일만 변경된 경우
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
           if echo "$CHANGED_FILES" | grep -qE "^(README\.md|docs/|\.github/ISSUE_TEMPLATE/)"; then
             echo "Only documentation files changed, skipping..."
