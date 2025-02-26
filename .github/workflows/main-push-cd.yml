@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
   statuses: write
 
 concurrency:
@@ -146,6 +147,6 @@ jobs:
 
       - name: Push NuGet Package to GitHub Packages
         run: |
-          dotnet nuget push "artifacts/*.nupkg" --source "https://nuget.pkg.github.com/YOUR_GITHUB_USERNAME/index.json" --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate
+          dotnet nuget push "artifacts/*.nupkg" --source "https://nuget.pkg.github.com/Natel210/index.json" --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
