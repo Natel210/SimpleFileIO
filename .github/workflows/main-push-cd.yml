@@ -81,7 +81,7 @@ jobs:
         run: dotnet restore SimpleFileIO/SimpleFileIO.csproj
 
       - name: Build Only Main Project
-        run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
+        run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release -p:Version="${{ needs.versioning.outputs.version }}" --no-restore
 
       - name: Ensure Artifacts Directory Exists
         run: |
@@ -138,8 +138,14 @@ jobs:
           body: "Release version ${{ needs.versioning.outputs.version }}"
           files: artifacts/publish_output.zip
 
-      - name: Push NuGet Package
+      - name: Push NuGet Package to NuGet.org
         run: |
           dotnet nuget push "artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ secrets.NUGET_API_KEY }}" --skip-duplicate
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Push NuGet Package to GitHub Packages
+        run: |
+          dotnet nuget push "artifacts/*.nupkg" --source "https://nuget.pkg.github.com/YOUR_GITHUB_USERNAME/index.json" --api-key "${{ secrets.GITHUB_TOKEN }}" --skip-duplicate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
