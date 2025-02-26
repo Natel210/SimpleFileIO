@@ -20,6 +20,7 @@ env:
 
 jobs:
   versioning:
+    if: github.actor != 'web-flow'
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.update_version.outputs.version }}
