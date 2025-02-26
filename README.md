@@ -251,6 +251,10 @@ internal class parserTpye1
 ```
 
 ## Notes
+- 
+- 0.0.3 ~ 0.1.1 fill github data & update action workflows 
+- 0.0.1 ~ 0.0.3 upload nuget
+- 0.0.1 Init
 
 ## Third-Party Libraries
 
