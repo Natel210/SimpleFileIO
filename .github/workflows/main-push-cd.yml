@@ -40,8 +40,8 @@ jobs:
           fi
 
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-          if echo "$CHANGED_FILES" | grep -qE "^(README\.md|docs/|\.github/ISSUE_TEMPLATE/)"; then
-            echo "Only documentation files changed, skipping..."
+          if echo "$CHANGED_FILES" | grep -qE "^(README\.md|docs/|\.github/ISSUE_TEMPLATE/|.*\.yml)$"; then
+            echo "Only documentation or YAML files changed, skipping..."
             SKIP=true
           fi
 
