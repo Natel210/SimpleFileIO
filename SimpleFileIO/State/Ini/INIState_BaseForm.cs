@@ -317,7 +317,7 @@ namespace SimpleFileIO.State.Ini
                             {
                                 await streamWriter.WriteLineAsync($"[{section.Key}]");
                                 foreach (var keyValue in section.Value)
-                                    await streamWriter.WriteLineAsync($"{keyValue.Key} = {keyValue.Value}");
+                                    await streamWriter.WriteLineAsync($"{keyValue.Key}={keyValue.Value}");
                                 await streamWriter.WriteLineAsync();
                             }
                         }

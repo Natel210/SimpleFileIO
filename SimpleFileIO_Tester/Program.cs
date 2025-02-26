@@ -38,7 +38,7 @@ namespace SimpleFileIO_Tester
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                 temp1 = csv.GetRecords<testdata2>().ToList();
 
-            Manager.CreateIniState("TestIni", new() { RootDirectory = new("./Test"), FileName = "TestIni", Extension = ".ini" });
+            Manager.CreateIniState("TestIni", new() { RootDirectory = new("./Test"), FileName = "TestIni", Extension = "ini" });
             IINIState? iniState = Manager.GetIniState("TestIni") ?? null;
             if (iniState is null)
                 throw new Exception("not create ini.");
@@ -73,7 +73,7 @@ namespace SimpleFileIO_Tester
 
             // new load and check datas
             IINIState? findINI = Manager.CreateIniState("TestFindIni",
-                new() { RootDirectory = new("./Test"), FileName = "TestIni", Extension = ".ini" });
+                new() { RootDirectory = new("./Test"), FileName = "TestIni", Extension = "ini" });
             if (findINI is null)
                 throw new Exception("not create ini.");
             findINI.ThrowExceptionMode = true;
