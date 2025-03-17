@@ -30,20 +30,28 @@ jobs:
       
       # Only Target Projects
       - name: Remove Test Project from Solution
-        run: dotnet sln SimpleFileIO.sln remove SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
+        run: |
+          # Only Target Projects
+          dotnet sln SimpleFileIO.sln remove SimpleFileIO_Tester/SimpleFileIO_Tester.csproj
 
       # Only Target Projects
       - name: Clear NuGet Cache
-        run: dotnet nuget locals all --clear
+        run: |
+          # Only Target Projects
+          dotnet nuget locals all --clear
 
       # Only Target Projects
       - name: Restore Only Main Project
-        run: dotnet restore SimpleFileIO/SimpleFileIO.csproj
+        run: |
+          # Only Target Projects
+          dotnet restore SimpleFileIO/SimpleFileIO.csproj
 
       # Only Target Projects
       - name: Build Test In Window Release
         id: build-test-in-window-release
-        run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
+        run: |
+          # Build Test In Window Release
+          dotnet build SimpleFileIO/SimpleFileIO.csproj -c Release --no-restore
         shell: pwsh
         continue-on-error: true
 
@@ -51,11 +59,23 @@ jobs:
       - name: Build Test In Window Debug
         id: build-test-in-window-debug
         if: steps.build-test-in-window-release.outcome == 'failure'
-        run: dotnet build SimpleFileIO/SimpleFileIO.csproj -c Debug --no-restore
+        run: |
+          # Build Test In Window Debug
+          dotnet build SimpleFileIO/SimpleFileIO.csproj -c Debug --no-restore
         shell: pwsh
         continue-on-error: true
 
-      # Last Failed Check
-      - name: Fail if both builds fail
-        if: steps.build-test-in-window-release.outcome == 'failure' || steps.build-test-in-window-debug.outcome == 'failure'
-        run: exit 1
+      # Debug Failed Check
+      - name: Fail if debug builds fail
+        if: steps.build-test-in-window-debug.outcome == 'failure'
+        run: |
+          # Report Debug Bulid
+          echo ::warning:: Debug Bulid Fail...
+          
+      # Release Failed Check
+      - name: Fail if release builds fail
+        if: steps.build-test-in-window-release.outcome == 'failure'
+        run: |
+          # Report Release Bulid
+          echo ::error:: Release Bulid Fail...
+          exit 1
