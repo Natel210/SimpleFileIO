@@ -40,11 +40,12 @@ jobs:
           fi
 
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-          if echo "$CHANGED_FILES" | grep -qE "^(README\.md|docs/|\.github/ISSUE_TEMPLATE/|.*\.yml)$"; then
+          if echo "$CHANGED_FILES" | grep -vE "^(README\.md|docs/|\.github/ISSUE_TEMPLATE/|.*\.yml)$" | grep -q .; then
+            echo "Code-related files detected, continuing workflow..."
+          else
             echo "Only documentation or YAML files changed, skipping..."
             SKIP=true
           fi
-
           echo "skip=$SKIP" >> $GITHUB_OUTPUT
           
   versioning:
