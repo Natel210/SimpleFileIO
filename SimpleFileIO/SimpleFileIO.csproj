@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <BaseOutputPath>../Bin/</BaseOutputPath>
+    <OutputPath>..\Bin\$(Configuration)\$(MSBuildProjectName)</OutputPath>
     <Copyright>MIT</Copyright>
     <!--<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>-->
     <PublishDir>$(BaseOutputPath)Publish</PublishDir>

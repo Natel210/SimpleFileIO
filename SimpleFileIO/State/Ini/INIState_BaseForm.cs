@@ -362,14 +362,11 @@ namespace SimpleFileIO.State.Ini
                 return false;
 
             IsLoading = true;
-            // Directory check and create if necessary
-            if (!Directory.Exists("./TempIniData/"))
-                Directory.CreateDirectory("./TempIniData/");
 
             PathProperty tempPathProperty = PathProperty;
             var getCurTick = DateTime.UtcNow.Ticks;
             FileInfo originFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
-            FileInfo tempCopyFileInfo = new FileInfo(Path.Combine("./TempIniData/", $"{tempPathProperty.FileName}_{getCurTick}.{tempPathProperty.Extension}"));
+            FileInfo tempCopyFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}_{getCurTick}.{tempPathProperty.Extension}"));
 
             // copy from origin
             originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
