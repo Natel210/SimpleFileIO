@@ -251,6 +251,7 @@ internal class parserTpye1
 ```
 
 ## Notes
+- 0.1.5 ~ 0.1.6 Remove Temp Ini Dir / Changed Output Dir in Code.
 - 0.1.1 ~ 0.1.4 Fix action workflow: Prevent push-triggered reversion when updating README or .yml files.
 - 0.0.3 ~ 0.1.1 fill github data & update action workflows
 - 0.0.1 ~ 0.0.3 upload nuget

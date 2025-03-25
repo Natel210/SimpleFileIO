@@ -317,7 +317,7 @@ namespace SimpleFileIO.State.Ini
                             {
                                 await streamWriter.WriteLineAsync($"[{section.Key}]");
                                 foreach (var keyValue in section.Value)
-                                    await streamWriter.WriteLineAsync($"{keyValue.Key}={keyValue.Value}");
+                                    await streamWriter.WriteLineAsync($"{keyValue.Key} = {keyValue.Value}");
                                 await streamWriter.WriteLineAsync();
                             }
                         }
@@ -366,7 +366,7 @@ namespace SimpleFileIO.State.Ini
             PathProperty tempPathProperty = PathProperty;
             var getCurTick = DateTime.UtcNow.Ticks;
             FileInfo originFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}.{tempPathProperty.Extension}"));
-            FileInfo tempCopyFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}_{getCurTick}.{tempPathProperty.Extension}"));
+            FileInfo tempCopyFileInfo = new FileInfo(Path.Combine(tempPathProperty.RootDirectory.FullName, $"{tempPathProperty.FileName}_temp{getCurTick}.{tempPathProperty.Extension}"));
 
             // copy from origin
             originFileInfo.CopyTo(tempCopyFileInfo.FullName, true);
